@@ -1,0 +1,1 @@
+BUILD_SUBMITTER -x -m baidu/iknow-copyright/shield -c "cd baidu/iknow-copyright/shield && mkdir output && cp BCLOUD ./output/" -u ./
