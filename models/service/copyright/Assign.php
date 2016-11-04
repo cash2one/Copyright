@@ -20,6 +20,10 @@ class Service_Copyright_Assign
     private $extra = array();
     private $header = array("pathinfo" => "copyright/Parallel");
     
+    /*
+    * @param:
+    * @result:
+    * */
     private function allocateTitleIknow(
         $processNum, 
         $casePerParallelProcess, 
@@ -47,7 +51,8 @@ class Service_Copyright_Assign
                 "scope" => $scope,
                 "query" => $query,
                 "chapter" => $chapter,
-                "text" => $text);
+                "text" => $text,
+            );
             $request = array($this->service, $this->method, $this->input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
@@ -66,13 +71,18 @@ class Service_Copyright_Assign
                 "scope" => $scope,
                 "query" => $query,
                 "chapter" => $chapter,
-                "text" => $text);
+                "text" => $text,
+            );
             $request = array($this->service, $this->method, $this->input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
         return $parallelServer;
     }
 
+    /*
+    * @param:
+    * @result:
+    * */
     private function allocateTiltePs(
         $processNum, 
         $casePerParallelProcess,
@@ -99,13 +109,18 @@ class Service_Copyright_Assign
                 "scope" => $scope,
                 "query" => $query,
                 "chapter" => $chapter,
-                "text" => $text);
+                "text" => $text,
+            );
             $request = array($service, $method, $input, $extra, $header);
             $parallelServer["$i"] = $request;
         }
         return $parallelServer;
     }
 
+    /*
+    * @param:
+    * @result:
+    * */
     private function allocateContentTieba(
         $processNum, 
         $casePerParallelProcess, 
@@ -121,6 +136,10 @@ class Service_Copyright_Assign
 
     }
 
+    /*
+    * @param:
+    * @result:
+    * */
     private function allocateContentPs(
         $processNum, 
         $casePerParallelProcess, 
@@ -143,6 +162,10 @@ class Service_Copyright_Assign
     }
 
     // casePerParallelProcess 必须可以被10整除且小于10,即(1,2,5,10)
+    /*
+    * @param:
+    * @result:
+    * */
     public function assignParallel(
         $mode, 
         $type, 
