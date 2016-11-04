@@ -21,8 +21,8 @@ class Service_Copyright_Assign
     private $header = array("pathinfo" => "copyright/Parallel");
     
     /*
-    * @param array
-    * @return array
+    * @param : num, num, num, num, num, str, str, str
+    * @return : array
     * */
     private function allocateTitleIknow(
         $processNum, 
@@ -80,8 +80,8 @@ class Service_Copyright_Assign
     }
 
     /*
-    * @param array
-    * @return array
+    * @param : num, num, num, num, num, str, str, str
+    * @return : array
     * */
     private function allocateTiltePs(
         $processNum, 
@@ -118,8 +118,8 @@ class Service_Copyright_Assign
     }
 
     /*
-    * @param array
-    * @return array
+    * @param : num, num, num, num, num, str, str, str
+    * @return : array
     * */
     private function allocateContentTieba(
         $processNum, 
@@ -137,8 +137,8 @@ class Service_Copyright_Assign
     }
 
     /*
-    * @param array
-    * @return array
+    * @param : num, num, num, num, num, str, str, str
+    * @return : array
     * */
     private function allocateContentPs(
         $processNum, 
@@ -163,8 +163,8 @@ class Service_Copyright_Assign
 
     // casePerParallelProcess 必须可以被10整除且小于10,即(1,2,5,10)
     /*
-    * @param array
-    * @return array
+    * @param : num, num, num, num, num, str, str, str
+    * @return : array
     * */
     public function assignParallel(
         $mode, 
