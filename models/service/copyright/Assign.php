@@ -20,7 +20,7 @@ class Service_Copyright_Assign
     private $extra = array();
     private $header = array("pathinfo" => "copyright/Parallel");
     
-    /*
+    /**
     * @param : num, num, num, num, num, str, str, str
     * @return : array
     * */
@@ -79,7 +79,7 @@ class Service_Copyright_Assign
         return $parallelServer;
     }
 
-    /*
+    /**
     * @param : num, num, num, num, num, str, str, str
     * @return : array
     * */
@@ -117,7 +117,7 @@ class Service_Copyright_Assign
         return $parallelServer;
     }
 
-    /*
+    /**
     * @param : num, num, num, num, num, str, str, str
     * @return : array
     * */
@@ -136,7 +136,7 @@ class Service_Copyright_Assign
 
     }
 
-    /*
+    /**
     * @param : num, num, num, num, num, str, str, str
     * @return : array
     * */
@@ -162,7 +162,7 @@ class Service_Copyright_Assign
     }
 
     // casePerParallelProcess 必须可以被10整除且小于10,即(1,2,5,10)
-    /*
+    /**
     * @param : num, num, num, num, num, str, str, str
     * @return : array
     * */
