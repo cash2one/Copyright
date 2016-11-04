@@ -15,21 +15,38 @@
 class Service_Data_Statistic
 {
     private $jobid;
-    function __construct($jobid)
+
+    /**
+     * @param
+     * @return
+     */
+    public function __construct($jobid)
     {
         $this->jobid = $jobid;
     }
 
+    /**
+     * @param
+     * @return
+     */
     function analyse($input)
     {
 
     }
 
+    /**
+     * @param
+     * @return
+     */
     function wreiteDb()
     {
 
     }
 
+    /**
+     * @param
+     * @return
+     */
     function readDb()
     {
 

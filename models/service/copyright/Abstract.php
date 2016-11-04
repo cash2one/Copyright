@@ -17,13 +17,29 @@ abstract class Service_Copyright_Abstract
     protected $searchResult;
     protected $normResult;
     protected $detectResult;
-    /*
-     *
+
+    /**
+     * @param
+     * @return
      */
     abstract function Search($pn,$start,$end,$ext = array());
+
+    /**
+     * @param
+     * @return
+     */
     abstract function Norm();
+
+    /**
+     * @param
+     * @return
+     */
     abstract function Detect();
 
+    /**
+     * @param
+     * @return
+     */
     function writeCache($key,array $field_value)
     {
 
