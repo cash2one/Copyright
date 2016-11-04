@@ -45,6 +45,10 @@ abstract class Service_Copyright_Abstract
 
     }
 
+    /**
+     * @param
+     * @return
+     */
     function readCache($key,$fields = array())
     {
 
