@@ -16,11 +16,19 @@
 class Service_Copyright_HashCache
 {
 
+    /*
+     * @param
+     * @return
+     */
     public function write($key,$field_value)
     {
         return;
     }
 
+    /*
+     * @param
+     * @return
+     */
     public function read($key,$filds = array())
     {
 
