@@ -16,7 +16,7 @@
 class Service_Copyright_HashCache
 {
 
-    /*
+    /**
      * @param
      * @return
      */
@@ -25,7 +25,7 @@ class Service_Copyright_HashCache
         return;
     }
 
-    /*
+    /**
      * @param
      * @return
      */
