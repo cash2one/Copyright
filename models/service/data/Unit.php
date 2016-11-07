@@ -20,9 +20,18 @@ class Servie_Data_Unit
 
     const PREFIX = 'Service_Copyrith_';
 
-    function schedule()
+    function schedule(
+            $pn,    
+            $start, 
+            $end,   
+            $casePerPage, 
+            $mode,  
+            $type,  
+            $scope, 
+            $query, 
+            $chapter, 
+            $text)
     {
-
     }
 }
 

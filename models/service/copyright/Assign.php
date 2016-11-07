@@ -148,7 +148,7 @@ class Service_Copyright_Assign
         $scope, 
         $query,
         $chapter,
-        $text))
+        $text)
     {
         return $this->allocateTiltePs(
             $processNum, 

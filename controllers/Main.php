@@ -6,6 +6,7 @@
  */
 class Controller_Main extends Ap_Controller_Abstract {
 	public $actions = array(
-		'sample' => 'actions/Sample.php',
+        'assignment' => 'actions/inner/Assignment.php',
+        'parallel' => 'actions/inner/Parallel.php',
 	);
 }
