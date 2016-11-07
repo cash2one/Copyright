@@ -18,7 +18,7 @@ class Service_Copyright_Assign
     private $service = "Copyright";
     private $method = "post"; 
     private $extra = array();
-    private $header = array("pathinfo" => "copyright/Parallel");
+    private $header = array("pathinfo" => "copyright/parallel");
     
     /**
     * @param : num, num, num, num, num, str, str, str
@@ -34,7 +34,7 @@ class Service_Copyright_Assign
         $chapter,
         $text)
     {
-        $parallel_server = array();
+        $parallelServer = array();
         $processNumF = intval(21/$casePerParallelProcess);
         $casePerPage = 20;
         for ($i = 0; $i < $processNumF; ++$i)
@@ -53,7 +53,7 @@ class Service_Copyright_Assign
                 "chapter" => $chapter,
                 "text" => $text,
             );
-            $request = array($this->service, $this->method, $this->input, $this->extra, $this->header);
+            $request = array($this->service, $this->method, $input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
         $casePerPage = 10;
@@ -73,7 +73,7 @@ class Service_Copyright_Assign
                 "chapter" => $chapter,
                 "text" => $text,
             );
-            $request = array($this->service, $this->method, $this->input, $this->extra, $this->header);
+            $request = array($this->service, $this->method, $input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
         return $parallelServer;
@@ -102,7 +102,7 @@ class Service_Copyright_Assign
             $input = array(
                 "pn" => $pn,
                 "start" => $start,
-                "num" => $casePerParallelProcess,
+                "end" => $start+$casePerParallelProcess,
                 "casePerPage" => $casePerPage,
                 "mode" => $mode,
                 "type" => $type,
@@ -111,7 +111,7 @@ class Service_Copyright_Assign
                 "chapter" => $chapter,
                 "text" => $text,
             );
-            $request = array($service, $method, $input, $extra, $header);
+            $request = array($this->service, $this->method, $input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
         return $parallelServer;
@@ -223,16 +223,28 @@ class Service_Copyright_Assign
                 $chapter,
                 $text);
         }
+        else if ($mode == 1 && $scope == 0)
+        {
+            $parallelServer = $this->allocateContentPs(
+                $processNum, 
+                $casePerParallelProcess,
+                $mode,  
+                $type,  
+                $scope, 
+                $query, 
+                $chapter,
+                $text);   
+        }
         
-        //BD_Log::notice(json_encode($parallel_server));
+        //BD_Log::notice(json_encode($parallelServer));
         
         if (count($parallelServer) != $processNum)
         {
             $ret['errno'] = 2;
-            $ret['message'] = "parallel num : $parallel_server not equal process num : $processNum !";
+            $ret['message'] = "parallel num : $parallelServer not equal process num : $processNum !";
         }
 
-        ral_multi($parallel_server);
+        ral_multi($parallelServer);
         return $ret;
     }
 }

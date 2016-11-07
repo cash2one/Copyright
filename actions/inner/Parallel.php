@@ -31,7 +31,7 @@ class Action_Parallel extends Ap_Action_Abstract
         $chapter = $httpPost['chapter'];
         $text = $httpPost['text'];
         
-        $unitJob = new Servie_Data_Unit();
+        $unitJob = new Service_Data_Unit();
         $ret = $unitJob->schedule(
             $pn, 
             $start, 

@@ -36,8 +36,34 @@ class Action_Assignment extends Ap_Action_Abstract
         $scope = $httpPost['scope'];
         $chapter = isset($httpPost['chapter'])?$httpPost['chapter']:"";
         $text = isset($httpPost['text'])?$httpPost['text']:"";
+        $caseNum = 10;
+        $casePerParallelProcess = 10;
+        if ($mode == 0 && $scope == 0)
+        {
+            $caseNum = 10;
+            $casePerParallelProcess = 1;
+        }
+        else if ($mode == 0 && $scope == 1)
+        {
+            $caseNum = 100;
+            $casePerParallelProcess = 10;
+        }
+        else if ($mode == 1 && $scope == 0)
+        {
+            $caseNum = 10;
+            $casePerParallelProcess = 1;
+        }
+        
         $assignJob = new Service_Copyright_Assign();
-        $ret = $assignJob->assignParallel($mode, $type, $scope, $query, $chapter, $text, 100);
+        $ret = $assignJob->assignParallel(
+            $mode, 
+            $type, 
+            $scope, 
+            $query, 
+            $chapter, 
+            $text, 
+            $caseNum,
+            $casePerParallelProcess);
         echo json_encode($ret);
     }
 }
