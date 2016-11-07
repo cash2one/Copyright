@@ -20,6 +20,10 @@ class Servie_Data_Unit
 
     const PREFIX = 'Service_Copyrith_';
 
+    /**
+    * @param : num, num, num, num, num, num, num, str, str, str
+    * @return : array
+    * */
     function schedule(
             $pn,    
             $start, 
