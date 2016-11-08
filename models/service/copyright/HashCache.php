@@ -19,6 +19,10 @@ class Service_Copyright_HashCache
 
     private $redis;
 
+    /**
+     * @param
+     * @return
+     */
     public function __construct()
     {
         if (empty($this->redis)) {

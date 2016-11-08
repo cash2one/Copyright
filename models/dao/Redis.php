@@ -23,6 +23,10 @@ class Service_Dao_Redis
     );
 
     //redis实例
+    /**
+     * @param
+     * @return
+     */
     public static function getInstance()
     {
         return Bd_RalRpc::create(self::AK_REDIS_CLASS,self::$redisConfig);
