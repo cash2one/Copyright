@@ -137,7 +137,7 @@ class Action_Submit extends Ap_Action_Abstract
         {   
             $fields[] = $i; 
         }   
-        $hashCache = new Service_Data_HashCache();
+        $hashCache = new Service_Copyrigth_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
         // redis访问失败
         if ($retCache === false || $retCache['err_no'] != 0)
@@ -169,7 +169,7 @@ class Action_Submit extends Ap_Action_Abstract
     * @desc : 调用数据分析接口，这里采用异步方式调用以提高速度
     * */
     public function callStatistic(
-        $jobId
+        $jobId,
         $mode, 
         $type, 
         $scope, 
