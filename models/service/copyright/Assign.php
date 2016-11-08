@@ -256,8 +256,28 @@ class Service_Copyright_Assign
             $ret['message'] = "parallel num : $parallelServer not equal process num : $processNum !";
         }
 
-        ral_multi($parallelServer);
-        return $ret;
+        if ($this->commitCache($jobId, $mode, $type, $scope, $query))
+        {
+            ral_multi($parallelServer);
+            return $ret;
+        }
+        else
+        {
+            $ret['errno'] = 3;
+            $ret['message'] = "commit to cache fail, jobid = $jobId";
+            return $ret;
+        }
+    }
+
+    private function commitCache($jobId, $mode, $type, $scope, $query)
+    {
+        $param['mode'] = $mode;
+        $param['type'] = $type;
+        $param['scope'] = $scope;
+        $param['query'] = $query;
+        $field['info'] = json_encode($param);
+        $obj = new Service_Copyright_HashCache();
+        return $obj->write($jobId, $field);
     }
 }
 

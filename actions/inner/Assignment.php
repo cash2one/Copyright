@@ -38,6 +38,7 @@ class Action_Assignment extends Ap_Action_Abstract
         $text = isset($httpPost['text'])?$httpPost['text']:"";
         $caseNum = 10;
         $casePerParallelProcess = 10;
+        $jobId = "just for test";
         if ($mode == 0 && $scope == 0)
         {
             $caseNum = 10;
@@ -56,6 +57,7 @@ class Action_Assignment extends Ap_Action_Abstract
         
         $assignJob = new Service_Copyright_Assign();
         $ret = $assignJob->assignParallel(
+            $jobId,
             $mode, 
             $type, 
             $scope, 
