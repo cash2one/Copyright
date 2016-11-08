@@ -16,11 +16,11 @@ class Action_Submit extends Ap_Action_Abstract
 {
      /*
      *
-     * mode×ÖµäÀàĞÍ: 0=±êÌâÀà, 1=ÄÚÈİÀà
-     * type×ÖµäÀàĞÍ: 0=Ğ¡Ëµ/³ö°æÎï, 1=Ó°ÊÓ¾ç£¬2=Ğ¡ËµÄÚÈİ£¬3=¶ÌÎÄÄÚÈİ
-     * scope×ÖµäÀàĞÍ: 0=°Ù¶ÈËÑË÷½á¹û, 1=°Ù¶ÈÖªµÀÕ¾ÄÚ×ÊÔ´£¬2=°Ù¶ÈÌù°É
-     * query±íÊ¾±êÌâÄÚÈİ
-     * text±íÊ¾ÎÄ±¾ÄÚÈİ(½öµ±modeÀàĞÍÎªÄÚÈİÀàÊ±Ê¹ÓÃ)
+     * modeå­—å…¸ç±»å‹: 0=æ ‡é¢˜ç±», 1=å†…å®¹ç±»
+     * typeå­—å…¸ç±»å‹: 0=å°è¯´/å‡ºç‰ˆç‰©, 1=å½±è§†å‰§ï¼Œ2=å°è¯´å†…å®¹ï¼Œ3=çŸ­æ–‡å†…å®¹
+     * scopeå­—å…¸ç±»å‹: 0=ç™¾åº¦æœç´¢ç»“æœ, 1=ç™¾åº¦çŸ¥é“ç«™å†…èµ„æºï¼Œ2=ç™¾åº¦è´´å§
+     * queryè¡¨ç¤ºæ ‡é¢˜å†…å®¹
+     * textè¡¨ç¤ºæ–‡æœ¬å†…å®¹(ä»…å½“modeç±»å‹ä¸ºå†…å®¹ç±»æ—¶ä½¿ç”¨)
      *
      * */
 
@@ -58,13 +58,13 @@ class Action_Submit extends Ap_Action_Abstract
         $ret['message'] = '';
         $ret['jobid'] = $jobId; 
 
-        // ¼ì²é»º´æÖĞÊÇ·ñ´æÔÚ
+        // æ£€æŸ¥ç¼“å­˜ä¸­æ˜¯å¦å­˜åœ¨
         $cacheData = array();
         if ($this->inCache($jobId, $caseNum))
         {
             echo json_encode($ret);
         }
-        // »º´æÖĞ²»´æÔÚ Ìá½»ĞÂÈÎÎñ
+        // ç¼“å­˜ä¸­ä¸å­˜åœ¨ æäº¤æ–°ä»»åŠ¡
         else
         {
             $assignJob = new Service_Copyright_Assign();
@@ -81,7 +81,7 @@ class Action_Submit extends Ap_Action_Abstract
 
             if ($parallelRet['errno'] == 0)
             {
-                // ·¢ÆğÒì²½ÇëÇó Éú³É·ÖÎö±¨¸æ
+                // å‘èµ·å¼‚æ­¥è¯·æ±‚ ç”Ÿæˆåˆ†ææŠ¥å‘Š
                 callStatistic(
                     $jobId,
                     $mode, 
@@ -128,7 +128,7 @@ class Action_Submit extends Ap_Action_Abstract
     /**
     * @param :
     * @return :
-    * @desc : Ö´ĞĞÌá½»²Ù×÷Ç°ÏÈ¼ì²é±¾´ÎÌá½»ÊÇ·ñ´æÔÚ»º´æÖĞ£¬Èç¹û´æÔÚÖ±½Ó·µ»Ø
+    * @desc : æ‰§è¡Œæäº¤æ“ä½œå‰å…ˆæ£€æŸ¥æœ¬æ¬¡æäº¤æ˜¯å¦å­˜åœ¨ç¼“å­˜ä¸­ï¼Œå¦‚æœå­˜åœ¨ç›´æ¥è¿”å›
     * */
     public function inCache($jobId, $caseNum)
     {
@@ -139,19 +139,19 @@ class Action_Submit extends Ap_Action_Abstract
         }   
         $hashCache = new Service_Data_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
-        // redis·ÃÎÊÊ§°Ü
+        // redisè®¿é—®å¤±è´¥
         if ($retCache === false || $retCache['err_no'] != 0)
         {
             return false;
         }
-        // ·ÃÎÊµÄjobid²»´æÔÚ
+        // è®¿é—®çš„jobidä¸å­˜åœ¨
         else if (empty($retCache['ret']["$jobId"]))
         {
             return false;
         }
         else
         {
-            // Ä³¸öÏÂ±ê²»´æÔÚ»òÕßÎª¿Õ¸öÊı²»¹»·µ»Øfalse
+            // æŸä¸ªä¸‹æ ‡ä¸å­˜åœ¨æˆ–è€…ä¸ºç©ºä¸ªæ•°ä¸å¤Ÿè¿”å›false
             foreach ($retCache['ret']["$jobId"] as $index => $value)
             {
                 if (!isset($value) || empty($value))
@@ -166,10 +166,10 @@ class Action_Submit extends Ap_Action_Abstract
     /**
     * @param :
     * @return :
-    * @desc : µ÷ÓÃÊı¾İ·ÖÎö½Ó¿Ú£¬ÕâÀï²ÉÓÃÒì²½·½Ê½µ÷ÓÃÒÔÌá¸ßËÙ¶È
+    * @desc : è°ƒç”¨æ•°æ®åˆ†ææ¥å£ï¼Œè¿™é‡Œé‡‡ç”¨å¼‚æ­¥æ–¹å¼è°ƒç”¨ä»¥æé«˜é€Ÿåº¦
     * */
     public function callStatistic(
-        $jobId
+        $jobId,
         $mode, 
         $type, 
         $scope, 

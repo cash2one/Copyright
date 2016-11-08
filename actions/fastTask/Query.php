@@ -39,14 +39,14 @@ class Action_Query extends Ap_Action_Abstract
         }   
         $hashCache = new Service_Data_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
-        // redis·ÃÎÊÊ§°Ü
+        // redisè®¿é—®å¤±è´¥
         if ($retCache === false || $retCache['err_no'] != 0)
         {
             $ret['errno'] = 1;
             $ret['message'] = "visit cache fail!";
             echo json_encode($ret);
         }
-        // ·ÃÎÊµÄjobid²»´æÔÚ
+        // è®¿é—®çš„jobidä¸å­˜åœ¨
         else if (empty($retCache['ret']["$jobId"]))
         {
             $ret['errno'] = 2;
@@ -80,7 +80,7 @@ class Action_Query extends Ap_Action_Abstract
                 $caseNum = 10;
             } 
 
-            // Ä³¸öÏÂ±ê²»´æÔÚ»òÕßÎª¿Õ¸öÊı²»¹»·µ»Øfalse
+            // æŸä¸ªä¸‹æ ‡ä¸å­˜åœ¨æˆ–è€…ä¸ºç©ºä¸ªæ•°ä¸å¤Ÿè¿”å›false
             $miss = false;
             for ($i = 0; $i < $caseNum; ++$i)
             {
