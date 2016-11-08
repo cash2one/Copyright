@@ -75,6 +75,10 @@ class Service_Copyright_HashCache
         return false;
     }
 
+    /**
+     * @param
+     * @return
+     */
     private function setExpire($key, $timeout = self::TIMEOUT)
     {
         $input = array('key' => $key, 'seconds' => $timeout);
