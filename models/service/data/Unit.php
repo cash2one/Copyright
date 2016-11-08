@@ -15,14 +15,43 @@
 //单进程调起
 
 
-class Servie_Data_Unit
+class Service_Data_Unit
 {
 
-    const PREFIX = 'Service_Copyrith_';
+    const PREFIX = 'Service_Copyright_';
 
-    function schedule()
+    /**
+    * @param : str, num, num, num, num, num, num, num, str, str, str
+    * @return : array
+    * */
+    function schedule(
+            $jobId,
+            $pn,    
+            $start, 
+            $end,   
+            $casePerPage, 
+            $mode,  
+            $type,  
+            $scope, 
+            $query, 
+            $chapter, 
+            $text)
     {
-
+        if ($mode == 0 && $scope == 0)
+        {       
+            $obj = new Service_Copyright_TitlePs($query, $type, $scope);
+            $obj->run($jobId, $pn, $start, $end);
+        }
+        else if ($mode == 0 && $scope == 1)
+        {
+            $obj = new Service_Copyright_TitleIknow($query, $type, $scope);
+            $obj->run($jobId, $pn, $start, $end);
+        }
+        else if ($mode == 1 && $scope == 0)
+        {       
+            $obj = new Service_Copyright_ContentPs($query, $type, $scope, $text); 
+            $obj->run($jobId, $pn, $start, $end);
+        }   
     }
 }
 
