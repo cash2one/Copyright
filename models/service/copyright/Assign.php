@@ -86,7 +86,7 @@ class Service_Copyright_Assign
     * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
-    private function allocateTiltePs(
+    private function allocateTitlePs(
         $jobId,
         $processNum, 
         $casePerParallelProcess,
@@ -157,7 +157,7 @@ class Service_Copyright_Assign
         $chapter,
         $text)
     {
-        return $this->allocateTiltePs(
+        return $this->allocateTitlePs(
             $jobId,
             $processNum, 
             $casePerParallelProcess, 
@@ -210,7 +210,7 @@ class Service_Copyright_Assign
 
         if ($mode == 0 && $scope == 0)
         {
-            $parallelServer = $this->allocateTiltePs(
+            $parallelServer = $this->allocateTitlePs(
                 $jobId,
                 $processNum, 
                 $casePerParallelProcess, 
@@ -223,7 +223,7 @@ class Service_Copyright_Assign
         }
         else  if ($mode == 0 && $scope == 1)
         {
-            $parallelServer = $this->allocateTilteIknow(
+            $parallelServer = $this->allocateTitleIknow(
                 $jobId,
                 $processNum, 
                 $casePerParallelProcess,

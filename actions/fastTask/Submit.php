@@ -81,8 +81,13 @@ class Action_Submit extends Ap_Action_Abstract
 
             if ($parallelRet['errno'] == 0)
             {
+<<<<<<< HEAD
                 // 鍙戣捣寮傛璇锋眰 鐢熸垚鍒嗘瀽鎶ュ憡
                 callStatistic(
+=======
+                // 发起异步请求 生成分析报告
+                $this->callStatistic(
+>>>>>>> 3124ac44b20565f3d2449e1df5b8eff9ee47bbbc
                     $jobId,
                     $mode, 
                     $type, 
@@ -137,7 +142,7 @@ class Action_Submit extends Ap_Action_Abstract
         {   
             $fields[] = $i; 
         }   
-        $hashCache = new Service_Copyrigth_HashCache();
+        $hashCache = new Service_Copyright_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
         // redis璁块棶澶辫触
         if ($retCache === false || $retCache['err_no'] != 0)
