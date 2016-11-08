@@ -15,23 +15,66 @@
 //数据缓存和拉取
 class Service_Copyright_HashCache
 {
+    const TIMEOUT = 600; //默认缓存十分钟
 
-    /**
-     * @param
-     * @return
-     */
-    public function write($key,$field_value)
+    private $redis;
+
+    public function __construct()
     {
-        return;
+        if (empty($this->redis)) {
+            $this->redis = Service_Dao_Redis::getInstance();
+        }
     }
 
     /**
      * @param
      * @return
      */
-    public function read($key,$filds = array())
+    public function write($key, $field_value, $timeout = self::TIMEOUT)
     {
+        if (!empty($field_value)) {
+            $input = array();
+            foreach ($field_value as $field => $value) {
+                $input['fields'][] = array('field' => $field, 'value' => $value);
+            }
+            if (!empty($input['fields'])) {
+                $input['key'] = $key;
+                $ret = $this->redis->HMSET($input);
+                if (!empty($ret) && $ret['err_no'] == 0) {
+                    //设置过期时间
+                    $this->setExpire($key, $timeout);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
+    /**
+     * @param
+     * @return
+     */
+    public function read($key, array $fields)
+    {
+        if (!empty($fields)) {
+            $input = array();
+            foreach ($fields as $index => $field) {
+                $input['field'][] = $field;
+            }
+            if (!empty($input['field'])) {
+                $input['key'] = $key;
+                $ret = $this->redis->HMGET($input);
+                return $ret;
+            }
+        }
+
+        return false;
+    }
+
+    private function setExpire($key, $timeout = self::TIMEOUT)
+    {
+        $input = array('key' => $key, 'seconds' => $timeout);
+        $this->redis->expire($input);
     }
 }
 
