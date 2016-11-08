@@ -58,8 +58,8 @@
       <file leaf-file-name="HashCache.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/service/copyright/HashCache.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.1201814" vertical-offset="285" max-vertical-offset="1767">
-              <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.5816327" vertical-offset="285" max-vertical-offset="1767">
+              <caret line="46" column="58" selection-start-line="46" selection-start-column="58" selection-end-line="46" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -435,8 +435,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/service/copyright/HashCache.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1201814" vertical-offset="285" max-vertical-offset="1767">
-          <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.5816327" vertical-offset="285" max-vertical-offset="1767">
+          <caret line="46" column="58" selection-start-line="46" selection-start-column="58" selection-end-line="46" selection-end-column="58" />
           <folding />
         </state>
       </provider>
