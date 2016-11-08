@@ -16,9 +16,17 @@
 Bd_Init::init('copyright');
 
 $key = $argv[1];
-$ret = read($key);
+$ret = readAll($key);
 var_dump($ret);
 
+
+function readAll($key)
+{
+  $redis = Service_Dao_Redis::getInstance();
+  $input= array('key'=>$key);
+  $ret = $redis->HGETALL($input);
+  return $ret;
+}
 /**
  * @param $key
  * @return bool
