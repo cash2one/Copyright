@@ -27,10 +27,11 @@ function read($key)
 {
  $obj = new Service_Copyright_HashCache();
  $fields = array();
- for($i = 40;$i<49;$i++)
+ for($i = 0;$i<9;$i++)
  {
    $fields[] =  $i;
  }
+ $fields[] = 'info';
  $ret = $obj->read($key,$fields);
  return $ret;
 }
