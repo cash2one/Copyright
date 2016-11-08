@@ -269,6 +269,10 @@ class Service_Copyright_Assign
         }
     }
 
+    /**
+    * @param :
+    * @return :
+    * */
     private function commitCache($jobId, $mode, $type, $scope, $query)
     {
         $param['mode'] = $mode;
