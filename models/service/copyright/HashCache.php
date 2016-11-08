@@ -79,10 +79,11 @@ class Service_Copyright_HashCache
                     foreach($fields as $index=>$item)
                     {
                         $new_ret[$item] = $ret['ret'][$key][$i];
+                        $i++;
                     }
                     $ret['ret'][$key] = $new_ret;
+                    return $ret;
                 }
-                return $ret;
             }
         }
 
