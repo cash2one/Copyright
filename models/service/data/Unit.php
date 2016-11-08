@@ -21,10 +21,11 @@ class Service_Data_Unit
     const PREFIX = 'Service_Copyright_';
 
     /**
-    * @param : num, num, num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, num, num, str, str, str
     * @return : array
     * */
     function schedule(
+            $jobId,
             $pn,    
             $start, 
             $end,   
@@ -39,17 +40,17 @@ class Service_Data_Unit
         if ($mode == 0 && $scope == 0)
         {       
             $obj = new Service_Copyright_TitlePs($query, $type, $scope);
-            $obj->run($pn, $start, $end);
+            $obj->run($jobId, $pn, $start, $end);
         }
         else if ($mode == 0 && $scope == 1)
         {
             $obj = new Service_Copyright_TitleIknow($query, $type, $scope);
-            $obj->run($pn, $start, $end);
+            $obj->run($jobId, $pn, $start, $end);
         }
         else if ($mode == 1 && $scope == 0)
         {       
             $obj = new Service_Copyright_ContentPs($query, $type, $scope, $text); 
-            $obj->run($pn, $start, $end);
+            $obj->run($jobId, $pn, $start, $end);
         }   
     }
 }

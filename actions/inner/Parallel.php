@@ -20,6 +20,7 @@ class Action_Parallel extends Ap_Action_Abstract
         $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
+        $jobId = $httpPost['jobid'];
         $pn = $httpPost['pn'];
         $start = $httpPost['start'];
         $end = $httpPost['end'];
@@ -33,6 +34,7 @@ class Action_Parallel extends Ap_Action_Abstract
         
         $unitJob = new Service_Data_Unit();
         $ret = $unitJob->schedule(
+            $jobId,
             $pn, 
             $start, 
             $end, 

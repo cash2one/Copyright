@@ -18,13 +18,14 @@ class Service_Copyright_Assign
     private $service = "Copyright";
     private $method = "post"; 
     private $extra = array();
-    private $header = array("pathinfo" => "copyright/parallel");
+    private $header = array("pathinfo" => "copyright/inner/parallel");
     
     /**
-    * @param : num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
     private function allocateTitleIknow(
+        $jobId,
         $processNum, 
         $casePerParallelProcess, 
         $mode,
@@ -42,6 +43,7 @@ class Service_Copyright_Assign
             $pn = intval(($casePerParallelProcess * $i)/$casePerPage);
             $start = $casePerParallelProcess * $i - $casePerPage * $pn;
             $input = array(
+                "jobid" => $jobId,
                 "pn" => $pn,
                 "start" => $start,
                 "end" => $start+$casePerParallelProcess,
@@ -62,6 +64,7 @@ class Service_Copyright_Assign
             $pn = intval(($casePerParallelProcess * $i)/$casePerPage);
             $start = $casePerParallelProcess * $i - $casePerPage * $pn;
             $input = array(
+                "jobid" => $jobId,
                 "pn" => $pn-1,
                 "start" => $start,
                 "end" => $start+$casePerParallelProcess,
@@ -80,10 +83,11 @@ class Service_Copyright_Assign
     }
 
     /**
-    * @param : num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
     private function allocateTiltePs(
+        $jobId,
         $processNum, 
         $casePerParallelProcess,
         $mode,
@@ -100,6 +104,7 @@ class Service_Copyright_Assign
             $pn = intval(($casePerParallelProcess * $i)/$casePerPage);
             $start = $casePerParallelProcess * $i - $casePerPage * $pn;
             $input = array(
+                "jobid" => $jobId,
                 "pn" => $pn,
                 "start" => $start,
                 "end" => $start+$casePerParallelProcess,
@@ -118,10 +123,11 @@ class Service_Copyright_Assign
     }
 
     /**
-    * @param : num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
     private function allocateContentTieba(
+        $jobId,
         $processNum, 
         $casePerParallelProcess, 
         $mode,
@@ -137,10 +143,11 @@ class Service_Copyright_Assign
     }
 
     /**
-    * @param : num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
     private function allocateContentPs(
+        $jobId,
         $processNum, 
         $casePerParallelProcess, 
         $mode,
@@ -151,6 +158,7 @@ class Service_Copyright_Assign
         $text)
     {
         return $this->allocateTiltePs(
+            $jobId,
             $processNum, 
             $casePerParallelProcess, 
             $mode,
@@ -163,10 +171,11 @@ class Service_Copyright_Assign
 
     // casePerParallelProcess 必须可以被10整除且小于10,即(1,2,5,10)
     /**
-    * @param : num, num, num, num, num, str, str, str
+    * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
     public function assignParallel(
+        $jobId,
         $mode, 
         $type, 
         $scope,
@@ -202,6 +211,7 @@ class Service_Copyright_Assign
         if ($mode == 0 && $scope == 0)
         {
             $parallelServer = $this->allocateTiltePs(
+                $jobId,
                 $processNum, 
                 $casePerParallelProcess, 
                 $mode,
@@ -214,6 +224,7 @@ class Service_Copyright_Assign
         else  if ($mode == 0 && $scope == 1)
         {
             $parallelServer = $this->allocateTilteIknow(
+                $jobId,
                 $processNum, 
                 $casePerParallelProcess,
                 $mode,
@@ -226,6 +237,7 @@ class Service_Copyright_Assign
         else if ($mode == 1 && $scope == 0)
         {
             $parallelServer = $this->allocateContentPs(
+                $jobId,
                 $processNum, 
                 $casePerParallelProcess,
                 $mode,  
