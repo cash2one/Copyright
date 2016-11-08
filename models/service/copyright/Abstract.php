@@ -42,16 +42,20 @@ abstract class Service_Copyright_Abstract
      */
     function writeCache($key,array $field_value)
     {
-
+        $sch = new Service_Copyright_HashCache();
+        $ret = $sch->write($key,$field_value);
+        return $ret;
     }
 
     /**
      * @param
      * @return
      */
-    function readCache($key,$fields = array())
+    function readCache($key,array $fields)
     {
-
+        $sch = new Service_Copyright_HashCache();
+        $ret = $sch->read($key,$fields);
+        return $ret;
     }
 
 }
