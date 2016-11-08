@@ -137,7 +137,7 @@ class Action_Submit extends Ap_Action_Abstract
         {   
             $fields[] = $i; 
         }   
-        $hashCache = new Service_Data_HashCache();
+        $hashCache = new Service_Copyrigth_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
         // redis访问失败
         if ($retCache === false || $retCache['err_no'] != 0)
