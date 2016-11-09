@@ -20,21 +20,20 @@ class Action_HomeTest extends Service_Action_Abstract
      */
     public function invoke()
     {
-        var_dump(Bd_Passport::checkUserLogin());
-        var_dump(Saf_SmartMain::getUserInfo());
+        //var_dump(Bd_Passport::checkUserLogin());
+        //var_dump(Saf_SmartMain::getUserInfo());
         $userInfo = Bd_Passport::checkUserLogin();
-        $uid = 0;
-        $uname = '';
+        $userInfo['isLogin'] = 0;
         if(!empty($userInfo) && isset($userInfo['uid']) && isset($userInfo['uname']))
         {
-            $uid = $userInfo['uid'];
-            $uname = $userInfo['uname'];
+            $userInfo['isLogin'] = 1;
         }
-        $tpl = Bd_TplFactory::getInstance();
-        $tpl->assign('uid',$uid);
-        $tpl->assign('uname',$uname);
-        $tpl->display('copyright/HomeTest.tpl');
 
+        $tpl = $this->smartyInstance();
+        $tpl->assign('userInfo',$userInfo);
+        $tpl->display('copyright/page/index.tpl');
+
+        //$tpl->display('copyright/HomeTest.tpl');
     }
 }
 

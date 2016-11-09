@@ -40,8 +40,10 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     public function smartyInstance()
     {
         $tpl = Bd_TplFactory::getInstance();
-        $tpl->setConfigDir(ROOT_PATH . '/template/config');
-        $tpl->setPluginsDir(ROOT_PATH . '/template/plugins');
+        if ($this->smartySelfDefine) {
+            $tpl->setConfigDir(ROOT_PATH . '/template/config');
+            $tpl->setPluginsDir(ROOT_PATH . '/template/plugins');
+        }
 
         return $tpl;
     }
