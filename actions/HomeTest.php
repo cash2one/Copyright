@@ -12,13 +12,13 @@
  * @brief
  *
  **/
-class Action_HomeTest extends Ap_Action_Abstract
+class Action_HomeTest extends Service_Action_Abstract
 {
     /**
      * @param
      * @return
      */
-    public function execute()
+    public function invoke()
     {
         var_dump(Bd_Passport::checkUserLogin());
         var_dump(Saf_SmartMain::getUserInfo());
