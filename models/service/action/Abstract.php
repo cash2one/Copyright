@@ -14,6 +14,7 @@
  **/
 abstract class Service_Action_Abstract extends Ap_Action_Abstract
 {
+    public static $connect_cut = false;
     protected $smartySelfDefine = true;
 
     /**
@@ -39,13 +40,45 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
      */
     public function smartyInstance()
     {
+        //检查用于是否登陆
+        $userInfo = Bd_Passport::checkUserLogin();
+        $userInfo['isLogin'] = 0;
+        if(!empty($userInfo) && isset($userInfo['uid']) && isset($userInfo['uname']))
+        {
+            $userInfo['isLogin'] = 1;
+        }
+
+        //实例smarty对象
         $tpl = Bd_TplFactory::getInstance();
+
+        //赋值tpl里面的信息
+        $tpl->assign('userInfo',$userInfo);
+
         if ($this->smartySelfDefine) {
             $tpl->setConfigDir(ROOT_PATH . '/template/config');
             $tpl->setPluginsDir(ROOT_PATH . '/template/plugins');
         }
 
         return $tpl;
+    }
+
+    /**
+     * @param $result
+     * @return
+     */
+    public function jsonResponse($result)
+    {
+        if(self::$connect_cut)
+        {
+            return;
+        }
+
+        header('Content-type:text/json');
+
+        echo json_encode($result);
+
+        fastcgi_finish_request();
+        self::$connect_cut = true;
     }
 }
 
