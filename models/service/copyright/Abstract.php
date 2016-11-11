@@ -14,15 +14,32 @@
  **/
 abstract class Service_Copyright_Abstract
 {
+    protected $jobId;
+    protected $query;
+    protected $contentOrLink;
+    protected $type;
+    protected $scope;
+    
     protected $searchResult;
     protected $normResult;
     protected $detectResult;
 
     /**
+     * @param jobId, query, type, scope, contentOrLink
+     * @return _
+     */ 
+    function __construct($_jobId, $_query, $_type, $_scope, $_contentOrLink = null) {
+        $this->jobId = $_jobId;
+        $this->query = $_query;
+        $this->type = $_type;
+        $this->scope = $_scope;
+        $this->contentOrLink = $_contentOrLink;
+    }
+    /**
      * @param
      * @return
      */
-    abstract function Search($pn,$start,$end,$ext = array());
+    abstract function Search($pn, $start, $end, $casePerPage = 10, $ext = array());
 
     /**
      * @param
@@ -42,20 +59,16 @@ abstract class Service_Copyright_Abstract
      */
     function writeCache($key,array $field_value)
     {
-        $sch = new Service_Copyright_HashCache();
-        $ret = $sch->write($key,$field_value);
-        return $ret;
+
     }
 
     /**
      * @param
      * @return
      */
-    function readCache($key,array $fields)
+    function readCache($key,$fields = array())
     {
-        $sch = new Service_Copyright_HashCache();
-        $ret = $sch->read($key,$fields);
-        return $ret;
+
     }
 
 }

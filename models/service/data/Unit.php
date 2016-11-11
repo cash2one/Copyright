@@ -39,18 +39,18 @@ class Service_Data_Unit
     {
         if ($mode == 0 && $scope == 0)
         {       
-            $obj = new Service_Copyright_TitlePs($query, $type, $scope);
-            $obj->run($jobId, $pn, $start, $end);
+            $obj = new Service_Copyright_TitlePs($jobId, $query, $type, $scope);
+            $obj->run($pn, $start, $end, $casePerPage);
         }
         else if ($mode == 0 && $scope == 1)
         {
-            $obj = new Service_Copyright_TitleIknow($query, $type, $scope);
-            $obj->run($jobId, $pn, $start, $end);
+            $obj = new Service_Copyright_TitleIknow($jobId, $query, $type, $scope);
+            $obj->run($pn, $start, $end, $casePerPage);
         }
         else if ($mode == 1 && $scope == 0)
         {       
-            $obj = new Service_Copyright_ContentPs($query, $type, $scope, $text); 
-            $obj->run($jobId, $pn, $start, $end);
+            $obj = new Service_Copyright_ContentPs($jobId, $query, $type, $scope, $text); 
+            $obj->run($pn, $start, $end, $casePerPage);
         }   
     }
 }
