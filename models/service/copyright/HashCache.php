@@ -61,6 +61,7 @@ class Service_Copyright_HashCache
      */
     public function read($key, array $fields)
     {
+        file_put_contents('/home/iknow/odp/log/zhenyu1.log',var_export(func_get_args(),ture));
         if (!empty($fields)) {
             $input = array();
             foreach ($fields as $index => $field) {
@@ -82,8 +83,9 @@ class Service_Copyright_HashCache
                         $i++;
                     }
                     $ret['ret'][$key] = $new_ret;
-                    return $ret;
                 }
+                file_put_contents('/home/iknow/odp/log/zhenyu.log',var_export($ret,true));
+                return $ret;
             }
         }
 

@@ -12,7 +12,8 @@
  * @brief 
  *  
  **/
-class Action_Submit extends Ap_Action_Abstract
+//class Action_Submit extends Ap_Action_Abstract
+class Action_Submit extends Service_Action_Abstract
 {
      /*
      *
@@ -24,7 +25,7 @@ class Action_Submit extends Ap_Action_Abstract
      *
      * */
 
-    public function execute()
+    public function invoke()
     {
         $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
@@ -37,6 +38,7 @@ class Action_Submit extends Ap_Action_Abstract
         $text = isset($httpPost['text'])?$httpPost['text']:"";
         $caseNum = 10;
         $casePerParallelProcess = 10;
+        header('Content-type:application/json');
         if ($mode == 0 && $scope == 0)
         {       
             $caseNum = 50;
