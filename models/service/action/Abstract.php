@@ -23,6 +23,11 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
      */
     public function execute()
     {
+        //get the class name by the instance
+        $class = get_class($this);
+        $request = Saf_SmartMain::getCgi();
+        //log the original request in here
+        Bd_Log::notice(sprintf('[class]%s,[request]%s',$class,json_encode($request)));
         return $this->invoke();
     }
 

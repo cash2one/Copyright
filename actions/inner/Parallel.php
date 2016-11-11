@@ -13,11 +13,10 @@
  *  
  **/
  
-class Action_Parallel extends Ap_Action_Abstract
+class Action_Parallel extends Service_Action_Abstract
 {
-    public function execute()
+    public function invoke()
     {   
-        $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
         $jobId = $httpPost['jobid'];
