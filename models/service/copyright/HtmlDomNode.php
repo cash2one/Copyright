@@ -544,8 +544,9 @@ class Service_Copyright_HtmlDomNode
         ksort($found_keys);
 
         $found = array();
-        foreach ($found_keys as $k => $v)
+        foreach ($found_keys as $k => $v) {
             $found[] = $this->dom->nodes[$k];
+        }
 
         // return nth-element or array
         if (is_null($idx)) { return $found; }

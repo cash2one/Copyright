@@ -797,6 +797,7 @@ class Service_Copyright_HtmlDom
     protected function remove_noise($pattern, $remove_tag = false)
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -828,6 +829,7 @@ class Service_Copyright_HtmlDom
     function restore_noise($text)
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
