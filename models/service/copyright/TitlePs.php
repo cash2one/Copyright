@@ -15,40 +15,48 @@
 
 class Service_Copyright_TitlePs extends Service_Copyright_Base
 {
+    /**
+     * @param 
+     * @return 
+     */
     public static function get_score($type, $title) {
-         $input['pid'] = $type;
-         $input['line'] = $title;
-         $postdata = json_encode($input);
-         $ch = curl_init();
-         curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2010/SVMService/svm_infer');
-         $header = array( "Content-Type: application/json");
-         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_POST, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-         $curlresult = curl_exec($ch);
-         curl_close($ch);
-         $t = json_decode($curlresult, true);
-         return $t['score'];
-         //usleep(10);
-     }
+        $input['pid'] = $type;
+        $input['line'] = $title;
+        $postdata = json_encode($input);
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2010/SVMService/svm_infer');
+        $header = array( "Content-Type: application/json");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        $curlresult = curl_exec($ch);
+        curl_close($ch);
+        $t = json_decode($curlresult, true);
+        return $t['score'];
+        //usleep(10);
+    }
+
+    /**
+     * @param
+     * @return
+     */
      public static function get_tags($type, $title) {
          $input['pid'] =  'qtag';
          if (($type == 'film') && ($key = contains_not_video($title)) != '') {
-                 return "非视频_$key";
-                 continue;
+            return "非视频_$key";
+            continue;
          }
          
          $input['doc'] = $title;
          $doc_len = mb_strlen($input['doc'],'utf8');
-
          $postdata = json_encode($input);
          $ch = curl_init();
          curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
          $header = array(
-                 "Content-Type: application/json",
+             "Content-Type: application/json",
          );
          curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -65,16 +73,24 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
          return $tags;
     }
 
+    /**
+     * @param
+     * @return
+     */
     public static function contains_not_video($title) {
          $arr_not_video = array("小说", "txt", "TXT", "全文", "全本", "插曲", "歌曲", "铃声", "音乐", "配乐", "mp3","MP3");
          foreach($arr_not_video as $key) {
-                 if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
-                         return $key;
-                 }
+             if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
+                 return $key;
+             }
          }
          return '';
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
         $base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
@@ -105,6 +121,10 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         BD_Log::notice("Search ".count($this->searchResult));
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Norm() {
         foreach ($this->searchResult as $index => $result) {
             $t = $result->find('.t', 0);
@@ -153,9 +173,15 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         //var_dump($this->normResult);
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Detect() {
         foreach ($this->normResult as $index => $cur) {
-            if (empty($cur)) continue;
+            if (empty($cur)) {
+                continue;
+            }
             $url = $cur["url"];
             $txt = $cur["title"];
             $domain = $cur["domain"];
@@ -176,12 +202,15 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
                 else if ($score < 0.000000664) {
                     $copyright = 1;
                 }
-                else $copyright = 0;
+                else {
+                    $copyright = 0;
+                }
             }
             else if ($this->type == 0){
                 if ($score < 0.587638
-                    && preg_match("/音乐|动漫|影视|漫画|游戏|视频|电影|电视剧|暗黑破坏神|穿越火线|mp3/i", $tags) == 0)
-                $copyright = 1;
+                    && preg_match("/音乐|动漫|影视|漫画|游戏|视频|电影|电视剧|暗黑破坏神|穿越火线|mp3/i", $tags) == 0) {
+                        $copyright = 1;
+                    }
             }
             $this->detectResult[$index] = $cur;
             $this->detectResult[$index]['risk'] = $copyright;

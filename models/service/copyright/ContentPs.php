@@ -16,6 +16,10 @@
 class Service_Copyright_ContentPs extends Service_Copyright_Base
 {
 
+    /**
+     * @param
+     * @return
+     */
     function GetContentFromLink($link) {
         $content_tmp = Service_Copyright_HtmlHelper::DailyPostUrl($link);
         $content = $content_tmp['content_ret'];
@@ -24,7 +28,9 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
         for($i = 0 ; $i < $get_txt_retry ; $i++){    
             $Readability = new Service_Copyright_Readability($content, $list_charset);
             $content = $Readability->getContent();
-            if($content['content'] == false) continue;
+            if($content['content'] == false) {
+                continue;
+            }
             else{
                 $content = str_replace(array("\r\n", "\r", "\n"), '', strip_tags($content['content'])); 
                 break;
@@ -33,6 +39,10 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
         return $content;
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
         $base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
@@ -61,6 +71,10 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
         }
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Norm() {
         foreach ($this->searchResult as $index => $result) {
             $t = $result->find('.t', 0);
@@ -117,18 +131,29 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $ret_arr["sim_title"] = $sim_title;
             $ret_arr["sim_content"] = $sim_content;
             $ret_arr["sim_len"] = $sim_content_ret;//(int)((double)$sim_content / 100 * mb_strlen($daily_txt, "utf-8"));
-            if ($sim_content == -1) $ret_arr["sim_len"] = 0;
-            if (strlen($list_html_txt) != 0)
+            if ($sim_content == -1) {
+                $ret_arr["sim_len"] = 0;
+            }
+            if (strlen($list_html_txt) != 0) {
                 $ret_arr["sim_other_content"] = (double)$ret_arr["sim_len"] / strlen($list_html_txt);
-            else $ret_arr["sim_other_content"] = 0;
+            }
+            else {
+                $ret_arr["sim_other_content"] = 0;
+            }
             $this->normResult[$index] = $ret_arr;            
 
         }
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Detect() {
         foreach ($this->normResult as $index => $cur) {
-            if (empty($cur)) continue;
+            if (empty($cur)) {
+                continue;
+            }
             $url = $cur["url"];
             $txt = $cur['title'];
             $domain = $cur["domain"];
@@ -138,8 +163,10 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $sim_other_content = $cur["sim_other_content"] * 100;
             $sim_other_content = sprintf("%.2f", $sim_other_content);
             if ($sim_content > 60 || ($sim_other_content > 80 && $sim_len > 500)) { $hign_cnt ++; $level = 2; }
-                else if ($sim_title > 80 && $sim_content == -1) { $mid_cnt ++; $level = 1; }
-                    else $level = 0;
+                else {
+                    if ($sim_title > 80 && $sim_content == -1) { $mid_cnt ++; $level = 1; }
+                    else { $level = 0; }
+                }
             $this->detectResult[$index] = $cur;
             $this->detectResult[$index]['risk'] = $level;
             unset($this->detectResult[$index]['daily_txt']);

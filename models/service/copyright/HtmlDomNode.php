@@ -201,12 +201,18 @@ class Service_Copyright_HtmlDomNode
     }
 
     // returns children of node
+    /**
+     * @param
+     * @return
+     */    
     function children($idx = -1)
     {
         if ($idx === -1) {
             return $this->children;
         }
-        if (isset($this->children[$idx])) return $this->children[$idx];
+        if (isset($this->children[$idx])) {
+            return $this->children[$idx];
+        }
         return null;
     }
 
@@ -268,9 +274,12 @@ class Service_Copyright_HtmlDomNode
         if ($this->parent === null) return null;
         $idx = 0;
         $count = count($this->parent->children);
-        while ($idx < $count && $this !== $this->parent->children[$idx])
+        while ($idx < $count && $this !== $this->parent->children[$idx]) {
             ++$idx;
-        if (--$idx < 0) return null;
+        }
+        if (--$idx < 0) {
+            return null;
+        }
         return $this->parent->children[$idx];
     }
 
@@ -281,17 +290,17 @@ class Service_Copyright_HtmlDomNode
      */
     function find_ancestor_tag($tag)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         // Start by including ourselves in the comparison.
         $returnDom = $this;
 
         while (!is_null($returnDom)) {
-            if (is_object($debugObject)) {
-                $debugObject->debugLog(2, "Current tag is: " . $returnDom->tag);
+            if (is_object($g_debugObject)) {
+                $g_debugObject->debugLog(2, "Current tag is: " . $returnDom->tag);
             }
 
             if ($returnDom->tag == $tag) {
@@ -325,15 +334,15 @@ class Service_Copyright_HtmlDomNode
      */
     function outertext()
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
             $text = '';
             if ($this->tag == 'text') {
                 if (!empty($this->text)) {
                     $text = " with text: " . $this->text;
                 }
             }
-            $debugObject->debugLog(1, 'Innertext of tag: ' . $this->tag . $text);
+            $g_debugObject->debugLog(1, 'Innertext of tag: ' . $this->tag . $text);
         }
 
         if ($this->tag === 'root') return $this->innertext();
@@ -524,9 +533,9 @@ class Service_Copyright_HtmlDomNode
      */
     protected function seek($selector, &$ret, $lowercase = false)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         list($tag, $key, $val, $exp, $no_key) = $selector;
@@ -588,8 +597,8 @@ class Service_Copyright_HtmlDomNode
                     // this is a normal search, we want the value of that attribute of the tag.
                     $nodeKeyValue = $node->attr[$key];
                 }
-                if (is_object($debugObject)) {
-                    $debugObject->debugLog(2, "testing node: " . $node->tag . " for attribute: " . $key . $exp . $val . " where nodes value is: " . $nodeKeyValue);
+                if (is_object($g_debugObject)) {
+                    $g_debugObject->debugLog(2, "testing node: " . $node->tag . " for attribute: " . $key . $exp . $val . " where nodes value is: " . $nodeKeyValue);
                 }
 
                 //PaperG - If lowercase is set, do a case insensitive test of the value of the selector.
@@ -598,8 +607,8 @@ class Service_Copyright_HtmlDomNode
                 } else {
                     $check = $this->match($exp, $val, $nodeKeyValue);
                 }
-                if (is_object($debugObject)) {
-                    $debugObject->debugLog(2, "after match: " . ($check ? "true" : "false"));
+                if (is_object($g_debugObject)) {
+                    $g_debugObject->debugLog(2, "after match: " . ($check ? "true" : "false"));
                 }
 
                 // handle multiple class
@@ -622,8 +631,8 @@ class Service_Copyright_HtmlDomNode
             unset($node);
         }
         // It's passed by reference so this is actually what this function returns.
-        if (is_object($debugObject)) {
-            $debugObject->debugLog(1, "EXIT - ret: ", $ret);
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLog(1, "EXIT - ret: ", $ret);
         }
     }
 
@@ -633,9 +642,9 @@ class Service_Copyright_HtmlDomNode
      */
     protected function match($exp, $pattern, $value)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         switch ($exp) {
@@ -662,9 +671,9 @@ class Service_Copyright_HtmlDomNode
      */
     protected function parse_selector($selector_string)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         // pattern of CSS selectors, modified from mootools
@@ -676,8 +685,8 @@ class Service_Copyright_HtmlDomNode
 //        $pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
         $pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-:]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
         preg_match_all($pattern, trim($selector_string) . ' ', $matches, PREG_SET_ORDER);
-        if (is_object($debugObject)) {
-            $debugObject->debugLog(2, "Matches Array: ", $matches);
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLog(2, "Matches Array: ", $matches);
         }
 
         $selectors = array();
@@ -809,9 +818,9 @@ class Service_Copyright_HtmlDomNode
      */
     function convert_text($text)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         $converted_text = $text;
@@ -823,8 +832,8 @@ class Service_Copyright_HtmlDomNode
             $sourceCharset = strtoupper($this->dom->_charset);
             $targetCharset = strtoupper($this->dom->_target_charset);
         }
-        if (is_object($debugObject)) {
-            $debugObject->debugLog(3, "source charset: " . $sourceCharset . " target charaset: " . $targetCharset);
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLog(3, "source charset: " . $sourceCharset . " target charaset: " . $targetCharset);
         }
 
         if (!empty($sourceCharset) && !empty($targetCharset) && (strcasecmp($sourceCharset, $targetCharset) != 0)) {
@@ -904,7 +913,7 @@ class Service_Copyright_HtmlDomNode
      */
     function get_display_size()
     {
-        global $debugObject;
+        global $g_debugObject;
 
         $width = -1;
         $height = -1;

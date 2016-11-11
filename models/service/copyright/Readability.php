@@ -21,13 +21,46 @@ class Service_Copyright_Readability {
 
     // 闇??瑕佸垹闄ょ殑鏍囩????
     // Note: added extra tags from https://github.com/ridcully
-    private $junkTags = Array("style", "form", "iframe", "script", "button", "input", "textarea", 
-                                "noscript", "select", "option", "object", "applet", "basefont",
-                                "bgsound", "blink", "canvas", "command", "menu", "nav", "datalist",
-                                "embed", "frame", "frameset", "keygen", "label", "marquee", "link");
+	private $junkTags = Array(
+		"style", 
+		"form", 
+		"iframe", 
+		"script", 
+		"button", 
+		"input", 
+		"textarea", 
+        "noscript", 
+		"select", 
+		"option", 
+		"object", 
+		"applet", 
+		"basefont",
+        "bgsound", 
+		"blink", 
+		"canvas", 
+		"command", 
+		"menu", 
+		"nav", 
+		"datalist",
+        "embed", 
+		"frame", 
+		"frameset", 
+		"keygen", 
+		"label", 
+		"marquee", 
+		"link",
+	);
 
     // 闇??瑕佸垹闄ょ殑灞炴????
-    private $junkAttrs = Array("style", "class", "onclick", "onmouseover", "align", "border", "margin");
+	private $junkAttrs = Array(
+		"style", 
+		"class", 
+		"onclick", 
+		"onmouseover", 
+		"align", 
+		"border", 
+		"margin",
+	);
 
 
     /**
@@ -48,10 +81,10 @@ class Service_Copyright_Readability {
         $source = $this->preparSource($source);
         // 鐢熸垚 DOM 瑙ｆ瀽绫??
         $this->DOM = new DOMDocument('1.0', $input_char);
-	try {
+		try {
             //libxml_use_internal_errors(true);
             // 浼氭湁浜涢敊璇??淇℃伅锛屼笉杩囦笉瑕佺揣 :^)
-	    if (!@$this->DOM->loadHTML('<?xml encoding="'.Service_Copyright_Readability::DOM_DEFAULT_CHARSET.'">'.$source)) {
+			if (!@$this->DOM->loadHTML('<?xml encoding="'.Service_Copyright_Readability::DOM_DEFAULT_CHARSET.'">'.$source)) {
                 throw new Exception("Parse HTML Error!");
             }
             foreach ($this->DOM->childNodes as $item) {
@@ -62,9 +95,10 @@ class Service_Copyright_Readability {
 
             // insert proper
             $this->DOM->encoding = Service_Copyright_Readability::DOM_DEFAULT_CHARSET;
-        } catch (Exception $e) {
-		// ...
-		//echo "There is something wrong! $e\n";
+		} 
+		catch (Exception $e) {
+			// ...
+			//echo "There is something wrong! $e\n";
         }
     }
 
@@ -408,12 +442,13 @@ class Service_Copyright_Readability {
         // 鑾峰彇椤甸潰涓诲唴瀹??
         $ContentBox = $this->getTopBox();
         //Check if we found a suitable top-box.
-        if($ContentBox === null)
+        if($ContentBox === null) {
             //throw new RuntimeException(Service_Copyright_Readability::MESSAGE_CAN_NOT_GET);
-            return false;
+			return false;
+		}
         
         // 澶嶅埗鍐呭??瑰埌鏂扮殑 DOMDocument
-        $Target = new DOMDocument;
+        $Target = new DOMDocument();
         $Target->appendChild($Target->importNode($ContentBox, true));
 
         // 鍒犻櫎涓嶉渶瑕佺殑鏍囩????
@@ -432,7 +467,7 @@ class Service_Copyright_Readability {
             'lead_image_url' => $this->getLeadImageUrl($Target),
             'word_count' => mb_strlen(strip_tags($content), Service_Copyright_Readability::DOM_DEFAULT_CHARSET),
             'title' => $ContentTitle ? $ContentTitle : null,
-            'content' => $content
+            'content' => $content,
         );
     }
 

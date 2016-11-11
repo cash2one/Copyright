@@ -16,6 +16,10 @@
 class Service_Copyright_TitleIknow extends Service_Copyright_Base {
 
 
+    /**
+     * @param
+     * @return
+     */    
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
         $ret['errno'] = 0;
         $ret['result'] = array();
@@ -41,12 +45,18 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 break;
             }
             $delta = 0;
-            if ($pn != 0) $delta = 10;
+            if ($pn != 0) {
+                $delta = 10;
+            }
             $this->searchResult[$pn * $casePerPage + $index + $delta] = $arrInfo;
             $ret['result']["$index"] = $arrInfo;
         }
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Norm() {
         foreach ($this->searchResult as $id => $arrInfo) {
             $qid = $arrInfo['qid'];
@@ -78,29 +88,28 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
             }
         }
         $arrAns = Service_Data_QtaService::getAnsList($qids);   
-        //      BD_LOG::notice('Qta_Service ' . count($arrAns['result']));
         foreach($arrAns['result'] as $id=>$v)
         {
             unset($arrCnt);
             $qid = $arrAns['result'][$id]['qid'];
-                foreach ($arrAns['result'][$id]['normal_replys'] as $k => $list)
+            foreach ($arrAns['result'][$id]['normal_replys'] as $k => $list)
+            {
+                $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
+                $arrPirate = Service_Data_Pirate::pirate($strCon);
+                if ($arrPirate['result']['label']==1)
                 {
-                    $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
-                    $arrPirate = Service_Data_Pirate::pirate($strCon);
-                    if ($arrPirate['result']['label']==1)
-                    {
-                        $arrCnt[$list['deleted']]++;
-                    }
+                    $arrCnt[$list['deleted']]++;
                 }
-                foreach ($arrAns['result'][$id]['special_replys'] as $k => $list)
+            }
+            foreach ($arrAns['result'][$id]['special_replys'] as $k => $list)
+            {
+                $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
+                $arrPirate = Service_Data_Pirate::pirate($strCon);
+                if ($arrPirate['result']['label']==1)
                 {
-                    $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
-                    $arrPirate = Service_Data_Pirate::pirate($strCon);
-                    if ($arrPirate['result']['label']==1)
-                    {
-                        $arrCnt[$list['deleted']]++;
-                    }
+                    $arrCnt[$list['deleted']]++;
                 }
+            }
             $url = "http://zhidao.baidu.com/question/$qid.html";
             $this->normResult[$arrUrlToId[$url]]['delcnt'] = empty($arrCnt[1]) ? 0:$arrCnt[1];
             $this->normResult[$arrUrlToId[$url]]['onlinecnt'] = empty($arrCnt[0]) ? 0:$arrCnt[0];
@@ -108,6 +117,10 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
         //    BD_LOG::notice('Norm ' . count($this->normResult));
     }
 
+    /**
+     * @param
+     * @return
+     */
     function Detect() {
         $this->detectResult = $this->normResult;
         //BD_LOG::notice('Detect ' . count($this->detectResult));

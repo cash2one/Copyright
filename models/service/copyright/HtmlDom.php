@@ -428,12 +428,15 @@ class Service_Copyright_HtmlDom
                     $this->parent->_[HDOM_INFO_END] = 0;
                     $org_parent = $this->parent;
 
-                    while (($this->parent->parent) && strtolower($this->parent->tag) !== $tag_lower)
+                    while (($this->parent->parent) && strtolower($this->parent->tag) !== $tag_lower) {
                         $this->parent = $this->parent->parent;
+                    }
 
                     if (strtolower($this->parent->tag) !== $tag_lower) {
                         $this->parent = $org_parent; // restore origonal parent
-                        if ($this->parent->parent) $this->parent = $this->parent->parent;
+                        if ($this->parent->parent) {
+                            $this->parent = $this->parent->parent;
+                        }
                         $this->parent->_[HDOM_INFO_END] = $this->cursor;
                         return $this->as_text_node($tag);
                     }
@@ -441,8 +444,9 @@ class Service_Copyright_HtmlDom
                     $this->parent->_[HDOM_INFO_END] = 0;
                     $org_parent = $this->parent;
 
-                    while (($this->parent->parent) && strtolower($this->parent->tag) !== $tag_lower)
+                    while (($this->parent->parent) && strtolower($this->parent->tag) !== $tag_lower) {
                         $this->parent = $this->parent->parent;
+                    }
 
                     if (strtolower($this->parent->tag) !== $tag_lower) {
                         $this->parent = $org_parent; // restore origonal parent
@@ -452,12 +456,15 @@ class Service_Copyright_HtmlDom
                 } else if (($this->parent->parent) && strtolower($this->parent->parent->tag) === $tag_lower) {
                     $this->parent->_[HDOM_INFO_END] = 0;
                     $this->parent = $this->parent->parent;
-                } else
+                } else {
                     return $this->as_text_node($tag);
+                }
             }
 
             $this->parent->_[HDOM_INFO_END] = $this->cursor;
-            if ($this->parent->parent) $this->parent = $this->parent->parent;
+            if ($this->parent->parent) {
+                $this->parent = $this->parent->parent;
+            }
 
             $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
             return true;
@@ -480,7 +487,9 @@ class Service_Copyright_HtmlDom
                 $node->nodetype = HDOM_TYPE_UNKNOWN;
                 $node->tag = 'unknown';
             }
-            if ($this->char === '>') $node->_[HDOM_INFO_TEXT] .= '>';
+            if ($this->char === '>') {
+                $node->_[HDOM_INFO_TEXT] .= '>';
+            }
             $this->link_nodes($node, true);
             $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
             return true;
@@ -502,7 +511,9 @@ class Service_Copyright_HtmlDom
                 return true;
             }
 
-            if ($this->char === '>') $node->_[HDOM_INFO_TEXT] .= '>';
+            if ($this->char === '>') {
+                $node->_[HDOM_INFO_TEXT] .= '>';
+            }    
             $this->link_nodes($node, false);
             $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
             return true;
@@ -563,7 +574,9 @@ class Service_Copyright_HtmlDom
             if ($name !== '/' && $name !== '') {
                 $space[1] = $this->copy_skip($this->token_blank);
                 $name = $this->restore_noise($name);
-                if ($this->lowercase) $name = strtolower($name);
+                if ($this->lowercase) {
+                    $name = strtolower($name);
+                }
                 if ($this->char === '=') {
                     $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
                     $this->parse_attr($node, $name, $space);
@@ -575,8 +588,9 @@ class Service_Copyright_HtmlDom
                 }
                 $node->_[HDOM_INFO_SPACE][] = $space;
                 $space = array($this->copy_skip($this->token_blank), '', '');
-            } else
+            } else {
                 break;
+            }
         } while ($this->char !== '>' && $this->char !== '/');
 
         $this->link_nodes($node, true);
@@ -588,7 +602,9 @@ class Service_Copyright_HtmlDom
             $node->_[HDOM_INFO_END] = 0;
         } else {
             // reset parent
-            if (!isset($this->self_closing_tags[strtolower($node->tag)])) $this->parent = $node;
+            if (!isset($this->self_closing_tags[strtolower($node->tag)])) {
+                $this->parent = $node;
+            }
         }
         $this->char = (++$this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
 
@@ -691,7 +707,9 @@ class Service_Copyright_HtmlDom
         $len = strspn($this->doc, $chars, $pos);
         $this->pos += $len;
         $this->char = ($this->pos < $this->size) ? $this->doc[$this->pos] : null; // next
-        if ($len === 0) return '';
+        if ($len === 0) {
+            return '';
+        }
         return substr($this->doc, $pos, $len);
     }
 
@@ -714,8 +732,9 @@ class Service_Copyright_HtmlDom
      */
     protected function copy_until_char($char)
     {
-        if ($this->char === null) return '';
-
+        if ($this->char === null) {
+            return '';
+        }
         if (($pos = strpos($this->doc, $char, $this->pos)) === false) {
             $ret = substr($this->doc, $this->pos, $this->size - $this->pos);
             $this->char = null;
@@ -747,7 +766,9 @@ class Service_Copyright_HtmlDom
                 return $ret;
             }
 
-            if ($pos === $this->pos) return '';
+            if ($pos === $this->pos) {
+                return '';
+            }
 
             if ($this->doc[$pos - 1] === '\\') {
                 $start = $pos + 1;
