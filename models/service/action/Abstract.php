@@ -85,6 +85,45 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         fastcgi_finish_request();
         self::$connect_cut = true;
     }
+
+    /**
+     * @param $sourceStr
+     * @return string
+     */
+    public  function iconvutf8($sourceStr)
+    {
+        if (empty($sourceStr))
+        {
+            return $sourceStr;
+        }
+
+        //encode的顺序很重要
+        if (preg_match("/[\x7f-\xff]/", $sourceStr))
+        {
+            $encode = mb_detect_encoding($sourceStr,"auto",true);
+            if($encode==='UTF-8')
+            {
+
+                return $sourceStr;
+            }
+            $encodeList = array('GBK','UTF-8','GB2312');
+        }
+        else
+        {
+            $encodeList = array('UTF-8','GBK','GB2312');
+        }
+
+        foreach ($encodeList as $index => $code)
+        {
+            $convStr = iconv($code, 'UTF-8', $sourceStr);
+            $lastStr = iconv('UTF-8', $code, $convStr);
+            if ($lastStr == $sourceStr)
+            {
+                return $convStr;
+            }
+        }
+        return $sourceStr;
+    }
 }
 
 

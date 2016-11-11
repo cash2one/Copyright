@@ -29,7 +29,7 @@ class Action_Submit extends Service_Action_Abstract
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
         $mode = $httpPost['mode'];
-        $query = $httpPost['query'];
+        $query = $this->iconvutf8($httpPost['query']);
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $chapter = isset($httpPost['chapter'])?$httpPost['chapter']:"";
