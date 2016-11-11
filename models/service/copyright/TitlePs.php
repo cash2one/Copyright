@@ -43,34 +43,34 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @param
      * @return
      */
-     public static function get_tags($type, $title) {
-         $input['pid'] =  'qtag';
-         if (($type == 'film') && ($key = contains_not_video($title)) != '') {
-            return "非视频_$key";
-            continue;
-         }
-         
-         $input['doc'] = $title;
-         $doc_len = mb_strlen($input['doc'],'utf8');
-         $postdata = json_encode($input);
-         $ch = curl_init();
-         curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
-         $header = array(
-             "Content-Type: application/json",
-         );
-         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-         curl_setopt($ch, CURLOPT_POST, 1);
-         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-         $curlresult = curl_exec($ch);
-         $t = json_decode($curlresult, true);
-         $tags = implode("_",$t['label']);
-         //echo "$ln\t{$t['score'][1]}\t$tags\n";
-         //usleep(15);
-         //echo "$ln\t$tags\n";
-         return $tags;
+    public static function get_tags($type, $title) {
+        $input['pid'] =  'qtag';
+        if (($type == 'film') && ($key = contains_not_video($title)) != '') {
+           return "非视频_$key";
+           continue;
+        }
+        
+        $input['doc'] = $title;
+        $doc_len = mb_strlen($input['doc'],'utf8');
+        $postdata = json_encode($input);
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
+        $header = array(
+            "Content-Type: application/json",
+        );
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        $curlresult = curl_exec($ch);
+        $t = json_decode($curlresult, true);
+        $tags = implode("_",$t['label']);
+        //echo "$ln\t{$t['score'][1]}\t$tags\n";
+        //usleep(15);
+        //echo "$ln\t$tags\n";
+        return $tags;
     }
 
     /**
@@ -78,13 +78,13 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @return
      */
     public static function contains_not_video($title) {
-         $arr_not_video = array("小说", "txt", "TXT", "全文", "全本", "插曲", "歌曲", "铃声", "音乐", "配乐", "mp3","MP3");
-         foreach($arr_not_video as $key) {
-             if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
-                 return $key;
-             }
-         }
-         return '';
+        $arr_not_video = array("小说", "txt", "TXT", "全文", "全本", "插曲", "歌曲", "铃声", "音乐", "配乐", "mp3","MP3");
+        foreach($arr_not_video as $key) {
+            if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
+                return $key;
+            }
+        }
+        return '';
     }
 
     /**

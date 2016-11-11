@@ -101,8 +101,9 @@ class Service_Copyright_HtmlDomNode
         echo $lead . $this->tag;
         if ($show_attr && count($this->attr) > 0) {
             echo '(';
-            foreach ($this->attr as $k => $v)
+            foreach ($this->attr as $k => $v) {
                 echo "[$k]=>\"" . $this->$k . '", ';
+            }
             echo ')';
         }
         echo "\n";
@@ -271,7 +272,9 @@ class Service_Copyright_HtmlDomNode
      */
     function prev_sibling()
     {
-        if ($this->parent === null) return null;
+        if ($this->parent === null) {
+            return null;
+        }
         $idx = 0;
         $count = count($this->parent->children);
         while ($idx < $count && $this !== $this->parent->children[$idx]) {
@@ -291,6 +294,7 @@ class Service_Copyright_HtmlDomNode
     function find_ancestor_tag($tag)
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -318,12 +322,17 @@ class Service_Copyright_HtmlDomNode
      */
     function innertext()
     {
-        if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
-        if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+        if (isset($this->_[HDOM_INFO_INNER])) {
+            return $this->_[HDOM_INFO_INNER];
+        }    
+        if (isset($this->_[HDOM_INFO_TEXT])) {
+            return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+        }
 
         $ret = '';
-        foreach ($this->nodes as $n)
+        foreach ($this->nodes as $n) {
             $ret .= $n->outertext();
+        }
         return $ret;
     }
 
@@ -335,6 +344,7 @@ class Service_Copyright_HtmlDomNode
     function outertext()
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $text = '';
             if ($this->tag == 'text') {
@@ -345,16 +355,20 @@ class Service_Copyright_HtmlDomNode
             $g_debugObject->debugLog(1, 'Innertext of tag: ' . $this->tag . $text);
         }
 
-        if ($this->tag === 'root') return $this->innertext();
-
+        if ($this->tag === 'root') {
+            return $this->innertext();
+        }
         // trigger callback
         if ($this->dom && $this->dom->callback !== null) {
             call_user_func_array($this->dom->callback, array($this));
         }
 
-        if (isset($this->_[HDOM_INFO_OUTER])) return $this->_[HDOM_INFO_OUTER];
-        if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
-
+        if (isset($this->_[HDOM_INFO_OUTER])) {
+            return $this->_[HDOM_INFO_OUTER];
+        }
+        if (isset($this->_[HDOM_INFO_TEXT])) {
+            return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+        }
         // render begin tag
         if ($this->dom && $this->dom->nodes[$this->_[HDOM_INFO_BEGIN]]) {
             $ret = $this->dom->nodes[$this->_[HDOM_INFO_BEGIN]]->makeup();
@@ -377,8 +391,9 @@ class Service_Copyright_HtmlDomNode
         }
 
         // render end tag
-        if (isset($this->_[HDOM_INFO_END]) && $this->_[HDOM_INFO_END] != 0)
+        if (isset($this->_[HDOM_INFO_END]) && $this->_[HDOM_INFO_END] != 0) {
             $ret .= '</' . $this->tag . '>';
+        }
         return $ret;
     }
 
@@ -389,7 +404,9 @@ class Service_Copyright_HtmlDomNode
      */
     function text()
     {
-        if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
+        if (isset($this->_[HDOM_INFO_INNER])) {
+            return $this->_[HDOM_INFO_INNER];
+        }
         switch ($this->nodetype) {
             case HDOM_TYPE_TEXT:
                 return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
@@ -398,8 +415,8 @@ class Service_Copyright_HtmlDomNode
             case HDOM_TYPE_UNKNOWN:
                 return '';
         }
-        if (strcasecmp($this->tag, 'script') === 0) return '';
-        if (strcasecmp($this->tag, 'style') === 0) return '';
+        if (strcasecmp($this->tag, 'script') === 0) { return ''; }
+        if (strcasecmp($this->tag, 'style') === 0) { return ''; }
 
         $ret = '';
         // In rare cases, (always node type 1 or HDOM_TYPE_ELEMENT - observed for some span tags, and some p tags) $this->nodes is set to NULL.
@@ -440,7 +457,9 @@ class Service_Copyright_HtmlDomNode
     function makeup()
     {
         // text, comment, unknown
-        if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+        if (isset($this->_[HDOM_INFO_TEXT])) {
+            return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+        }
 
         $ret = '<' . $this->tag;
         $i = -1;
@@ -449,13 +468,15 @@ class Service_Copyright_HtmlDomNode
             ++$i;
 
             // skip removed attribute
-            if ($val === null || $val === false)
+            if ($val === null || $val === false) {
                 continue;
+            }
 
             $ret .= $this->_[HDOM_INFO_SPACE][$i][0];
             //no value attr: nowrap, checked selected...
-            if ($val === true)
+            if ($val === true) {
                 $ret .= $key;
+            }
             else {
                 switch ($this->_[HDOM_INFO_QUOTE][$i]) {
                     case HDOM_QUOTE_DOUBLE:
@@ -483,15 +504,21 @@ class Service_Copyright_HtmlDomNode
     function find($selector, $idx = null, $lowercase = false)
     {
         $selectors = $this->parse_selector($selector);
-        if (($count = count($selectors)) === 0) return array();
+        if (($count = count($selectors)) === 0) {
+            return array();
+        }
         $found_keys = array();
 
         // find each selector
         for ($c = 0; $c < $count; ++$c) {
             // The change on the below line was documented on the sourceforge code tracker id 2788009
             // used to be: if (($levle=count($selectors[0]))===0) return array();
-            if (($levle = count($selectors[$c])) === 0) return array();
-            if (!isset($this->_[HDOM_INFO_BEGIN])) return array();
+            if (($levle = count($selectors[$c])) === 0) {
+                return array();
+            }
+            if (!isset($this->_[HDOM_INFO_BEGIN])) {
+                return array();
+            }
 
             $head = array($this->_[HDOM_INFO_BEGIN] => 1);
 
@@ -507,8 +534,9 @@ class Service_Copyright_HtmlDomNode
             }
 
             foreach ($head as $k => $v) {
-                if (!isset($found_keys[$k]))
+                if (!isset($found_keys[$k])) {
                     $found_keys[$k] = 1;
+                }
             }
         }
 
@@ -520,8 +548,10 @@ class Service_Copyright_HtmlDomNode
             $found[] = $this->dom->nodes[$k];
 
         // return nth-element or array
-        if (is_null($idx)) return $found;
-        else if ($idx < 0) $idx = count($found) + $idx;
+        if (is_null($idx)) { return $found; }
+        else {
+            if ($idx < 0) { $idx = count($found) + $idx; }
+        }        
         return (isset($found[$idx])) ? $found[$idx] : null;
     }
 
@@ -534,6 +564,7 @@ class Service_Copyright_HtmlDomNode
     protected function seek($selector, &$ret, $lowercase = false)
     {
         global $g_debugObject;
+
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -570,8 +601,9 @@ class Service_Copyright_HtmlDomNode
             $pass = true;
 
             if ($tag === '*' && !$key) {
-                if (in_array($node, $this->children, true))
+                if (in_array($node, $this->children, true)) {
                     $ret[$i] = 1;
+                }
                 continue;
             }
 
@@ -582,9 +614,9 @@ class Service_Copyright_HtmlDomNode
             // compare key
             if ($pass && $key) {
                 if ($no_key) {
-                    if (isset($node->attr[$key])) $pass = false;
+                    if (isset($node->attr[$key])) { $pass = false; }
                 } else {
-                    if (($key != "plaintext") && !isset($node->attr[$key])) $pass = false;
+                    if (($key != "plaintext") && !isset($node->attr[$key])) { $pass = false; }
                 }
             }
             // compare value
@@ -621,13 +653,13 @@ class Service_Copyright_HtmlDomNode
                             } else {
                                 $check = $this->match($exp, $val, $k);
                             }
-                            if ($check) break;
+                            if ($check) { break; }
                         }
                     }
                 }
-                if (!$check) $pass = false;
+                if (!$check) { $pass = false; }
             }
-            if ($pass) $ret[$i] = 1;
+            if ($pass) { $ret[$i] = 1; }
             unset($node);
         }
         // It's passed by reference so this is actually what this function returns.
@@ -643,6 +675,7 @@ class Service_Copyright_HtmlDomNode
     protected function match($exp, $pattern, $value)
     {
         global $g_debugObject;
+
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -672,6 +705,7 @@ class Service_Copyright_HtmlDomNode
     protected function parse_selector($selector_string)
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -695,9 +729,9 @@ class Service_Copyright_HtmlDomNode
 
         foreach ($matches as $m) {
             $m[0] = trim($m[0]);
-            if ($m[0] === '' || $m[0] === '/' || $m[0] === '//') continue;
+            if ($m[0] === '' || $m[0] === '/' || $m[0] === '//') { continue; }
             // for browser generated xpath
-            if ($m[1] === 'tbody') continue;
+            if ($m[1] === 'tbody') { continue; }
 
             list($tag, $key, $val, $exp, $no_key) = array($m[1], null, null, '=', false);
             if (!empty($m[2])) {
@@ -735,8 +769,9 @@ class Service_Copyright_HtmlDomNode
                 $result = array();
             }
         }
-        if (count($result) > 0)
+        if (count($result) > 0) {
             $selectors[] = $result;
+        }
         return $selectors;
     }
 
@@ -773,7 +808,9 @@ class Service_Copyright_HtmlDomNode
             case 'outertext':
                 return $this->_[HDOM_INFO_OUTER] = $value;
             case 'innertext':
-                if (isset($this->_[HDOM_INFO_TEXT])) return $this->_[HDOM_INFO_TEXT] = $value;
+                if (isset($this->_[HDOM_INFO_TEXT])) {
+                    return $this->_[HDOM_INFO_TEXT] = $value;
+                }    
                 return $this->_[HDOM_INFO_INNER] = $value;
         }
         if (!isset($this->attr[$name])) {
@@ -807,8 +844,9 @@ class Service_Copyright_HtmlDomNode
      */
     function __unset($name)
     {
-        if (isset($this->attr[$name]))
+        if (isset($this->attr[$name])) {
             unset($this->attr[$name]);
+        }
     }
 
     // PaperG - Function to convert the text from one character set to another if the two sets are not the same.
@@ -819,6 +857,7 @@ class Service_Copyright_HtmlDomNode
     function convert_text($text)
     {
         global $g_debugObject;
+        
         if (is_object($g_debugObject)) {
             $g_debugObject->debugLogEntry(1);
         }
@@ -873,18 +912,26 @@ class Service_Copyright_HtmlDomNode
         for ($i = 0; $i < $len; $i++) {
             $c = ord($str[$i]);
             if ($c > 128) {
-                if (($c >= 254)) return false;
+                if (($c >= 254)) {
+                    return false;
+                }
                 elseif ($c >= 252) $bits = 6;
                 elseif ($c >= 248) $bits = 5;
                 elseif ($c >= 240) $bits = 4;
                 elseif ($c >= 224) $bits = 3;
                 elseif ($c >= 192) $bits = 2;
-                else return false;
-                if (($i + $bits) > $len) return false;
+                else {
+                    return false;
+                }
+                if (($i + $bits) > $len) {
+                    return false;
+                }
                 while ($bits > 1) {
                     $i++;
                     $b = ord($str[$i]);
-                    if ($b < 128 || $b > 191) return false;
+                    if ($b < 128 || $b > 191) {
+                        return false;
+                    }
                     $bits--;
                 }
             }
@@ -976,8 +1023,10 @@ class Service_Copyright_HtmlDomNode
         // ridiculously far future development
         // If the class or id is specified in a SEPARATE css file thats not on the page, go get it and do what we were just doing for the ones on the page.
 
-        $result = array('height' => $height,
-            'width' => $width);
+        $result = array(
+            'height' => $height,
+            'width' => $width,
+        );
         return $result;
     }
 

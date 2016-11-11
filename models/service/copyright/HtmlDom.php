@@ -584,7 +584,9 @@ class Service_Copyright_HtmlDom
                     //no value attr: nowrap, checked selected...
                     $node->_[HDOM_INFO_QUOTE][] = HDOM_QUOTE_NO;
                     $node->attr[$name] = true;
-                    if ($this->char != '>') $this->char = $this->doc[--$this->pos]; // prev
+                    if ($this->char != '>') {
+                        $this->char = $this->doc[--$this->pos]; // prev
+                    }
                 }
                 $node->_[HDOM_INFO_SPACE][] = $space;
                 $space = array($this->copy_skip($this->token_blank), '', '');
@@ -742,7 +744,9 @@ class Service_Copyright_HtmlDom
             return $ret;
         }
 
-        if ($pos === $this->pos) return '';
+        if ($pos === $this->pos) {
+            return '';
+        }
         $pos_old = $this->pos;
         $this->char = $this->doc[$pos];
         $this->pos = $pos;
@@ -755,7 +759,9 @@ class Service_Copyright_HtmlDom
      */
     protected function copy_until_char_escape($char)
     {
-        if ($this->char === null) return '';
+        if ($this->char === null) {
+            return '';
+        }
 
         $start = $this->pos;
         while (1) {
@@ -790,17 +796,17 @@ class Service_Copyright_HtmlDom
      */
     protected function remove_noise($pattern, $remove_tag = false)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         $count = preg_match_all($pattern, $this->doc, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 
         for ($i = $count - 1; $i > -1; --$i) {
             $key = '___noise___' . sprintf('% 5d', count($this->noise) + 1000);
-            if (is_object($debugObject)) {
-                $debugObject->debugLog(2, 'key is: ' . $key);
+            if (is_object($g_debugObject)) {
+                $g_debugObject->debugLog(2, 'key is: ' . $key);
             }
             $idx = ($remove_tag) ? 0 : 1;
             $this->noise[$key] = $matches[$i][$idx][0];
@@ -821,17 +827,17 @@ class Service_Copyright_HtmlDom
      */
     function restore_noise($text)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         while (($pos = strpos($text, '___noise___')) !== false) {
             // Sometimes there is a broken piece of markup, and we don't GET the pos+11 etc... token which indicates a problem outside of us...
             if (strlen($text) > $pos + 15) {
                 $key = '___noise___' . $text[$pos + 11] . $text[$pos + 12] . $text[$pos + 13] . $text[$pos + 14] . $text[$pos + 15];
-                if (is_object($debugObject)) {
-                    $debugObject->debugLog(2, 'located key of: ' . $key);
+                if (is_object($g_debugObject)) {
+                    $g_debugObject->debugLog(2, 'located key of: ' . $key);
                 }
 
                 if (isset($this->noise[$key])) {
@@ -855,9 +861,10 @@ class Service_Copyright_HtmlDom
      */
     function search_noise($text)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
+        global $g_debugObject;
+        
+        if (is_object($g_debugObject)) {
+            $g_debugObject->debugLogEntry(1);
         }
 
         foreach ($this->noise as $noiseElement) {

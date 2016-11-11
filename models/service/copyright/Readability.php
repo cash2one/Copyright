@@ -434,7 +434,9 @@ class Service_Copyright_Readability {
      * @return
      */
     public function getContent() {
-        if (!$this->DOM) return false;
+		if (!$this->DOM) {
+			return false;
+		}
 
         // 鑾峰彇椤甸潰鏍囬????
         $ContentTitle = $this->getTitle();

@@ -163,10 +163,10 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $sim_other_content = $cur["sim_other_content"] * 100;
             $sim_other_content = sprintf("%.2f", $sim_other_content);
             if ($sim_content > 60 || ($sim_other_content > 80 && $sim_len > 500)) { $hign_cnt ++; $level = 2; }
-                else {
-                    if ($sim_title > 80 && $sim_content == -1) { $mid_cnt ++; $level = 1; }
-                    else { $level = 0; }
-                }
+            else {
+                if ($sim_title > 80 && $sim_content == -1) { $mid_cnt ++; $level = 1; }
+                else { $level = 0; }
+            }
             $this->detectResult[$index] = $cur;
             $this->detectResult[$index]['risk'] = $level;
             unset($this->detectResult[$index]['daily_txt']);

@@ -50,9 +50,9 @@ class Service_Copyright_HtmlHelper {
         // For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
         //For time out!!
         $opts = array(
-            'http'=>array(
+            'http' => array(
                 'timeout'=>60,
-            )
+            ),
         );
 
         $context=stream_context_create($opts);      
