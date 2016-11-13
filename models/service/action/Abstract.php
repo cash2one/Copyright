@@ -100,13 +100,18 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         //encode的顺序很重要
         if (preg_match("/[\x7f-\xff]/", $sourceStr))
         {
-            $encode = mb_detect_encoding($sourceStr,"auto",true);
+            $encodeList = array('GB2312','GBK','UTF-8');
+            $encode = mb_detect_encoding($sourceStr,$encodeList,true);
             if($encode==='UTF-8')
             {
 
                 return $sourceStr;
             }
-            $encodeList = array('GBK','UTF-8','GB2312');
+            else
+            {
+                return iconv($encode,'UTF-8//IGNORE',$sourceStr);
+            }
+            //$encodeList = array('GBK','UTF-8','GB2312');
         }
         else
         {
