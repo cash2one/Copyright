@@ -55,6 +55,7 @@ class Service_Copyright_Assign
                 "chapter" => $chapter,
                 "text" => $text,
             );
+            //need set ral config name as copyright
             $request = array($this->service, $this->method, $input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
@@ -169,7 +170,7 @@ class Service_Copyright_Assign
             $text);
     }
 
-    // casePerParallelProcess ±ØĞë¿ÉÒÔ±»10Õû³ıÇÒĞ¡ÓÚ10,¼´(1,2,5,10)
+    // casePerParallelProcess å¿…é¡»å¯ä»¥è¢«10æ•´é™¤ä¸”å°äº10,å³(1,2,5,10)
     /**
     * @param : str, num, num, num, num, num, str, str, str
     * @return : array
@@ -247,8 +248,6 @@ class Service_Copyright_Assign
                 $chapter,
                 $text);   
         }
-        
-        //BD_Log::notice(json_encode($parallelServer));
         
         if (count($parallelServer) != $processNum)
         {

@@ -6,13 +6,13 @@
  **************************************************************************/
 
 /**
- * @file Statistic.php
+ * @file Init.php
  * @author chenzhenyu01(com@baidu.com)
- * @date 2016/11/4 10:51
+ * @date 2016/11/8 18:15
  * @brief
  *
  **/
-class Action_Statistic extends Service_Action_Abstract
+class Action_Init extends Service_Action_Abstract
 {
     /**
      * @param
@@ -20,7 +20,8 @@ class Action_Statistic extends Service_Action_Abstract
      */
     public function invoke()
     {
-
+        $tpl = $this->smartyInstance();
+        $tpl->display('copyright/page/quick-search.tpl');
     }
 }
 

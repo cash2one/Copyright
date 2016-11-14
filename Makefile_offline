@@ -1,0 +1,71 @@
+#!/bin/bash
+APP_NAME="copyright"
+PREFIX_PATH="/home/iknow/odp"
+
+APP_PATH="$PREFIX_PATH/app/$APP_NAME"
+CONF_PATH="$PREFIX_PATH/conf/app/$APP_NAME"
+WEBROOT_PATH="$PREFIX_PATH/webroot/$APP_NAME"
+API_PATH="$PREFIX_PATH/php/phplib/iknow/api/$APP_NAME"
+
+#template模板路径
+#TEMPLATE_PATH="$PREFIX_PATH/template/$APP_NAME"
+
+LOG_PATH="$PREFIX_PATH/log/$APP_NAME"
+
+#静态文件路径
+#STATIC_RTS_PATH="$PREFIX_PATH/webroot/static/$APP_NAME"
+
+
+DATA_PATH="$PREFIX_PATH/data/app/$APP_NAME"
+#TEMPLATE_PLUGIN_PATH="$PREFIX_PATH/php/phplib/ext/smarty/baiduplugins"
+
+
+
+#APP_SRC_FILE=actions Bootstrap.php controllers library models script test
+
+OUT_PUT="./"
+
+rm -rf $APP_PATH.bak $CONF_PATH.bak $WEBROOT_PATH.bak
+#rm  -rf  $STATIC_RTS_PATH.bak $TEMPLATE_PATH.bak;
+
+mv $APP_PATH $APP_PATH.bak
+mkdir -p $APP_PATH
+mv $CONF_PATH $CONF_PATH.bak
+mkdir -p $CONF_PATH
+mv $WEBROOT_PATH $WEBROOT_PATH.bak
+mkdir -p $WEBROOT_PATH
+mv $API_PATH $API_PATH.bak
+mkdir -p $API_PATH
+mkdir -p $LOG_PATH
+mkdir -p $DATA_PATH
+
+#mv $STATIC_RTS_PATH $STATIC_RTS_PATH.bak; mkdir -p $STATIC_RTS_PATH;
+#mv $TEMPLATE_PATH $TEMPLATE_PATH.bak; mkdir -p $TEMPLATE_PATH;
+
+cp -r $OUT_PUT/actions $OUT_PUT/Bootstrap.php $OUT_PUT/controllers $OUT_PUT/library $OUT_PUT/models $OUT_PUT/script  $APP_PATH
+
+#配置文件拷贝
+cp -r $OUT_PUT/conf/copyright/* $CONF_PATH
+#webroot index 文件
+cp -r $OUT_PUT/index.php $WEBROOT_PATH
+#api 文件
+cp -r $OUT_PUT/api/*  $API_PATH
+#静态资源文件
+#cp -r $OUT_PUT/static/$APP_NAME/*    $STATIC_RTS_PATH
+#模板文件
+#cp -r $OUT_PUT/template/$APP_NAME/*  $TEMPLATE_PATH
+
+echo "make file for  offline success!"
+exit 1;
+
+#DEV_PC="iknow@cp01-ocean-169.epc.baidu.com"
+dev_pc:
+	@ssh $(DEV_PC) "rm -rf $(APP_PATH).bak $(CONF_PATH).bak $(WEBROOT_PATH).bak $(API_PATH).bak; mv $(APP_PATH) $(APP_PATH).bak; mkdir -p $(APP_PATH); mv $(CONF_PATH) $(CONF_PATH).bak; mkdir -p $(CONF_PATH); mv $(WEBROOT_PATH) $(WEBROOT_PATH).bak; mkdir -p $(WEBROOT_PATH); mv $(API_PATH) $(API_PATH).bak; mkdir -p $(API_PATH); mkdir -p $(LOG_PATH);mkdir -p $(DATA_PATH);"
+	scp -r $(APP_SRC_FILE) $(DEV_PC):$(APP_PATH)
+	scp -r conf/newapp/* $(DEV_PC):$(CONF_PATH)
+	scp -r index.php $(DEV_PC):$(WEBROOT_PATH)
+	scp -r api/* $(DEV_PC):$(API_PATH)
+	@ssh $(DEV_PC) "cd $(CONF_PATH); find ./ -type d -name .svn|xargs -i rm -rf {};"
+	@ssh $(DEV_PC) "cd $(APP_PATH); find ./ -type d -name .svn|xargs -i rm -rf {};"
+	@ssh $(DEV_PC) "cd $(API_PATH); find ./ -type d -name .svn|xargs -i rm -rf {};"
+	

@@ -35,6 +35,7 @@ class Action_Query extends Ap_Action_Abstract
         $scope = $ret['scope'];
         $ret['result'] = array();
 
+        header('Content-type:application/json');
         $caseNum = 100;
         if ($mode == 0 && $scope == 0)
         {
