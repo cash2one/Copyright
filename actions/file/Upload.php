@@ -14,6 +14,10 @@
  **/
 class Action_Upload extends Ap_Action_Abstract
 {
+    /**
+    * @param :
+    * @return :
+    * */
     public function execute()
     {
         $httpGet = $_GET;
@@ -42,6 +46,10 @@ class Action_Upload extends Ap_Action_Abstract
         return $ret;
     }
 
+    /**
+    * @param:
+    * @return :
+    * */
     public function genFileId($content)
     {
         return md5($content);
