@@ -22,22 +22,39 @@ class Action_Query extends Ap_Action_Abstract
     public function execute()
     {
         $httpGet = $_GET;
-        $jobId = $httpGet['jobId'];
+        $jobId = $httpGet['jobid'];
         $ret['errno'] = 0;
         $ret['message'] = '';
-        $ret['jobId'] = $jobId;
-        $ret['mode'] = 0;
-        $ret['type'] = 0;
-        $ret['scope'] = 0;
-        $ret['query'] = '';
+        $ret['jobid'] = $httpGet['jobid'];
+        $ret['mode'] = $httpGet['mode'];
+        $ret['type'] = $httpGet['type'];
+        $ret['scope'] = $httpGet['scope'];
+        $jobId = $httpGet['jobid'];
+        $mode = $ret['mode'];
+        $type = $ret['type'];
+        $scope = $ret['scope'];
         $ret['result'] = array();
 
+        header('Content-type:application/json');
+        $caseNum = 100;
+        if ($mode == 0 && $scope == 0)
+        {
+            $caseNum = 50;
+        }
+        else if ($mode == 0 && $scope == 1)
+        {
+            $caseNum = 100;
+        }
+        else if ($mode == 1 && $scope == 0)
+        {
+            $caseNum = 10;
+        }
         $fields[] = "info";
-        for($i = 0; $i < 100; $i++)
+        for($i = 0; $i < $caseNum; $i++)
         {   
             $fields[] = $i; 
         }   
-        $hashCache = new Service_Data_HashCache();
+        $hashCache = new Service_Copyright_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
         // redis访问失败
         if ($retCache === false || $retCache['err_no'] != 0)
@@ -62,24 +79,6 @@ class Action_Query extends Ap_Action_Abstract
         }
         else
         {
-            $info = json_decode($retCache['ret']["$jobId"]['info'], true);
-            $mode = $info['mode'];
-            $scope = $info['scope'];
-
-            $caseNum = 10;
-            if ($mode == 0 && $scope == 0)
-            {       
-                $caseNum = 10;
-            }       
-            else if ($mode == 0 && $scope == 1)
-            {       
-                $caseNum = 100;
-            }       
-            else if ($mode == 1 && $scope == 0)
-            {     
-                $caseNum = 10;
-            } 
-
             // 某个下标不存在或者为空个数不够返回false
             $miss = false;
             for ($i = 0; $i < $caseNum; ++$i)

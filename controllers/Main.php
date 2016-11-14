@@ -6,5 +6,7 @@
  */
 class Controller_Main extends Ap_Controller_Abstract {
 	public $actions = array(
+		'index' => 'actions/Index.php',
+		'hometest' => 'actions/HomeTest.php',
 	);
 }

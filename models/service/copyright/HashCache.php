@@ -56,10 +56,12 @@ class Service_Copyright_HashCache
 
     /**
      * @param
+     * @parma fields 是key value形式的
      * @return
      */
     public function read($key, array $fields)
     {
+        file_put_contents('/home/iknow/odp/log/zhenyu1.log',var_export(func_get_args(),ture));
         if (!empty($fields)) {
             $input = array();
             foreach ($fields as $index => $field) {
@@ -68,6 +70,21 @@ class Service_Copyright_HashCache
             if (!empty($input['field'])) {
                 $input['key'] = $key;
                 $ret = $this->redis->HMGET($input);
+
+                //把数组按照key value的形式会对回去
+                $count = count($fields);
+                $new_ret = array();
+                if($ret['err_no'] == 0 && count($ret['ret'][$key]) == $count)
+                {
+                    $i = 0;
+                    foreach($fields as $index=>$item)
+                    {
+                        $new_ret[$item] = $ret['ret'][$key][$i];
+                        $i++;
+                    }
+                    $ret['ret'][$key] = $new_ret;
+                }
+                file_put_contents('/home/iknow/odp/log/zhenyu.log',var_export($ret,true));
                 return $ret;
             }
         }

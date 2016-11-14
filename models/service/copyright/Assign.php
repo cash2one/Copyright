@@ -55,6 +55,7 @@ class Service_Copyright_Assign
                 "chapter" => $chapter,
                 "text" => $text,
             );
+            //need set ral config name as copyright
             $request = array($this->service, $this->method, $input, $this->extra, $this->header);
             $parallelServer["$i"] = $request;
         }
@@ -86,7 +87,7 @@ class Service_Copyright_Assign
     * @param : str, num, num, num, num, num, str, str, str
     * @return : array
     * */
-    private function allocateTiltePs(
+    private function allocateTitlePs(
         $jobId,
         $processNum, 
         $casePerParallelProcess,
@@ -157,7 +158,7 @@ class Service_Copyright_Assign
         $chapter,
         $text)
     {
-        return $this->allocateTiltePs(
+        return $this->allocateTitlePs(
             $jobId,
             $processNum, 
             $casePerParallelProcess, 
@@ -169,7 +170,7 @@ class Service_Copyright_Assign
             $text);
     }
 
-    // casePerParallelProcess ±ØÐë¿ÉÒÔ±»10Õû³ýÇÒÐ¡ÓÚ10,¼´(1,2,5,10)
+    // casePerParallelProcess å¿…é¡»å¯ä»¥è¢«10æ•´é™¤ä¸”å°äºŽ10,å³(1,2,5,10)
     /**
     * @param : str, num, num, num, num, num, str, str, str
     * @return : array
@@ -210,7 +211,7 @@ class Service_Copyright_Assign
 
         if ($mode == 0 && $scope == 0)
         {
-            $parallelServer = $this->allocateTiltePs(
+            $parallelServer = $this->allocateTitlePs(
                 $jobId,
                 $processNum, 
                 $casePerParallelProcess, 
@@ -223,7 +224,7 @@ class Service_Copyright_Assign
         }
         else  if ($mode == 0 && $scope == 1)
         {
-            $parallelServer = $this->allocateTilteIknow(
+            $parallelServer = $this->allocateTitleIknow(
                 $jobId,
                 $processNum, 
                 $casePerParallelProcess,
@@ -248,16 +249,38 @@ class Service_Copyright_Assign
                 $text);   
         }
         
-        //BD_Log::notice(json_encode($parallelServer));
-        
         if (count($parallelServer) != $processNum)
         {
             $ret['errno'] = 2;
             $ret['message'] = "parallel num : $parallelServer not equal process num : $processNum !";
         }
 
-        ral_multi($parallelServer);
-        return $ret;
+        if ($this->commitCache($jobId, $mode, $type, $scope, $query))
+        {
+            ral_multi($parallelServer);
+            return $ret;
+        }
+        else
+        {
+            $ret['errno'] = 3;
+            $ret['message'] = "commit to cache fail, jobid = $jobId";
+            return $ret;
+        }
+    }
+
+    /**
+    * @param :
+    * @return :
+    * */
+    private function commitCache($jobId, $mode, $type, $scope, $query)
+    {
+        $param['mode'] = $mode;
+        $param['type'] = $type;
+        $param['scope'] = $scope;
+        $param['query'] = $query;
+        $field['info'] = json_encode($param);
+        $obj = new Service_Copyright_HashCache();
+        return $obj->write($jobId, $field);
     }
 }
 
