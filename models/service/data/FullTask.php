@@ -52,7 +52,11 @@ class Service_Data_FullTask
     }
 
     /**
-     *
+     * @param $fields
+     * @param $startIndex
+     * @param $number
+     * @return mixed
+     * @throws Exception
      */
     public function select($fields,$startIndex,$number)
     {
