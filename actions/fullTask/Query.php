@@ -14,11 +14,10 @@
  **/
 class Action_Query extends Service_Action_Abstract
 {
-     /*
-     *  @param :
-     *  @return :
-     * */
-
+    /**
+     * @param
+     * @return
+     */
     public function invoke()
     {
         $request = Saf_SmartMain::getCgi();
@@ -29,7 +28,8 @@ class Action_Query extends Service_Action_Abstract
 
         // get jobs from mysql deps on uid, pageIndex, pageCount
         $obj = new Service_Page_FullTask();
-        $obj->getJobs($uid, $pageIndex, $pageCount);
+        $ret = $obj->getJobs($uid, $pageIndex, $pageCount);
+        $this->jsonResponse($ret);
     }
 } 
  

@@ -69,6 +69,19 @@ class Service_Data_FullTask
         return $ret;
     }
 
+    /**
+     * @param $jobid
+     * @param $row
+     * @return mixed
+     * @throws Exception
+     */
+    public function updateTable($jobid,$row)
+    {
+        $condition = array('jobid='=>$jobid);
+        $ret = $this->sdm->update($this->table,$row,$condition);
+        return $ret;
+    }
+
 
 }
 

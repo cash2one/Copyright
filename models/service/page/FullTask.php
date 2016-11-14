@@ -103,6 +103,17 @@ class Service_Page_FullTask
         return array('errno'=>0,'count'=>$count,'result'=>$result);
 
     }
+
+    /**
+     * @param $jobid
+     * @param $row
+     * @return mixed
+     */
+    public function updateTable($jobid,$row)
+    {
+        $ret = $this->sdf->updateTable($jobid,$row);
+        return $ret;
+    }
 }
 
 
