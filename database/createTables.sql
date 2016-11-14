@@ -14,7 +14,7 @@ CREATE TABLE `fast_task` (
   -- `job_result` text COMMENT 'job的结果',
   `job_stat` VARCHAR(512) DEFAULT NULL COMMENT 'job的聚合统计结果',
   `status` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'job当前状态 0=job成功创建',
-  -- `job_process` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'job当前的进度 0~100',
+  `ext` varchar(1024) default null comment '扩展字段',
   PRIMARY KEY (`id`),
   UNIQUE KEY `jobid` (`jobid`),
   KEY `uid` (`uid`)
@@ -40,6 +40,7 @@ CREATE TABLE `full_task` (
   `job_stat` VARCHAR(512) DEFAULT NULL COMMENT 'job的聚合统计结果',
   `status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'job当前状态 0=job成功创建',
   `job_process` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'job当前的进度 0~100',
+  `ext` varchar(1024) default null comment '扩展字段',
   PRIMARY KEY (`id`),
   UNIQUE KEY `jobid` (`jobid`),
   KEY `uid` (`uid`)

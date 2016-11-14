@@ -60,8 +60,11 @@ class Service_Data_FullTask
      */
     public function select($fields,$startIndex,$number)
     {
+        //order & limit
+        $order = "order by create_time DESC";
         $limit = "limit $startIndex,$number";
-        $appends = array($limit);
+        $appends = array($order,$limit);
+
         $ret = $this->sdm->select($this->table,$fields,null,null,$appends);
         return $ret;
     }

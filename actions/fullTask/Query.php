@@ -12,21 +12,20 @@
  * @brief 
  *  
  **/
-class Action_Query extends Ap_Action_Abstract
+class Action_Query extends Service_Action_Abstract
 {
      /*
      *  @param :
      *  @return :
      * */
 
-    public function execute()
+    public function invoke()
     {
-        $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
-        $pageIndex = $httpPost['pageIndex'];
-        $pageCount = $httpPost['pageCount'];
-        $uid = "xxx";
+        $pageIndex = intval($httpPost['pageIndex']);
+        $pageCount = intval($httpPost['pageCount']);
+        $uid = $this->getUid();
 
         // get jobs from mysql deps on uid, pageIndex, pageCount
         $obj = new Service_Page_FullTask();

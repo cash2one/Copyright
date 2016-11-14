@@ -17,6 +17,8 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     public static $connect_cut = false;
     protected $smartySelfDefine = true;
 
+    protected $uid;
+
     /**
      * @param void
      * @return mixed
@@ -27,7 +29,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         $class = get_class($this);
         $request = Saf_SmartMain::getCgi();
         //log the original request in here
-        Bd_Log::notice(sprintf('[class]%s,[request]%s',$class,json_encode($request)));
+        Bd_Log::notice(sprintf('[class]%s,[request]%s', $class, json_encode($request)));
         return $this->invoke();
     }
 
@@ -48,8 +50,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         //检查用于是否登陆
         $userInfo = Bd_Passport::checkUserLogin();
         $userInfo['isLogin'] = 0;
-        if(!empty($userInfo) && isset($userInfo['uid']) && isset($userInfo['uname']))
-        {
+        if (!empty($userInfo) && isset($userInfo['uid']) && isset($userInfo['uname'])) {
             $userInfo['isLogin'] = 1;
         }
 
@@ -57,7 +58,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         $tpl = Bd_TplFactory::getInstance();
 
         //赋值tpl里面的信息
-        $tpl->assign('userInfo',$userInfo);
+        $tpl->assign('userInfo', $userInfo);
 
         if ($this->smartySelfDefine) {
             $tpl->setConfigDir(ROOT_PATH . '/template/config');
@@ -68,13 +69,28 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     }
 
     /**
+     * @param
+     * @return int
+     */
+    public function getUid()
+    {
+        if (empty($this->uid)) {
+            $userInfo = Bd_Passport::checkUserLogin();
+            if (!empty($userInfo) && isset($userInfo['uid']))
+            {
+                $this->uid = intval($userInfo['uid']);;
+            }
+        }
+        return $this->uid;
+    }
+
+    /**
      * @param $result
      * @return
      */
     public function jsonResponse($result)
     {
-        if(self::$connect_cut)
-        {
+        if (self::$connect_cut) {
             return;
         }
 
@@ -90,40 +106,31 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
      * @param $sourceStr
      * @return string
      */
-    public  function iconvutf8($sourceStr)
+    public function iconvutf8($sourceStr)
     {
-        if (empty($sourceStr))
-        {
+        if (empty($sourceStr)) {
             return $sourceStr;
         }
 
         //encode的顺序很重要
-        if (preg_match("/[\x7f-\xff]/", $sourceStr))
-        {
-            $encodeList = array('GB2312','GBK','UTF-8');
-            $encode = mb_detect_encoding($sourceStr,$encodeList,true);
-            if($encode==='UTF-8')
-            {
+        if (preg_match("/[\x7f-\xff]/", $sourceStr)) {
+            $encodeList = array('GB2312', 'GBK', 'UTF-8');
+            $encode = mb_detect_encoding($sourceStr, $encodeList, true);
+            if ($encode === 'UTF-8') {
 
                 return $sourceStr;
-            }
-            else
-            {
-                return iconv($encode,'UTF-8//IGNORE',$sourceStr);
+            } else {
+                return iconv($encode, 'UTF-8//IGNORE', $sourceStr);
             }
             //$encodeList = array('GBK','UTF-8','GB2312');
-        }
-        else
-        {
-            $encodeList = array('UTF-8','GBK','GB2312');
+        } else {
+            $encodeList = array('UTF-8', 'GBK', 'GB2312');
         }
 
-        foreach ($encodeList as $index => $code)
-        {
+        foreach ($encodeList as $index => $code) {
             $convStr = iconv($code, 'UTF-8', $sourceStr);
             $lastStr = iconv('UTF-8', $code, $convStr);
-            if ($lastStr == $sourceStr)
-            {
+            if ($lastStr == $sourceStr) {
                 return $convStr;
             }
         }
