@@ -21,7 +21,12 @@ test();
  */
 function test()
 {
-    $jobid = '';
+    //随便获取一个jobid；
+    $mysqInstance = new Service_Dao_Mysql();
+    $ret = $mysqInstance->query('select jobid from full_task limit 1');
+    $jobid = $ret[0]['jobid'];
+
+
     $job_process = rand(1,99);
     $row = array('status'=>1,'job_process'=>$job_process);
 
