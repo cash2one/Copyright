@@ -38,7 +38,53 @@ class Action_Submit extends Ap_Action_Abstract
         $endTime = isset($httpPost['endTime'])?$httpPost['endTime']:0;
         $uid = "xxx";
 
+        $jobId = $this->genJobId(
+            $mode,
+            $type,
+            $scope,
+            $fileId,
+            $fullTime,
+            $startTime,
+            $endTime,
+            $uid);
+
         // sumbit a new job here
+        $obj = new Service_Page_FullTask();
+        $ret = $obj->createJob(
+            $jobId,
+            $mode,
+            $type,
+            $scope,
+            $fileId,
+            $fullTime,
+            $startTime,
+            $endTime,
+            $uid);
+    }
+    /**
+    * @param :
+    * @return :
+    * */
+    public function genJobId(
+        $mode,  
+        $type,  
+        $scope, 
+        $fileId, 
+        $fullTime, 
+        $startTime,
+        $endTime,
+        $uid)  
+    {
+        $str = "uid:$uid ";
+        $str .= "mode:$mode ";
+        $str .= "type:$type ";
+        $str .= "scope:$scope ";
+        $str .= "fileId:$fileId ";
+        $str .= "fullTime:$fullTime ";
+        $str .= "startTime:$startTime ";
+        $str .= "endTime:$endTime";
+        $jobId = md5($str);
+        return $jobId; 
     }
 } 
  

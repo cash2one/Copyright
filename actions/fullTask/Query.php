@@ -29,6 +29,8 @@ class Action_Query extends Ap_Action_Abstract
         $uid = "xxx";
 
         // get jobs from mysql deps on uid, pageIndex, pageCount
+        $obj = new Service_Page_FullTask();
+        $obj->getJobs($uid, $pageIndex, $pageCount);
     }
 } 
  
