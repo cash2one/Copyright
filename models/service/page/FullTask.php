@@ -72,7 +72,7 @@ class Service_Page_FullTask
 
         if($count > 0)
         {
-            $fields = array('jobid','create_time','mode','type','scope','status','process','job_result_file','custom_start_time','custom_end_time');
+            $fields = array('jobid','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
             $index = $pageCount*($pageIndex-1);
             $limit = $pageCount;
             $ret = $this->sdf->select($fields,$index,$limit);
@@ -85,7 +85,7 @@ class Service_Page_FullTask
                 $item['type'] = intval($value['type']);
                 $item['scope'] = intval($value['scope']);
                 $item['status'] = intval($value['status']);
-                $item['process'] = intval($value['process']);
+                $item['process'] = intval($value['job_process']);
                 $item['downloadAddr'] = $value['job_result_file'];
 
                 $custom_start_time = intval($value['custom_start_time']);
