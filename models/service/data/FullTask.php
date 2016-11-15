@@ -49,10 +49,14 @@ class Service_Data_FullTask
      * @return mixed
      * @throws Exception
      */
-    public function getUidTaskCount($uid)
+    public function getUidTaskCount($uid,$status=null)
     {
         //查询条件
         $condition = array('uid='=>$uid);
+        if(isset($status))
+        {
+            $condition['status='] = $status;
+        }
         $ret = $this->sdm->selectCount($this->table,$condition);
         return $ret;
     }

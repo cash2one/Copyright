@@ -61,7 +61,7 @@ class Service_Page_FullTask
     public function getJobs($uid,$pageIndex,$pageCount,$status=null)
     {
         //先要拉取个count ， 这个用户曾经提交了多少个job
-        $count = $this->sdf->getUidTaskCount($uid);
+        $count = $this->sdf->getUidTaskCount($uid,$status);
 
         if($count === false)
         {
