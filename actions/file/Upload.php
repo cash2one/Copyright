@@ -12,15 +12,14 @@
  * @brief 
  *  
  **/
-class Action_Upload extends Ap_Action_Abstract
+class Action_Upload extends Service_Action_Abstract
 {
     /**
     * @param :
     * @return :
     * */
-    public function execute()
+    public function invoke()
     {
-        $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
 
@@ -29,7 +28,7 @@ class Action_Upload extends Ap_Action_Abstract
         $ret['fileId'] = '';
 
         $arrFileInfo=array();
-        //�ϴ��ļ������ơ����͡���С����ʱ�ļ����ơ��ϴ����̴����
+        //上传文件的名称、类型、大小、临时文件名称、上传过程错误号
         $arrFileInfo['name'] = $_FILES["file"]["name"];
         $arrFileInfo['type'] = $_FILES["file"]["type"];
         $arrFileInfo['size'] = round( ($_FILES["file"]["size"] / 1024),3);//0.001kb
@@ -37,13 +36,22 @@ class Action_Upload extends Ap_Action_Abstract
         $arrFileInfo['errno'] = $_FILES["file"]["error"] ;
         $arrInput['fileInfo'] = $arrFileInfo;
 
-        $content = get_file_contents($arrFileInfo['temp']);
-        $allRight = new Service_Copyright_FileContentCheck();
-        if ($allRight->Check($content))
+        $content = get_file_contents($arrFileInfo['temp']); //文件内容
+        $scf = new Service_Copyright_File();
+        if ($scf->Check($content))
         {
-            $ret['fileId'] = $this->genFileId($content);
+            $fileId = $this->genFileId($content);
+            if($scf->save2Local($fileId,$content))
+            {
+                $ret = array('errno'=>0,'fileId'=>$fileId);
+            }
+            else
+            {
+                //文件存储失败
+                $ret = array('errno'=>-1,'fileId'=>$fileId,'message'=>sprintf('save file %s failed',$fileId));
+            }
         }
-        return $ret;
+        $this->jsonResponse($ret);
     }
 
     /**

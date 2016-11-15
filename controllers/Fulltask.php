@@ -4,7 +4,7 @@
  * @desc 主控制器,也是默认控制器
  * @author iknow@baidu.com
  */
-class Controller_FastTask extends Ap_Controller_Abstract {
+class Controller_FullTask extends Ap_Controller_Abstract {
 	public $actions = array(
         'init' => 'actions/fullTask/Init.php',
         'submit' => 'actions/fullTask/Submit.php',
