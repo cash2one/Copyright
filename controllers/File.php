@@ -7,5 +7,6 @@
 class Controller_File extends Ap_Controller_Abstract {
 	public $actions = array(
         'upload' => 'actions/file/Upload.php',
+		'download'=>'actions/file/Download.php',
 	);
 }

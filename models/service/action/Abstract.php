@@ -103,6 +103,37 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     }
 
     /**
+     * @param $filePath
+     * @return
+     */
+    public function downloadFileResponse($filePath)
+    {
+        if(!file_exists($filePath))
+        {
+            $ret = array('errno'=>-1,'message'=>'not found this file!');
+            $this->jsonResponse($ret);
+            return;
+        }
+        $temp = pathinfo($filePath);
+        $fileName = $temp['basename'];
+        $fileSize=filesize($filePath);
+        Header("Content-type: application/octet-stream");
+        Header("Accept-Ranges: bytes");
+        Header("Accept-Length:".$fileSize);
+        Header("Content-Disposition: attachment; filename=".$fileName);
+        $buffer = 1024;
+        $fileCount=0;
+        //向浏览器返回数据
+        $fp = fopen($filePath,"r");
+        while(!feof($fp) && $fileCount<$fileSize){
+            $stream = fread($fp,$buffer);
+            $fileCount += $buffer;
+            echo $stream;
+        }
+        fclose($fp);
+    }
+
+    /**
      * @param $sourceStr
      * @return string
      */

@@ -27,18 +27,19 @@ class Service_Page_FullTask
     /**
      * @param $jobid
      * @param $uid
-     * @param $file
+     * @param $fileId
+     * @param $fileName
      * @param $mode
      * @param $type
      * @param $scope
      * @param int $custom_start_time 默认0 表示没有起始时间
      * @param int $custom_end_time 默认0表示没自定义的时间是当前时间
-     * @return
+     * @return bool
      */
     public function createJob($jobid,$uid,$fileId,$fileName,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
     {
         //构造row数据
-        $row = array('jobid'=>$jobid,'uid'=>$uid,'fileId'=>$fileId,'fileName'=>$fileName,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
+        $row = array('jobid'=>$jobid,'uid'=>$uid,'file_id'=>$fileId,'file_name'=>$fileName,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
         if($custom_start_time != 0)
         {
             $row['custom_start_time'] = $custom_start_time;
@@ -82,8 +83,8 @@ class Service_Page_FullTask
                 $item = array('jobid' => $value['jobid']);
                 //全量任务对应的文件名字
                 $item['sourceFile'] = $value['file_name'];
-                //全量任务对应的文件服务器的路径
-                $tiem['sourceFileServerPath'] = Service_Copyright_File::getFullTaskPath().'/'.$item['file_id'].'/'.$value['file_name'];
+                //全量任务对应的文件服务器的相对路径
+                $item['sourceFileServerPath'] = $value['file_id'].'/'.$value['file_name'];
                 $item['createTime'] = intval($value['create_time']);
                 $item['mode'] = intval($value['mode']);
                 //当mode=0，即标题类的时候， 才有范围的说法

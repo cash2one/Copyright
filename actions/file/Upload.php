@@ -14,7 +14,6 @@
  **/
 class Action_Upload extends Service_Action_Abstract
 {
-    const FOLDER = 'FullTask';
     /**
     * @param :
     * @return :
