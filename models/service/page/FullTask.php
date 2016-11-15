@@ -35,10 +35,10 @@ class Service_Page_FullTask
      * @param int $custom_end_time 默认0表示没自定义的时间是当前时间
      * @return
      */
-    public function createJob($jobid,$uid,$file,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
+    public function createJob($jobid,$uid,$fileId,$fileName,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
     {
         //构造row数据
-        $row = array('jobid'=>$jobid,'uid'=>$uid,'file'=>$file,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
+        $row = array('jobid'=>$jobid,'uid'=>$uid,'fileId'=>$fileId,'fileName'=>$fileName,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
         if($custom_start_time != 0)
         {
             $row['custom_start_time'] = $custom_start_time;
@@ -72,14 +72,18 @@ class Service_Page_FullTask
 
         if($count > 0)
         {
-            $fields = array('jobid','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
+            $fields = array('jobid','file_id','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
             $index = $pageCount*($pageIndex-1);
             $limit = $pageCount;
             $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
             $result = array();
-            //格式化数据
+            //格式化数据,从数据库到对象
             foreach($ret as $index=>$value) {
                 $item = array('jobid' => $value['jobid']);
+                //全量任务对应的文件名字
+                $item['sourceFile'] = $value['file_name'];
+                //全量任务对应的文件服务器的路径
+                $tiem['sourceFileServerPath'] = Service_Copyright_File::getFullTaskPath().'/'.$item['file_id'].'/'.$value['file_name'];
                 $item['createTime'] = intval($value['create_time']);
                 $item['mode'] = intval($value['mode']);
                 //当mode=0，即标题类的时候， 才有范围的说法

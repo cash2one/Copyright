@@ -14,12 +14,21 @@
  **/
 class Service_Copyright_File
 {
-    const UPLOAD_FOLDER = 'upload';
+    const FULLTASK_FOLDER = 'FullTask';
     const FILE = 'file';
     const MAX_SIZE = 100000; //限制文件上传字节数
 
     protected $allowType = array('txt');
     protected $errmsg;
+
+    /**
+     * @param
+     * @return string
+     */
+    public static function getFullTaskPath()
+    {
+        return DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::FULLTASK_FOLDER;
+    }
 
     /**
     * @param :

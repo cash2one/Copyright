@@ -26,7 +26,7 @@ class Action_Upload extends Service_Action_Abstract
         if($checkRet === true)
         {
             $fileId = $this->genFileId();
-            $parentFolder = DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::FOLDER.'/'.$fileId;
+            $parentFolder = Service_Copyright_File::getFullTaskPath().'/'.$fileId;
             if($scf->save2Local($parentFolder))
             {
                 $ret = array('errno'=>0,'fileId'=>$fileId);

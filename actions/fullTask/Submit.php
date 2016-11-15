@@ -32,6 +32,25 @@ class Action_Submit extends Service_Action_Abstract
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $fileId = $httpPost['fileId'];
+        //根据fileId， 获取对应路径下的文件名， 这个文件是全量任务要用到的用户上传的文件
+        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $fileId;
+        if (is_dir($parentFolder)) {
+            $files = glob($parentFolder . '/*.*');
+            if (count($files) == 1) {
+                //如果在当前路径下只有一个文件， 说明没有问题，获取文件名
+                $temp = pathinfo($files[0]);
+                $fileName = $temp['basename']; //在这里获取到文件名字
+            } else {
+                $ret = array('errno' => -1, 'message' => sprintf('[path]%s contain more than one file!', $parentFolder));
+                $this->jsonResponse($ret);
+                return;
+            }
+        } else {
+            $ret = array('errno' => -1, 'message' => sprintf('no found the path of %s', $parentFolder));
+            $this->jsonResponse($ret);
+            return;
+        }
+
         //默认用户自定的时间，起始时间和终止时间都是0
         $custom_start_time = 0;
         $custom_end_time = 0;
@@ -42,34 +61,33 @@ class Action_Submit extends Service_Action_Abstract
 
         //这是寅生写的生成jobid的方法
         $jobId = $this->genJobId(
+            $this->getUid(),
+            $fileId,
+            $fileName,
             $mode,
             $type,
             $scope,
-            $fileId,
-            intval($httpPost['fullTime']),
             $custom_start_time,
-            $custom_end_time,
-            $this->uid);
+            $custom_end_time
+         );
 
-        // sumbit a new job here
+        // submit a new job here
         $obj = new Service_Page_FullTask();
         $createJobCount = $obj->createJob(
             $jobId,
             $this->getUid(),
             $fileId,
+            $fileName,
             $mode,
             $type,
             $scope,
             $custom_start_time,
             $custom_end_time
         );
-        if($createJobCount == 1)
-        {
-            $ret =array('errno'=>0,'jobId'=>$jobId);
-        }
-        else
-        {
-            $ret = array('errno'=>-1,'message'=>'create job failed!');
+        if ($createJobCount == 1) {
+            $ret = array('errno' => 0, 'jobId' => $jobId);
+        } else {
+            $ret = array('errno' => -1, 'message' => 'create job failed!');
         }
         $this->jsonResponse($ret);
     }
@@ -79,21 +97,21 @@ class Action_Submit extends Service_Action_Abstract
      * @return :
      * */
     public function genJobId(
+        $uid,
+        $fileId,
+        $sourceFile,
         $mode,
         $type,
         $scope,
-        $fileId,
-        $fullTime,
         $startTime,
-        $endTime,
-        $uid)
+        $endTime)
     {
         $str = "uid:$uid ";
+        $str .= "fileId:$fileId ";
+        $str .= "sourceFile:$sourceFile";
         $str .= "mode:$mode ";
         $str .= "type:$type ";
         $str .= "scope:$scope ";
-        $str .= "fileId:$fileId ";
-        $str .= "fullTime:$fullTime ";
         $str .= "startTime:$startTime ";
         $str .= "endTime:$endTime";
         $jobId = md5($str);
