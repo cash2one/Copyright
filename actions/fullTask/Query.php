@@ -21,14 +21,18 @@ class Action_Query extends Service_Action_Abstract
     public function invoke()
     {
         $request = Saf_SmartMain::getCgi();
-        $httpPost = $request['post'];
-        $pageIndex = intval($httpPost['pageIndex']);
-        $pageCount = intval($httpPost['pageCount']);
+        $httpGet = $request['get'];
+        $pageIndex = intval($httpGet['pageIndex']);
+        $pageCount = intval($httpGet['pageCount']);
+        if(isset($httpGet['status']))
+        {
+            $status = intval($httpGet['status']);
+        }
         $uid = $this->getUid();
 
         // get jobs from mysql deps on uid, pageIndex, pageCount
         $obj = new Service_Page_FullTask();
-        $ret = $obj->getJobs($uid, $pageIndex, $pageCount);
+        $ret = $obj->getJobs($uid, $pageIndex, $pageCount,$status);
         $this->jsonResponse($ret);
     }
 } 

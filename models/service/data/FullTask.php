@@ -59,19 +59,27 @@ class Service_Data_FullTask
 
     /**
      * @param $fields
+     * @param $uid
      * @param $startIndex
      * @param $number
+     * @param null $status
      * @return mixed
      * @throws Exception
      */
-    public function select($fields,$startIndex,$number)
+    public function select($fields,$uid,$startIndex,$number,$status = null)
     {
+        //初始化查询条件
+        $condition = array('uid='=>$uid);
+        if(isset($status))
+        {
+            $condition['status='] = $status;
+        }
         //order & limit
         $order = "order by create_time DESC";
         $limit = "limit $startIndex,$number";
         $appends = array($order,$limit);
 
-        $ret = $this->sdm->select($this->table,$fields,null,null,$appends);
+        $ret = $this->sdm->select($this->table,$fields,$condition,null,$appends);
         return $ret;
     }
 

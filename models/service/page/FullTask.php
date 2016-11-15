@@ -58,7 +58,7 @@ class Service_Page_FullTask
      * @param $pageCount
      * @return
      */
-    public function getJobs($uid,$pageIndex,$pageCount)
+    public function getJobs($uid,$pageIndex,$pageCount,$status=null)
     {
         //先要拉取个count ， 这个用户曾经提交了多少个job
         $count = $this->sdf->getUidTaskCount($uid);
@@ -75,15 +75,19 @@ class Service_Page_FullTask
             $fields = array('jobid','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
             $index = $pageCount*($pageIndex-1);
             $limit = $pageCount;
-            $ret = $this->sdf->select($fields,$index,$limit);
+            $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
             $result = array();
             //格式化数据
             foreach($ret as $index=>$value) {
                 $item = array('jobid' => $value['jobid']);
                 $item['createTime'] = intval($value['create_time']);
                 $item['mode'] = intval($value['mode']);
+                //当mode=0，即标题类的时候， 才有范围的说法
+                if($item['mode'] == 0)
+                {
+                    $item['scope'] = intval($value['scope']);
+                }
                 $item['type'] = intval($value['type']);
-                $item['scope'] = intval($value['scope']);
                 $item['status'] = intval($value['status']);
                 $item['process'] = intval($value['job_process']);
                 $item['downloadAddr'] = $value['job_result_file'];
@@ -92,8 +96,8 @@ class Service_Page_FullTask
                 $custom_end_time = intval($value['custom_end_time']);
                 //有用户自定义时间的那种
                 if ($custom_start_time > 0 && $custom_end_time > 0) {
-                    $item['startTime'] = $custom_start_time;
-                    $item['endTime'] = $custom_end_time;
+                    $item['startDate'] = $custom_start_time;
+                    $item['endDate'] = $custom_end_time;
                 } else {
                     $item['fullTime'] = 1;  //全量任务的那种
                 }

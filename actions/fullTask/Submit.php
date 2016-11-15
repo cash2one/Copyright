@@ -36,8 +36,8 @@ class Action_Submit extends Service_Action_Abstract
         $custom_start_time = 0;
         $custom_end_time = 0;
         if (empty($httpPost['fullTime'])) {
-            $custom_start_time = isset($httpPost['startTime']) ? $httpPost['startTime'] : 0;
-            $custom_end_time = isset($httpPost['endTime']) ? $httpPost['endTime'] : 0;
+            $custom_start_time = isset($httpPost['startDate']) ? $httpPost['startDate'] : 0;
+            $custom_end_time = isset($httpPost['endDate']) ? $httpPost['endDate'] : 0;
         }
 
         //这是寅生写的生成jobid的方法
@@ -53,7 +53,7 @@ class Action_Submit extends Service_Action_Abstract
 
         // sumbit a new job here
         $obj = new Service_Page_FullTask();
-        $ret = $obj->createJob(
+        $createJobCount = $obj->createJob(
             $jobId,
             $this->getUid(),
             $fileId,
@@ -63,6 +63,14 @@ class Action_Submit extends Service_Action_Abstract
             $custom_start_time,
             $custom_end_time
         );
+        if($createJobCount == 1)
+        {
+            $ret =array('errno'=>0,'jobId'=>$jobId);
+        }
+        else
+        {
+            $ret = array('errno'=>-1,'message'=>'create job failed!');
+        }
         $this->jsonResponse($ret);
     }
 
