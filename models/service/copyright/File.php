@@ -77,7 +77,7 @@ class Service_Copyright_File
         $tmpFile = $_FILES["file"]["tmp_name"];
         if(!empty($tmpFile) &&  !empty($newFileName) )
         {
-            $parentFolderPath= DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::FOLDER;
+            $parentFolderPath= DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::UPLOAD_FOLDER;
             $this->beddingDir($parentFolderPath);
             $localFilePath = $parentFolderPath.'/'.$newFileName;
             if(@move_uploaded_file($tmpFile,$localFilePath))

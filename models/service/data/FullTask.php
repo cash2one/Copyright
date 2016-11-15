@@ -35,7 +35,7 @@ class Service_Data_FullTask
     public function insertTable($row)
     {
         //设置创建时间是当前的时间戳
-        if(!issset($row['create_time']))
+        if(!isset($row['create_time']))
         {
             $row['create_time'] = time();
         }

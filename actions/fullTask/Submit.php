@@ -55,7 +55,7 @@ class Action_Submit extends Service_Action_Abstract
         $obj = new Service_Page_FullTask();
         $ret = $obj->createJob(
             $jobId,
-            $this->uid,
+            $this->getUid(),
             $fileId,
             $mode,
             $type,
