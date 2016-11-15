@@ -1,79 +1,84 @@
 <?php
 /***************************************************************************
- * 
+ *
  * Copyright (c) 2015 Baidu.com, Inc. All Rights Reserved
- * 
+ *
  **************************************************************************/
 
 /**
  * @file Submit.php
  * @author cuiyinsheng(com@baidu.com)
  * @date 2016/11/9 15:04
- * @brief 
- *  
+ * @brief
+ *
  **/
-class Action_Submit extends Ap_Action_Abstract
+class Action_Submit extends Service_Action_Abstract
 {
-     /*
-     *
-     * mode×ÖµäÀàÐÍ: 0=±êÌâÀà, 1=ÄÚÈÝÀà
-     * type×ÖµäÀàÐÍ: 0=Ð¡Ëµ/³ö°æÎï, 1=Ó°ÊÓ¾ç£¬2=Ð¡ËµÄÚÈÝ£¬3=¶ÌÎÄÄÚÈÝ
-     * scope×ÖµäÀàÐÍ: 0=°Ù¶ÈËÑË÷½á¹û, 1=°Ù¶ÈÖªµÀÕ¾ÄÚ×ÊÔ´£¬2=°Ù¶ÈÌù°É
-     * query±íÊ¾±êÌâÄÚÈÝ
-     * text±íÊ¾ÎÄ±¾ÄÚÈÝ(½öµ±modeÀàÐÍÎªÄÚÈÝÀàÊ±Ê¹ÓÃ)
-     *
-     * */
+    /*
+    *
+    *  modeå­—å…¸ç±»åž‹: 0=æ ‡é¢˜ç±», 1=å†…å®¹ç±»
+    * typeå­—å…¸ç±»åž‹: 0=å°è¯´/å‡ºç‰ˆç‰©, 1=å½±è§†å‰§ï¼Œ2=å°è¯´å†…å®¹ï¼Œ3=çŸ­æ–‡å†…å®¹
+    * scopeå­—å…¸ç±»åž‹: 0=ç™¾åº¦æœç´¢ç»“æžœ, 1=ç™¾åº¦çŸ¥é“ç«™å†…èµ„æºï¼Œ2=ç™¾åº¦è´´å§
+    * queryè¡¨ç¤ºæ ‡é¢˜å†…å®¹
+    * textè¡¨ç¤ºæ–‡æœ¬å†…å®¹(ä»…å½“modeç±»åž‹ä¸ºå†…å®¹ç±»æ—¶ä½¿ç”¨)
+    *
+    * */
 
-    public function execute()
+    public function invoke()
     {
-        $httpGet = $_GET;
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
         $mode = $httpPost['mode'];
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $fileId = $httpPost['fileId'];
-        $fullTime = isset($httpPost['fullTime'])?$httpPost['fullTime']:0;
-        $startTime = isset($httpPost['startTime'])?$httpPost['startTime']:0;
-        $endTime = isset($httpPost['endTime'])?$httpPost['endTime']:0;
-        $uid = "xxx";
+        //é»˜è®¤ç”¨æˆ·è‡ªå®šçš„æ—¶é—´ï¼Œèµ·å§‹æ—¶é—´å’Œç»ˆæ­¢æ—¶é—´éƒ½æ˜¯0
+        $custom_start_time = 0;
+        $custom_end_time = 0;
+        if (empty($httpPost['fullTime'])) {
+            $custom_start_time = isset($httpPost['startTime']) ? $httpPost['startTime'] : 0;
+            $custom_end_time = isset($httpPost['endTime']) ? $httpPost['endTime'] : 0;
+        }
 
+        //è¿™æ˜¯å¯…ç”Ÿå†™çš„ç”Ÿæˆjobidçš„æ–¹æ³•
         $jobId = $this->genJobId(
             $mode,
             $type,
             $scope,
             $fileId,
-            $fullTime,
-            $startTime,
-            $endTime,
-            $uid);
+            intval($httpPost['fullTime']),
+            $custom_start_time,
+            $custom_end_time,
+            $this->uid);
 
         // sumbit a new job here
         $obj = new Service_Page_FullTask();
         $ret = $obj->createJob(
             $jobId,
+            $this->uid,
+            $fileId,
             $mode,
             $type,
             $scope,
-            $fileId,
-            $fullTime,
-            $startTime,
-            $endTime,
-            $uid);
+            $custom_start_time,
+            $custom_end_time
+        );
+        $this->jsonResponse($ret);
     }
+
     /**
-    * @param :
-    * @return :
-    * */
+     * @param :
+     * @return :
+     * */
     public function genJobId(
-        $mode,  
-        $type,  
-        $scope, 
-        $fileId, 
-        $fullTime, 
+        $mode,
+        $type,
+        $scope,
+        $fileId,
+        $fullTime,
         $startTime,
         $endTime,
-        $uid)  
+        $uid)
     {
         $str = "uid:$uid ";
         $str .= "mode:$mode ";
@@ -84,9 +89,9 @@ class Action_Submit extends Ap_Action_Abstract
         $str .= "startTime:$startTime ";
         $str .= "endTime:$endTime";
         $jobId = md5($str);
-        return $jobId; 
+        return $jobId;
     }
-} 
- 
- /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
- ?>
+}
+
+/* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
+?>

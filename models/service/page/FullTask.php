@@ -35,7 +35,7 @@ class Service_Page_FullTask
      * @param int $custom_end_time 默认0表示没自定义的时间是当前时间
      * @return
      */
-    public function insertTable($jobid,$uid,$file,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
+    public function createJob($jobid,$uid,$file,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
     {
         //构造row数据
         $row = array('jobid'=>$jobid,'uid'=>$uid,'file'=>$file,'mode'=>$mode,'type'=>$type,'scope'=>$scope);

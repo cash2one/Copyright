@@ -29,7 +29,7 @@ function test()
     $mode = 0;
     $type = 0;
     $scope = 0;
-    $ret = $obj->insertTable($jobid, $uid, $file, $mode, $type, $scope);
+    $ret = $obj->createJob($jobid, $uid, $file, $mode, $type, $scope);
     var_dump($ret);
 }
 

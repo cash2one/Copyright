@@ -6,6 +6,7 @@
  */
 class Controller_FastTask extends Ap_Controller_Abstract {
 	public $actions = array(
+        'init' => 'actions/fullTask/Init.php',
         'submit' => 'actions/fullTask/Submit.php',
         'query' => 'actions/fullTask/Query.php',
 	);
