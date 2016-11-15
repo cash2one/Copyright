@@ -20,6 +20,29 @@ class Action_Upload extends Service_Action_Abstract
     * */
     public function invoke()
     {
+        $ret = array();
+        $scf = new Service_Copyright_File();
+        $checkRet = $scf->Check();
+        if($checkRet === true)
+        {
+            $content = get_file_contents($_FILES["file"]["tmp_name"]);
+            $fileId = $this->genFileId($content);
+            if($scf->save2Local($fileId))
+            {
+                $ret = array('errno'=>0,'fileId'=>$fileId);
+            }
+            else
+            {
+                $ret = array('errno'=>0,'fileId'=>$fileId,'message'=>'save file failed!');
+            }
+        }
+        else
+        {
+            $ret = array('errno'=>-1,'message'=>$checkRet);
+        }
+        $this->jsonResponse($ret);
+
+        /*
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
 
@@ -52,6 +75,7 @@ class Action_Upload extends Service_Action_Abstract
             }
         }
         $this->jsonResponse($ret);
+        */
     }
 
     /**
