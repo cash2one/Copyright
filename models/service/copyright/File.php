@@ -51,7 +51,7 @@ class Service_Copyright_File
      */
     public function beddingDir($dir,$mode=0777)
     {
-        return is_dir($dir) or (self::beddingDir(dirname($dir)) and mkdir($dir,$mode));
+        return is_dir($dir) || (self::beddingDir(dirname($dir)) && mkdir($dir,$mode));
     }
 
 
