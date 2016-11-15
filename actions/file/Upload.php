@@ -14,20 +14,20 @@
  **/
 class Action_Upload extends Service_Action_Abstract
 {
+    const FOLDER = 'FullTask';
     /**
     * @param :
     * @return :
     * */
     public function invoke()
     {
-        $ret = array();
         $scf = new Service_Copyright_File();
-        $checkRet = $scf->Check();
+        $checkRet = $scf->check();
         if($checkRet === true)
         {
-            $content = get_file_contents($_FILES["file"]["tmp_name"]);
-            $fileId = $this->genFileId($content);
-            if($scf->save2Local($fileId))
+            $fileId = $this->genFileId();
+            $parentFolder = DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::FOLDER.'/'.$fileId;
+            if($scf->save2Local($parentFolder))
             {
                 $ret = array('errno'=>0,'fileId'=>$fileId);
             }
@@ -42,49 +42,19 @@ class Action_Upload extends Service_Action_Abstract
         }
         $this->jsonResponse($ret);
 
-        /*
-        $request = Saf_SmartMain::getCgi();
-        $httpPost = $request['post'];
-
-        $ret['errno'] = 0;
-        $ret['message'] = '';
-        $ret['fileId'] = '';
-
-        $arrFileInfo=array();
-        //上传文件的名称、类型、大小、临时文件名称、上传过程错误号
-        $arrFileInfo['name'] = $_FILES["file"]["name"];
-        $arrFileInfo['type'] = $_FILES["file"]["type"];
-        $arrFileInfo['size'] = round( ($_FILES["file"]["size"] / 1024),3);//0.001kb
-        $arrFileInfo['temp'] = $_FILES["file"]["tmp_name"];
-        $arrFileInfo['errno'] = $_FILES["file"]["error"] ;
-        $arrInput['fileInfo'] = $arrFileInfo;
-
-        $content = get_file_contents($arrFileInfo['temp']); //文件内容
-        $scf = new Service_Copyright_File();
-        if ($scf->Check($content))
-        {
-            $fileId = $this->genFileId($content);
-            if($scf->save2Local($fileId,$content))
-            {
-                $ret = array('errno'=>0,'fileId'=>$fileId);
-            }
-            else
-            {
-                //文件存储失败
-                $ret = array('errno'=>-1,'fileId'=>$fileId,'message'=>sprintf('save file %s failed',$fileId));
-            }
-        }
-        $this->jsonResponse($ret);
-        */
     }
 
     /**
     * @param:
     * @return :
     * */
-    public function genFileId($content)
+    public function genFileId()
     {
-        return md5($content);
+        //从临时文件中获取文件1k字节的内容
+        $content = file_get_contents($_FILES[Service_Copyright_File::FILE]["tmp_name"],0,null,0,1024);
+        $temp = 'content'.$content;
+        $temp .= 'time'.time();
+        return md5($temp);
     }
 } 
  

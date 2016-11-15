@@ -15,16 +15,17 @@
 class Service_Copyright_File
 {
     const UPLOAD_FOLDER = 'upload';
+    const FILE = 'file';
     const MAX_SIZE = 100000; //限制文件上传字节数
 
-    protected $allowType = array('txt','jpg','php');
+    protected $allowType = array('txt');
     protected $errmsg;
 
     /**
     * @param :
     * @return :
     * */
-    function Check()
+    function check()
     {
         if($this->checkFileType() && $this->checkFileSize())
         {
@@ -40,13 +41,14 @@ class Service_Copyright_File
     private function checkFileType()
     {
         //file extension
-        $extension = pathinfo($_FILES["file"]["size"]['name'], PATHINFO_EXTENSION);
-        $extension = strtolower($extension);
+        $temp = explode(".",$_FILES[self::FILE]['name']);
+        $extension = end($temp);
+        $extension = empty($extension)?'':strtolower($extension);
         if(in_array($extension,$this->allowType))
         {
             return true;
         }
-        $this->errmsg = sprintf('[file extension]%s is not support!',$extension);
+        $this->errmsg = sprintf('[file extension]%s, this is not support,suggest file extension be %s !',$extension,implode(',',$this->allowType));
         return false;
     }
 
@@ -56,7 +58,7 @@ class Service_Copyright_File
      */
     private function checkFileSize()
     {
-        //file sieze
+        //file size
         $size = $_FILES["file"]["size"];
         if($size <= self::MAX_SIZE)
         {
@@ -72,22 +74,21 @@ class Service_Copyright_File
      * @param $content
      * @return bool
      */
-    public function save2Local($newFileName)
+    public function save2Local($parentFolder)
     {
-        $tmpFile = $_FILES["file"]["tmp_name"];
-        if(!empty($tmpFile) &&  !empty($newFileName) )
+        $tmpFile = $_FILES[self::FILE]["tmp_name"];
+        $newFile = $parentFolder.'/'.$_FILES[self::FILE]["name"];
+        if(!empty($tmpFile) &&  !empty($newFile) )
         {
-            $parentFolderPath= DATA_PATH.'/app/'.Bd_AppEnv::getCurrApp().'/'.self::UPLOAD_FOLDER;
-            $this->beddingDir($parentFolderPath);
-            $localFilePath = $parentFolderPath.'/'.$newFileName;
-            if(@move_uploaded_file($tmpFile,$localFilePath))
+            $this->beddingDir($parentFolder);
+            if(@move_uploaded_file($tmpFile,$newFile))
             {
                 return true;
             }
-            Bd_Log::warning(sprintf('move file %s failed',$tmpFile));
+            Bd_Log::warning(sprintf('move file from %s to %s failed!',$tmpFile,$newFile));
             return false;
         }
-        Bd_Log::wanring(sprintf('[newFileName]%s or [tmpFile] is empty!',$newFileName));
+        Bd_Log::wanring(sprintf('[tmpFile]%s or [newFile] is empty!',$tmpFile,$newFile));
         return false;
     }
 
