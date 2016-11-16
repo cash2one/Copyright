@@ -22,8 +22,14 @@ class Action_Download extends Service_Action_Abstract
     {
         $httpGet = $_GET;
         $salt = $httpGet['salt'];
-        $fileName = $httpGet['fileName'];
+        $fileName = $httpGet['file'];
         $fileName = $this->iconvutf8($fileName);
+
+        if(empty($salt))
+        {
+            $salt = 'sample'; //如果没有指定salt ， 说明是全量检索的样板文件下载， 地址是放在sample里的
+        }
+
         $filePath = Service_Copyright_File::getFullTaskPath().'/'.$salt.'/'.$fileName;
         $this->downloadFileResponse($filePath);
 

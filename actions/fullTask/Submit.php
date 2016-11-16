@@ -14,16 +14,13 @@
  **/
 class Action_Submit extends Service_Action_Abstract
 {
-    /*
-    *
-    *  mode字典类型: 0=标题类, 1=内容类
-    * type字典类型: 0=小说/出版物, 1=影视剧，2=小说内容，3=短文内容
-    * scope字典类型: 0=百度搜索结果, 1=百度知道站内资源，2=百度贴吧
-    * query表示标题内容
-    * text表示文本内容(仅当mode类型为内容类时使用)
-    *
-    * */
-
+    /**
+     *  mode字典类型: 0=标题类, 1=内容类
+     * type字典类型: 0=小说/出版物, 1=影视剧，2=小说内容，3=短文内容
+     * scope字典类型: 0=百度搜索结果, 1=百度知道站内资源，2=百度贴吧
+     * query表示标题内容
+     * text表示文本内容(仅当mode类型为内容类时使用)
+     */
     public function invoke()
     {
         $request = Saf_SmartMain::getCgi();
@@ -32,6 +29,11 @@ class Action_Submit extends Service_Action_Abstract
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $salt = $httpPost['salt'];
+        if (empty($salt)) {
+            $ret = array('errno' => -1, 'message' => 'please provide the salt!');
+            $this->jsonResponse($ret);
+            return;
+        }
         //根据fileId， 获取对应路径下的文件名， 这个文件是全量任务要用到的用户上传的文件
         $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
         if (is_dir($parentFolder)) {
@@ -69,7 +71,7 @@ class Action_Submit extends Service_Action_Abstract
             $scope,
             $custom_start_time,
             $custom_end_time
-         );
+        );
 
         // submit a new job here
         $obj = new Service_Page_FullTask();

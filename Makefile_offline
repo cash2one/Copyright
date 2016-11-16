@@ -46,6 +46,8 @@ cp -r $OUT_PUT/actions $OUT_PUT/Bootstrap.php $OUT_PUT/controllers $OUT_PUT/libr
 
 #配置文件拷贝
 cp -r $OUT_PUT/conf/copyright/* $CONF_PATH
+#数据文件拷贝
+cp -r $OUT_PUT/data/app/copyright/* $DATA_PATH
 #webroot index 文件
 cp -r $OUT_PUT/index.php $WEBROOT_PATH
 #api 文件
