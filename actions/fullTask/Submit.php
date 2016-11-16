@@ -31,9 +31,9 @@ class Action_Submit extends Service_Action_Abstract
         $mode = $httpPost['mode'];
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
-        $fileId = $httpPost['fileId'];
+        $salt = $httpPost['salt'];
         //根据fileId， 获取对应路径下的文件名， 这个文件是全量任务要用到的用户上传的文件
-        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $fileId;
+        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
         if (is_dir($parentFolder)) {
             $files = glob($parentFolder . '/*.*');
             if (count($files) == 1) {
@@ -62,7 +62,7 @@ class Action_Submit extends Service_Action_Abstract
         //这是寅生写的生成jobid的方法
         $jobId = $this->genJobId(
             $this->getUid(),
-            $fileId,
+            $salt,
             $fileName,
             $mode,
             $type,
@@ -76,7 +76,7 @@ class Action_Submit extends Service_Action_Abstract
         $createJobCount = $obj->createJob(
             $jobId,
             $this->getUid(),
-            $fileId,
+            $salt,
             $fileName,
             $mode,
             $type,
@@ -98,7 +98,7 @@ class Action_Submit extends Service_Action_Abstract
      * */
     public function genJobId(
         $uid,
-        $fileId,
+        $salt,
         $sourceFile,
         $mode,
         $type,
@@ -107,7 +107,7 @@ class Action_Submit extends Service_Action_Abstract
         $endTime)
     {
         $str = "uid:$uid ";
-        $str .= "fileId:$fileId ";
+        $str .= "salt:$salt ";
         $str .= "sourceFile:$sourceFile";
         $str .= "mode:$mode ";
         $str .= "type:$type ";

@@ -27,7 +27,7 @@ class Service_Page_FullTask
     /**
      * @param $jobid
      * @param $uid
-     * @param $fileId
+     * @param $salt
      * @param $fileName
      * @param $mode
      * @param $type
@@ -36,10 +36,10 @@ class Service_Page_FullTask
      * @param int $custom_end_time 默认0表示没自定义的时间是当前时间
      * @return bool
      */
-    public function createJob($jobid,$uid,$fileId,$fileName,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
+    public function createJob($jobid,$uid,$salt,$fileName,$mode,$type,$scope,$custom_start_time=0,$custom_end_time=0)
     {
         //构造row数据
-        $row = array('jobid'=>$jobid,'uid'=>$uid,'file_id'=>$fileId,'file_name'=>$fileName,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
+        $row = array('jobid'=>$jobid,'uid'=>$uid,'salt'=>$salt,'file_name'=>$fileName,'mode'=>$mode,'type'=>$type,'scope'=>$scope);
         if($custom_start_time != 0)
         {
             $row['custom_start_time'] = $custom_start_time;
@@ -73,7 +73,7 @@ class Service_Page_FullTask
 
         if($count > 0)
         {
-            $fields = array('jobid','file_id','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
+            $fields = array('jobid','salt','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
             $index = $pageCount*($pageIndex-1);
             $limit = $pageCount;
             $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
@@ -84,7 +84,7 @@ class Service_Page_FullTask
                 //全量任务对应的文件名字
                 $item['sourceFile'] = $value['file_name'];
                 //全量任务对应的文件服务器的相对路径
-                $item['sourceFileServerPath'] = $value['file_id'].'/'.$value['file_name'];
+                $item['sourceFileServerPath'] = $value['salt'].'/'.$value['file_name'];
                 $item['createTime'] = intval($value['create_time']);
                 $item['mode'] = intval($value['mode']);
                 //当mode=0，即标题类的时候， 才有范围的说法

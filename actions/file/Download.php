@@ -21,10 +21,10 @@ class Action_Download extends Service_Action_Abstract
     public function invoke()
     {
         $httpGet = $_GET;
-        $fileId = $httpGet['fileId'];
+        $salt = $httpGet['salt'];
         $fileName = $httpGet['fileName'];
         $fileName = $this->iconvutf8($fileName);
-        $filePath = Service_Copyright_File::getFullTaskPath().'/'.$fileId.'/'.$fileName;
+        $filePath = Service_Copyright_File::getFullTaskPath().'/'.$salt.'/'.$fileName;
         $this->downloadFileResponse($filePath);
 
     }
