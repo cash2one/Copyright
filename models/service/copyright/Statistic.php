@@ -14,10 +14,13 @@
  **/
 class Service_Copyright_Statistic
 {
-
+    /**
+     * @param
+     * @return
+     */
     public function run()
     {
-
+        return 'this is temp statistic result';
     }
 }
 

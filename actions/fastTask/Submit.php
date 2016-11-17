@@ -28,8 +28,17 @@ class Action_Submit extends Service_Action_Abstract
     {
         $request = Saf_SmartMain::getCgi();
         $httpPost = $request['post'];
-        $mode = $httpPost['mode'];
+
+        //如果query都没有设置，那就不需要进行后续的步骤了
+        if(!isset($httpPost['query']))
+        {
+            $ret = array('errno'=>-1,'message'=>'no query provide, please input query!');
+            $this->jsonResponse($ret);
+            return;
+        }
+
         $query = $this->iconvutf8($httpPost['query']);
+        $mode = $httpPost['mode'];
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $chapter = isset($httpPost['chapter'])?$httpPost['chapter']:"";

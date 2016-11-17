@@ -278,6 +278,7 @@ class Service_Copyright_Assign
         $param['type'] = $type;
         $param['scope'] = $scope;
         $param['query'] = $query;
+        $param['createTime'] = time();
         $field['info'] = json_encode($param);
         $obj = new Service_Copyright_HashCache();
         return $obj->write($jobId, $field);

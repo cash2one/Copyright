@@ -12,30 +12,33 @@
  * @brief 
  *  
  **/
-class Action_Query extends Ap_Action_Abstract
+class Action_Query extends Service_Action_Abstract
 {
+    public $query;
+    public $createTime;
+    public $chapter;
+    public $text;
      /*
      *  @param :
      *  @return :
      * */
 
-    public function execute()
+    public function invoke()
     {
         $httpGet = $_GET;
         $jobId = $httpGet['jobid'];
         $ret['errno'] = 0;
         $ret['message'] = '';
         $ret['jobid'] = $httpGet['jobid'];
+        //这个地方应该是寅生加的， 根据jobid 其实可以从redis取出来的， 不过传过来也行
         $ret['mode'] = $httpGet['mode'];
         $ret['type'] = $httpGet['type'];
         $ret['scope'] = $httpGet['scope'];
-        $jobId = $httpGet['jobid'];
         $mode = $ret['mode'];
         $type = $ret['type'];
         $scope = $ret['scope'];
         $ret['result'] = array();
 
-        header('Content-type:application/json');
         $caseNum = 100;
         if ($mode == 0 && $scope == 0)
         {
@@ -56,31 +59,30 @@ class Action_Query extends Ap_Action_Abstract
         }   
         $hashCache = new Service_Copyright_HashCache();
         $retCache = $hashCache->read($jobId, $fields);
-        // redis����ʧ��
+        // redis访问失败
         if ($retCache === false || $retCache['err_no'] != 0)
         {
             $ret['errno'] = 1;
             $ret['message'] = "visit cache fail!";
-            echo json_encode($ret);
+            $this->jsonResponse($ret);
         }
-        // ���ʵ�jobid������
+        // 没查询到jobid
         else if (empty($retCache['ret']["$jobId"]))
         {
             $ret['errno'] = 2;
             $ret['message'] = "jobid = $jobId doesn't exist!";
-            echo json_encode($ret);
+            $this->jsonResponse($ret);
         }
         else if (!isset($retCache['ret']["$jobId"]['info']) ||
                  empty($retCache['ret']["$jobId"]['info']))
         {
             $ret['errno'] = 3;
             $ret['message'] = "job info miss!";
-            echo json_encode($ret);
+            $this->jsonResponse($ret);
         }
         else
         {
-            // ĳ���±겻���ڻ���Ϊ�ո�����������false
-            $miss = false;
+            // 将redis中缓存的数据打到返回结果里面
             for ($i = 0; $i < $caseNum; ++$i)
             {
                 if (!isset($retCache['ret']["$jobId"][$i]) || 
@@ -88,13 +90,44 @@ class Action_Query extends Ap_Action_Abstract
                 {
                     $ret['errno'] = 4;
                     $ret['message'] = "cache index = $i miss";
-                    $miss = true;
                     break;
                 }
                 $ret['result'][] = json_decode($retCache['ret']["$jobId"][$i], true);
             }
-            echo json_encode($ret);
+
+
+            $this->processInfo($retCache['ret']["$jobId"]['info']);
+            $ret['query'] = $this->query;
+            $this->jsonResponse($ret); //给前端返回， 并断开连接
+
+            //就是这里， 要添加数据分析那结果，要入库mysql
+            $scs = new Service_Copyright_Statistic();
+            $statisticRet = $scs->run($ret['result']);
+            $status = 3; //status=3 表示任务完成
+            $spf = new Service_Page_FastTask();
+            $spf->createJob($jobId,$this->getUid(),$this->query,$mode,$type,$scope,$this->createTime,$statisticRet,$status,$this->chapter,$this->text);
+
         }
+    }
+
+    /**
+     * @param $infoJsonString
+     * @return
+     */
+    private function processInfo($infoJsonString)
+    {
+        $infoArr = json_decode($infoJsonString,true);
+        $this->query = $infoArr['query'];
+        $this->createTime = $infoArr['createTime'];
+        if(!empty($infoArr['chapter']))
+        {
+            $this->chapter = $infoArr['chapter'];
+        }
+        if(!empty($infoArr['text']))
+        {
+            $this->text = $infoArr['text'];
+        }
+        return;
     }
 } 
  
