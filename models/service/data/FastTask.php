@@ -26,6 +26,20 @@ class Service_Data_FastTask
         }
 
     }
+
+    /**
+     * @param $jobid
+     * @return mixed
+     * @throws Exception
+     */
+    public function getJobIdCount($jobid)
+    {
+        //查询条件
+        $condition = array('jobid='=>$jobid);
+        $ret = $this->sdm->selectCount($this->table,$condition);
+        return $ret;
+    }
+
     /**
      * @param $row
      * @return bool

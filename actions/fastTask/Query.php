@@ -100,13 +100,11 @@ class Action_Query extends Service_Action_Abstract
             $ret['query'] = $this->query;
             $this->jsonResponse($ret); //给前端返回， 并断开连接
 
-            //就是这里， 要添加数据分析那结果，要入库mysql
-            $scs = new Service_Copyright_Statistic();
-            $statisticRet = $scs->run($ret['result']);
-            $status = 3; //status=3 表示任务完成
+            //就是这里， 要添加数据分析结果，要入库mysql
+
             $spf = new Service_Page_FastTask();
-            $spf->createJob($jobId,$this->getUid(),$this->query,$mode,$type,$scope,$this->createTime,$statisticRet,$status,
-                json_encode($ret['result']),
+            $spf->saveJob($jobId,$this->getUid(),$this->query,$mode,$type,$scope,$this->createTime,
+                $ret['result'],
                 $this->chapter,$this->text);
 
         }

@@ -36,30 +36,44 @@ class Service_Page_FastTask
      * @param $type
      * @param $scope
      * @param $createTime
+     * @param null $jobResult
      * @param null $chapter
      * @param null $text
-     * @return mixed
+     * @return bool
      */
-    public function createJob($jobid,$uid,$query,$mode,$type,$scope,$createTime,$jobStatistic,$status,$jobResult=null,$chapter=null,$text=null)
+    public function saveJob($jobid,$uid,$query,$mode,$type,$scope,$createTime,$jobResult=null,$chapter=null,$text=null)
     {
-        //构造row数据
-        $row = array('jobid'=>$jobid,'uid'=>$uid,'query'=>$query,'mode'=>$mode,'type'=>$type,'scope'=>$scope,'create_time'=>$createTime);
-        $row['job_stat'] = $jobStatistic;
-        $row['status'] = $status;
-        if(!empty($jobResult))
+        //是否有必要进行存储
+        $count = $this->sdf->getJobIdCount($jobid);
+        if($count == 0)
         {
-            $row['job_result'] = $jobResult;
+            $scs = new Service_Copyright_Statistic();
+            $jobStat = $scs->run($jobResult); //统计结果
+
+            //构造row数据
+            $row = array('jobid'=>$jobid,'uid'=>$uid,'query'=>$query,'mode'=>$mode,'type'=>$type,'scope'=>$scope,'create_time'=>$createTime);
+            $row['status'] = 3; //3表示job执行成功
+            if(!empty($jobResult))
+            {
+                $row['job_result'] = json_encode($jobResult);
+            }
+            if(!empty($jobStat))
+            {
+                $row['job_stat'] = $jobStat;
+            }
+            if(!empty($chapter))
+            {
+                $row['chapter'] = $chapter;
+            }
+            if(!empty($text))
+            {
+                $row['text'] = $text;
+            }
+            $ret = $this->sdf->insertTable($row);
+            return $ret;
         }
-        if(!empty($chapter))
-        {
-            $row['chapter'] = $chapter;
-        }
-        if(!empty($text))
-        {
-            $row['text'] = $text;
-        }
-        $ret = $this->sdf->insertTable($row);
-        return $ret;
+        return true; //说明已经有jobid存储了， 那么就直接返回true;
+
     }
 }
 
