@@ -49,10 +49,10 @@ class Service_Dao_Mysql
      * @param $row
      * @return bool
      */
-    public function insert($table,$row)
+    public function insert($table,$row,$options=null,$onDup = null)
     {
         $this->_initDb();
-        $ret = $this->_db->insert($table,$row);
+        $ret = $this->_db->insert($table,$row,$options,$onDup);
         if($ret === false)
         {
             $executeSql = $this->_db->getLastSQL();

@@ -37,8 +37,8 @@ class Service_Data_FastTask
         {
             $row['create_time'] = time();
         }
-
-        $ret = $this->sdm->insert($this->table,$row);
+        $options = 'IGNORE';
+        $ret = $this->sdm->insert($this->table,$row,$options);
         return $ret;
     }
 

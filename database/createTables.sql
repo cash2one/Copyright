@@ -11,7 +11,7 @@ CREATE TABLE `fast_task` (
   `text` VARCHAR(512) DEFAULT NULL COMMENT 'text可选字段，内容类检索时可输入网页链接或文本内容',
   `create_time` INT(10) UNSIGNED NOT NULL COMMENT 'job创建的时间',
   `update_time` INT(10) UNSIGNED NOT NULL default 0 COMMENT 'job最近一次更新的时间',
-  `job_result` text COMMENT 'job的结果',
+  `job_result` text default '' COMMENT 'job的结果',
   `job_stat` VARCHAR(512) DEFAULT NULL COMMENT 'job的聚合统计结果',
   `status` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'job当前状态 0=job成功创建',
   `ext` varchar(1024) default null comment '扩展字段',

@@ -105,7 +105,9 @@ class Action_Query extends Service_Action_Abstract
             $statisticRet = $scs->run($ret['result']);
             $status = 3; //status=3 表示任务完成
             $spf = new Service_Page_FastTask();
-            $spf->createJob($jobId,$this->getUid(),$this->query,$mode,$type,$scope,$this->createTime,$statisticRet,$status,$this->chapter,$this->text);
+            $spf->createJob($jobId,$this->getUid(),$this->query,$mode,$type,$scope,$this->createTime,$statisticRet,$status,
+                json_encode($ret['result']),
+                $this->chapter,$this->text);
 
         }
     }
