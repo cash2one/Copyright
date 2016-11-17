@@ -427,7 +427,7 @@ class Service_Copyright_HtmlDomNode
                 $ret .= $this->convert_text($n->text());
             }
 
-            // If this node is a span... add a space at the end of it so multiple spans don't run into each other.  This is plaintext after all.
+            // If this node is a span... add a space at the end of it so multiple spans don't computeFastTaskStatistic into each other.  This is plaintext after all.
             if ($this->tag == "span") {
                 $ret .= $this->dom->default_span_text;
             }

@@ -223,7 +223,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
 }
 
 //$obj = new Service_Copyright_TitlePs('English', 0, 0);
-//$obj->run(0, 0, 5);
+//$obj->computeFastTaskStatistic(0, 0, 5);
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
 ?>

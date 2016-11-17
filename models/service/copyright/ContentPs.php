@@ -177,7 +177,7 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
 }
 
 //$obj = new Service_Copyright_ContentPs('1', '人为什么要睡觉', 1, 0, 'https://zhidao.baidu.com/daily/view?id=10299');
-//$obj->run(0, 0, 5);
+//$obj->computeFastTaskStatistic(0, 0, 5);
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
 ?>

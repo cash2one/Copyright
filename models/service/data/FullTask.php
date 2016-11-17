@@ -45,6 +45,19 @@ class Service_Data_FullTask
     }
 
     /**
+     * @param $jobid
+     * @return mixed
+     * @throws Exception
+     */
+    public function getJobIdCount($jobid)
+    {
+        //查询条件
+        $condition = array('jobid='=>$jobid);
+        $ret = $this->sdm->selectCount($this->table,$condition);
+        return $ret;
+    }
+
+    /**
      * @param $uid
      * @return mixed
      * @throws Exception
@@ -97,6 +110,20 @@ class Service_Data_FullTask
     {
         $condition = array('jobid='=>$jobid);
         $ret = $this->sdm->update($this->table,$row,$condition);
+        return $ret;
+    }
+
+    /**
+     * @param $fields
+     * @param $jobid
+     * @return mixed
+     * @throws Exception
+     */
+    public function getStatistic($fields,$jobid)
+    {
+        //初始化查询条件
+        $condition = array('jobid='=>$jobid);
+        $ret = $this->sdm->select($this->table,$fields,$condition);
         return $ret;
     }
 

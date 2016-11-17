@@ -48,7 +48,7 @@ class Service_Page_FastTask
         if($count == 0)
         {
             $scs = new Service_Copyright_Statistic();
-            $jobStat = $scs->run($jobResult); //统计结果
+            $jobStat = $scs->computeFastTaskStatistic($jobResult); //统计结果
 
             //构造row数据
             $row = array('jobid'=>$jobid,'uid'=>$uid,'query'=>$query,'mode'=>$mode,'type'=>$type,'scope'=>$scope,'create_time'=>$createTime);

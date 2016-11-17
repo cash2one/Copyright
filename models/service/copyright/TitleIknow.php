@@ -127,7 +127,7 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
     }
 }
 //$obj = new Service_Copyright_TitleIknow('1', '岛上书店', 0, 1);
-//$obj->run(0, 0, 5);
+//$obj->computeFastTaskStatistic(0, 0, 5);
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
 ?>

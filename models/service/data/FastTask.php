@@ -56,6 +56,20 @@ class Service_Data_FastTask
         return $ret;
     }
 
+    /**
+     * @param $fields
+     * @param $jobid
+     * @return mixed
+     * @throws Exception
+     */
+    public function getStatistic($fields,$jobid)
+    {
+        //初始化查询条件
+        $condition = array('jobid='=>$jobid);
+        $ret = $this->sdm->select($this->table,$fields,$condition);
+        return $ret;
+    }
+
 }
 
 
