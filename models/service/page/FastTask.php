@@ -59,7 +59,7 @@ class Service_Page_FastTask
             }
             if(!empty($jobStat))
             {
-                $row['job_stat'] = $jobStat;
+                $row['job_stat'] = json_encode($jobStat);
             }
             if(!empty($chapter))
             {
