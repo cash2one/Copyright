@@ -15,10 +15,10 @@
 class Service_Copyright_Statistic
 {
     /**
-     * @param
-     * @return
+     * @param $jobResult
+     * @return array
      */
-    public function computeFastTaskStatistic()
+    public function computeFastTaskStatistic($jobResult)
     {
         //目前是瞎构造的
         //$overview 对应总体概况，$riskEstimate对应风险评估，$priacySource对应盗版来源， 是个数组
@@ -27,6 +27,15 @@ class Service_Copyright_Statistic
         $priacySource = array(array('from'=>'www.daoban.com','fromType'=>0,'count'=>89),array('from'=>'盗版发帖人','fromType'=>1,'count'=>304));
         $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
         return $result;
+    }
+
+    /**
+     * @param
+     * @return
+     */
+    public function computeFullTaskStatistic()
+    {
+
     }
 
     /**
