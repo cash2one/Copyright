@@ -38,7 +38,7 @@ CREATE TABLE `full_task` (
   `update_time` INT(10) UNSIGNED NOT NULL default 0 COMMENT 'job最近一次更新的时间',
   `job_result_file` VARCHAR(256) COMMENT 'job的结果文件路径',
   `job_stat` VARCHAR(512) DEFAULT NULL COMMENT 'job的聚合统计结果',
-  `status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'job当前状态 0=job成功创建',
+  `status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT 'job当前状态 0=job成功创建,1=job正在执行，2=job运行失败，3=job已经完成',
   `job_process` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'job当前的进度 0~100',
   `ext` varchar(1024) default null comment '扩展字段',
   PRIMARY KEY (`id`),

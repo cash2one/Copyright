@@ -95,7 +95,10 @@ class Service_Page_FullTask
                 $item['type'] = intval($value['type']);
                 $item['status'] = intval($value['status']);
                 $item['process'] = intval($value['job_process']);
-                $item['downloadAddr'] = $value['job_result_file'];
+                if(!empty($value['job_result_file']))
+                {
+                    $item['downloadAddr'] = sprintf('/copyright/file/download?salt=%s&file=%s',$value['salt'],$value['job_result_file']);
+                }
 
                 $custom_start_time = intval($value['custom_start_time']);
                 $custom_end_time = intval($value['custom_end_time']);

@@ -30,6 +30,14 @@ class Action_Download extends Service_Action_Abstract
             $salt = 'sample'; //如果没有指定salt ， 说明是全量检索的样板文件下载， 地址是放在sample里的
         }
 
+        //不下载空文件
+        if(empty($fileName))
+        {
+            $ret = array('errno'=>-1,'message'=>'please input the file');
+            $this->jsonResponse($ret);
+            return;
+        }
+
         $filePath = Service_Copyright_File::getFullTaskPath().'/'.$salt.'/'.$fileName;
         $this->downloadFileResponse($filePath);
 

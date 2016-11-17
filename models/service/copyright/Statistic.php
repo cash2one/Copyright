@@ -21,11 +21,11 @@ class Service_Copyright_Statistic
     public function computeFastTaskStatistic()
     {
         //目前是瞎构造的
+        //$overview 对应总体概况，$riskEstimate对应风险评估，$priacySource对应盗版来源， 是个数组
         $overview = array('totalScan'=>9900,'hitResourceCount'=>500,'riskCount'=>465,'highRiskCount'=>199,'priacyAttachCount'=>344,'priacyUrlCount'=>278);
-        $riskEstimate = array('totalScan'=>9900,'riskCount'=>465,'highRiskCount'=>199,'lowRiskCount'=>266,'priacyAttachCount'=>344,'priacyUrlCount'=>278);
+        $riskEstimate = array('interval'=>1,'totalScan'=>9900,'riskCount'=>465,'noRiskCount'=>777,'riskRate'=>432/789,'highRiskCount'=>199,'lowRiskCount'=>266,'priacyAttachCount'=>789,'priacyUrlCount'=>278);
         $priacySource = array(array('from'=>'www.daoban.com','fromType'=>0,'count'=>89),array('from'=>'盗版发帖人','fromType'=>1,'count'=>304));
-        $interval = 1;
-        $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource,'intval'=>$interval);
+        $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
         return $result;
     }
 

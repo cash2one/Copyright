@@ -38,7 +38,7 @@ class Action_Statistic extends Service_Action_Abstract
             $tpl->assign('result', $statisticResult);
 
             //快速检索
-            $tpl->display('copyright/page/full-result-analyze.tpl');
+            $tpl->display('copyright/page/quick-result-analyze.tpl');
         }
         else
         {
@@ -51,10 +51,8 @@ class Action_Statistic extends Service_Action_Abstract
             $tpl->assign('type', $ret['type']);
             $tpl->assign('result', $statisticResult);
             //全量检索
-            $tpl->display('copyright/page/quick-result-analyze.tpl');
+            $tpl->display('copyright/page/full-result-analyze.tpl');
         }
-        //zhenyu 调试
-        $this->jsonResponse($statisticResult);
 
     }
 }
