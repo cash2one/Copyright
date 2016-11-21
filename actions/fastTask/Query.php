@@ -29,6 +29,12 @@ class Action_Query extends Service_Action_Abstract
         $jobId = $httpGet['jobid'];
         $ret['errno'] = 0;
         $ret['message'] = '';
+        if(empty($httpGet['jobid']))
+        {
+            $ret = array('errno'=>-1,'message'=>'jobid is empty!');
+            $this->jsonResponse($ret);
+            return;
+        }
         $ret['jobid'] = $httpGet['jobid'];
         //这个地方应该是寅生加的， 根据jobid 其实可以从redis取出来的， 不过传过来也行
         $ret['mode'] = $httpGet['mode'];

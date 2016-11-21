@@ -18,6 +18,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     protected $smartySelfDefine = true;
 
     protected $uid;
+    protected $userInfo;
 
     /**
      * @param void
@@ -52,6 +53,14 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         $userInfo['isLogin'] = 0;
         if (!empty($userInfo) && isset($userInfo['uid']) && isset($userInfo['uname'])) {
             $userInfo['isLogin'] = 1;
+        }
+        $this->userInfo = $userInfo;
+        if($this->userInfo['isLogin'] == 0)
+        {
+            $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
+            $destUrl = 'https://passport.rdtest.baidu.com/?login&u='.$currentUrl;
+            header('Location:'.$destUrl);
+            exit();
         }
 
         //实例smarty对象
