@@ -23,7 +23,7 @@ class Action_Test extends Service_Action_Abstract
         //登录成功之后要跳转去的url
         $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
         //passport的登陆地址
-        $loginUrl = Bd_Conf::getAppConf("global/passport/login_url");
+        $loginUrl = Bd_Conf::getAppConf("passport/login_url");
         //拼凑目标地址
         $destUrl = $loginUrl.'$u='.$currentUrl;
 
