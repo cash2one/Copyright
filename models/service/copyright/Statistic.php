@@ -40,22 +40,29 @@ class Service_Copyright_Statistic
         $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
         return $result;
         */
-
+        BD_LOG::notice('jobResult '. $jobResult);
+        BD_LOG::notice('jobResult_json '. json_encode($jobResult));
         $totalScan = count($jobResult);
         $riskCount = 0;
         $highRiskCount = 0;
+        $lowRiskCount = 0;
         $priacyAttachCount = 0;
         $priacyUrlCount = 0;
         $domainCount = array();
         $userCount = array();
-        for ($jobResult as $key => $value) {
+        foreach ($jobResult as $key => $value) {
             $url = $value['url'];
             $title = $value['title'];
             $domain = $value['domain'];
             $user = $value['user'];
             $risk = $value['risk'];
+            $riskUrl = $value['riskUrl'];
+            $riskAttach = $value['riskAttach'];
             if ($risk != 0) { $riskCount ++; }
             if ($risk == 2) { $highRiskCount ++; }
+            if ($risk == 1) { $lowRiskCount ++; }
+            if ($riskUrl != null) { $priacyAttachCount ++; }
+            if ($riskAttach != null) { $priacyUrlCount ++; }
             if ($domain != null) {
                 if ($domainCount[$domain]) { $domainCount[$domain] ++; }
                 else { $domainCount[$domain] = 1; }
@@ -83,8 +90,8 @@ class Service_Copyright_Statistic
             'riskCount' => $riskCount,
             'noRiskCount' => $noRiskCount,
             'riskRate' => $riskCount / $totalScan,
-            'highRiskCount' => $highRiskCount,
-            'lowRiskCount' => $lowRiskCount,
+            'highRiskCount' => $highRiskCount / $totalScan,
+            'lowRiskCount' => $lowRiskCount / $totalScan,
             'priacyAttachCount' => $priacyAttachCount,
             'priacyUrlCount' => $priacyUrlCount, 
         );
@@ -108,6 +115,7 @@ class Service_Copyright_Statistic
         usort($priacySource, array('Service_Copyright_Statistic', 'cmp_obj'));
         $priacySource = array_slice($priacySource, 0, 10);
         $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
+        return $result;
     }
 
     /**

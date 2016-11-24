@@ -135,6 +135,24 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             $href = $a->href;
             $a_txt = $a->innertext;
 
+            $abstract = $result->find('.c-abstract', 0);
+            if (empty($abstract)) {
+                $abstract = (string)$result->find('div', 0);
+            }
+            else {
+                $abstract = strip_tags($abstract->innertext);
+            }
+
+            $domain = $result->find('.f13', 0);
+            if (empty($domain)) {
+                $domain = null;
+            }
+            else {
+                $domain = $domain->find('a', 0);
+                $domain = explode("/", strip_tags($domain->innertext));
+                $domain = $domain[0];
+            }
+
             $a_txt_arr = array();
             $list_title = '';
             if(strstr($a_txt,"_")){
@@ -152,9 +170,9 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             
             $list_title = strip_tags($a_txt);
          //   $list_html_url = Service_Copyright_HtmlHelper::dailyPostUrl($href);
-            $list_html_url = $list_html_url['url_ret'];
-            $parts_html_url = parse_url($list_html_url);
-            $domain = $parts_html_url['host'];
+         //   $list_html_url = $list_html_url['url_ret'];
+         //   $parts_html_url = parse_url($list_html_url);
+         //   $domain = $parts_html_url['host'];
             if ($this->type == 1) {
                 $ret_arr['score'] = Service_Copyright_TitlePs::get_score("film", $list_title);
                 $ret_arr['tags'] = Service_Copyright_TitlePs::get_tags("film", $list_title);
@@ -164,9 +182,9 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
                 $ret_arr['tags'] = Service_Copyright_TitlePs::get_tags("fiction", $list_title);
             }
             $ret_arr["title"] = $list_title;
-            $ret_arr["url"] = $list_html_url;
+            $ret_arr["url"] = $href;
             $ret_arr["domain"] = $domain;
-            $ret_arr["abstract"] = '摘要内容test';
+            $ret_arr["abstract"] = $abstract;
             $this->normResult[$index] = $ret_arr;            
         }
         BD_Log::notice("Norm ".count($this->normResult));
@@ -213,6 +231,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
                     }
             }
             $this->detectResult[$index] = $cur;
+            if ($copyright == 1) $copyright = 2;
             $this->detectResult[$index]['risk'] = $copyright;
         }   
         //var_dump($this->detectResult);

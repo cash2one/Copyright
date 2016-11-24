@@ -61,6 +61,8 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
         foreach ($this->searchResult as $id => $arrInfo) {
             $qid = $arrInfo['qid'];
             $url = "http://zhidao.baidu.com/question/$qid.html";
+            if ($this->type == 0) $type = 'fiction';
+            else $type = 'film';
             $arrRet = Service_Data_Da::isResource($type, $arrInfo['title']);
             $arrRet['errno'] =0;
             $arrRet['result']['risk']=1;
@@ -78,10 +80,15 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
             }
             $this->normResult[$id]['url'] = $url;
             $this->normResult[$id]['title'] = $arrInfo['title'];
-            $this->normResult[$id]['risk'] = $arrRet['result']['risk'];
+            if ($arrRet['result']['label'] == 1) {
+                $this->normResult[$id]['risk'] = 2;
+            }
+            else {
+                $this->normResult[$id]['risk'] = 0;
+            }
 
             $arrCnt  = array();
-            if ($arrRet['result']['risk']==1)
+            if ($arrRet['result']['label'] != -1)
             {
                 $qids[] = array('qid' => $qid);
                 $arrUrlToId[$url] = $id;
@@ -91,28 +98,52 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
         foreach($arrAns['result'] as $id=>$v)
         {
             unset($arrCnt);
+            unset($piracyUrl);
+            unset($piracyAttach);
             $qid = $arrAns['result'][$id]['qid'];
             foreach ($arrAns['result'][$id]['normal_replys'] as $k => $list)
             {
                 $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
                 $arrPirate = Service_Data_Pirate::pirate($strCon);
-                if ($arrPirate['result']['label']==1)
+                $intRet = preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?    \:\%\~\|\.]+/i', $strCon, $arrMat);
+                if ($intRet > 0) {
+                    $piracyUrl = $arrMat[0];
+                }
+                $intRet = preg_match('/\<file fsid/i', $strCon, $arrMat);
+                if ($intRet > 0) {
+                    $piracyAttach = $arrMat[0];
+                }
+                /*if ($arrPirate['result']['label']==1)
                 {
                     $arrCnt[$list['deleted']]++;
-                }
+                }*/
+
             }
             foreach ($arrAns['result'][$id]['special_replys'] as $k => $list)
             {
                 $strCon = iconv('gbk', 'utf-8', $list['content'].$list['content_rich']);
                 $arrPirate = Service_Data_Pirate::pirate($strCon);
+                $intRet = preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?    \:\%\~\|\.]+/i', $strCon, $arrMat);
+                if ($intRet > 0) {
+                    $piracyUrl = $arrMat[0];
+                }
+                $intRet = preg_match('/\<file fsid/i', $strCon, $arrMat);
+                if ($intRet > 0) {
+                    $piracyAttach = $arrMat[0];
+                }
+                /*
                 if ($arrPirate['result']['label']==1)
                 {
                     $arrCnt[$list['deleted']]++;
-                }
+                }*/
+
             }
             $url = "http://zhidao.baidu.com/question/$qid.html";
-            $this->normResult[$arrUrlToId[$url]]['delcnt'] = empty($arrCnt[1]) ? 0:$arrCnt[1];
-            $this->normResult[$arrUrlToId[$url]]['onlinecnt'] = empty($arrCnt[0]) ? 0:$arrCnt[0];
+            $this->normResult[$arrUrlToId[$url]]['riskAttach'] = $piracyAttach;
+            $this->normResult[$arrUrlToId[$url]]['riskUrl'] = $piracyUrl;
+            if (!$piracyAttach && !$piracyUrl) {
+                $this->normResult[$arrUrlToId[$url]]['risk'] = 0;
+            }
         }
         //    BD_LOG::notice('Norm ' . count($this->normResult));
     }

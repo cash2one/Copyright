@@ -86,6 +86,25 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $a_txt = $a->innertext;
             $a_txt_arr = array();
             $list_title = '';
+            
+            $abstract = $result->find('.c-abstract', 0);
+            if (empty($abstract)) {
+                $abstract = null;
+            }
+            else {
+                $abstract = strip_tags($abstract->innertext);
+            }
+
+            $domain = $result->find('.f13', 0);
+            if (empty($domain)) {
+                $domain = null;
+            }
+            else {
+                $domain = $domain->find('a', 0);
+                $domain = explode("/", $domain->innertext);
+                $domain = $domain[0];
+            }
+
             if(strstr($a_txt,"_")){
                 $a_txt_arr = explode("_",$a_txt);
                 //$list_title = strip_tags($a_txt_arr[0]);
@@ -117,12 +136,12 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $sim_title = sprintf("%.2f", $sim_title)*100; 
             $sim_content = -1;
             $list_html_txt = $this->GetContentFromLink($href);//$list_html['content_ret'];
-            $list_html_url = Service_Copyright_HtmlHelper::dailyPostUrl($href);
-            $list_html_url = $list_html_url['url_ret'];
+            //$list_html_url = Service_Copyright_HtmlHelper::dailyPostUrl($href);
+            //$list_html_url = $list_html_url['url_ret'];
             $sim_content_ret = similar_text($this->contentOrLink, $list_html_txt, $sim_content);
             $sim_content = sprintf("%.2f", $sim_content);
-            $parts_html_url = parse_url($list_html_url);
-            $domain = $parts_html_url['host'];
+            //$parts_html_url = parse_url($list_html_url);
+            //$domain = $parts_html_url['host'];
             $ret_arr["daily_title"] = $this->query;
             $ret_arr["daily_txt"] = $this->contentOrLink;
             $ret_arr["title"] = strip_tags($a_txt);
