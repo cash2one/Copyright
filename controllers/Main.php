@@ -8,6 +8,6 @@ class Controller_Main extends Ap_Controller_Abstract {
 	public $actions = array(
 		'index' => 'actions/Index.php',
 		'statistic'=>'actions/Statistic.php',
-		'hometest' => 'actions/HomeTest.php',
+		'test' => 'actions/Test.php',
 	);
 }
