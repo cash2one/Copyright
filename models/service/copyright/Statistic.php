@@ -14,6 +14,17 @@
  **/
 class Service_Copyright_Statistic
 {
+
+    /**
+     * @param 
+     * @return 0, 1, -1
+     */ 
+    public static function cmp_obj($a, $b) {
+        if ($a['count'] > $b['count']) return -1;
+        if ($a['count'] < $b['count']) return 1;
+        return 0;
+    }
+
     /**
      * @param $jobResult
      * @return array
@@ -22,11 +33,81 @@ class Service_Copyright_Statistic
     {
         //目前是瞎构造的
         //$overview 对应总体概况，$riskEstimate对应风险评估，$priacySource对应盗版来源， 是个数组
+        /*
         $overview = array('totalScan'=>9900,'hitResourceCount'=>500,'riskCount'=>465,'highRiskCount'=>199,'priacyAttachCount'=>344,'priacyUrlCount'=>278);
         $riskEstimate = array('interval'=>1,'totalScan'=>9900,'riskCount'=>465,'noRiskCount'=>777,'riskRate'=>432/789,'highRiskCount'=>199,'lowRiskCount'=>266,'priacyAttachCount'=>789,'priacyUrlCount'=>278);
         $priacySource = array(array('from'=>'www.daoban.com','fromType'=>0,'count'=>89),array('from'=>'盗版发帖人','fromType'=>1,'count'=>304));
         $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
         return $result;
+        */
+
+        $totalScan = count($jobResult);
+        $riskCount = 0;
+        $highRiskCount = 0;
+        $priacyAttachCount = 0;
+        $priacyUrlCount = 0;
+        $domainCount = array();
+        $userCount = array();
+        for ($jobResult as $key => $value) {
+            $url = $value['url'];
+            $title = $value['title'];
+            $domain = $value['domain'];
+            $user = $value['user'];
+            $risk = $value['risk'];
+            if ($risk != 0) { $riskCount ++; }
+            if ($risk == 2) { $highRiskCount ++; }
+            if ($domain != null) {
+                if ($domainCount[$domain]) { $domainCount[$domain] ++; }
+                else { $domainCount[$domain] = 1; }
+            }
+            if ($user != null) {    
+                if ($userCount[$user]) { $userCount[$user] ++; }
+                else { $userCount[$user] = 1; }
+            }
+        }
+        $overview = array(
+            'totalScan' => $totalScan,
+            'hitResourceCount' => $totalScan,
+            'riskCount' => $riskCount,
+            'highRiskCount' => $highRiskCount,
+            'priacyAttachCount' => $priacyAttachCount,
+            'priacyUrlCount' => $priacyUrlCount,
+        );
+        $interval = 3;
+        if ($riskCount / $totalScan > 0.2) $interval = 0;
+        else if ($riskCount / $totalScan > 0.05) $interval = 1;
+        else if ($riskCount / $totalScan > 0.01) $interval = 2;
+        $riskEstimate = array(
+            'interval' => $interval,
+            'totalScan' => $totalScan,
+            'riskCount' => $riskCount,
+            'noRiskCount' => $noRiskCount,
+            'riskRate' => $riskCount / $totalScan,
+            'highRiskCount' => $highRiskCount,
+            'lowRiskCount' => $lowRiskCount,
+            'priacyAttachCount' => $priacyAttachCount,
+            'priacyUrlCount' => $priacyUrlCount, 
+        );
+        $priacySource = array();
+        //arsort($domainCount);
+        //arsort($userCount);
+        foreach ($domainCount as $key => $value) {
+            $priacySource[] = array(
+                'from' => $key,
+                'fromType' => 0,
+                'count' => $value,
+            );
+        }
+        foreach ($userCount as $key => $value) {
+            $priacySource[] = array(
+                'from' => $key,
+                'fromType' => 1,
+                'count' => $value,
+            );
+        }
+        usort($priacySource, array('Service_Copyright_Statistic', 'cmp_obj'));
+        $priacySource = array_slice($priacySource, 0, 10);
+        $result = array('overview'=>$overview,'riskEstimate'=>$riskEstimate,'priacySource'=>$priacySource);
     }
 
     /**
