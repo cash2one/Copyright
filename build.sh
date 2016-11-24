@@ -11,7 +11,7 @@ mkdir -p output/webroot/$APP_NAME
 
 #data里面相关的样板文件
 mkdir -p output/data/app/$APP_NAME/FullTask/sample
-cp -r data/app/$APP_NAME/FullTask/sample output/data/app/$APP_NAME/FullTask/sample
+cp -r data/app/$APP_NAME/FullTask/sample/* output/data/app/$APP_NAME/FullTask/sample
 
 #拷贝后端代码文件
 cp -r actions controllers library models script Bootstrap.php output/app/$APP_NAME
@@ -26,6 +26,6 @@ cp -r index.php  output/webroot/$APP_NAME
 
 cd output
 find ./ -name .svn -exec rm -rf {} \;
-tar cvzf $APP_NAME.tar.gz app conf webroot php
+tar cvzf $APP_NAME.tar.gz app conf webroot data
 
-rm -rf app conf webroot php
+rm -rf app conf webroot data php
