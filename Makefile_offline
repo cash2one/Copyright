@@ -42,7 +42,7 @@ mkdir -p $DATA_PATH
 #mv $STATIC_RTS_PATH $STATIC_RTS_PATH.bak; mkdir -p $STATIC_RTS_PATH;
 #mv $TEMPLATE_PATH $TEMPLATE_PATH.bak; mkdir -p $TEMPLATE_PATH;
 
-cp -r $OUT_PUT/actions $OUT_PUT/Bootstrap.php $OUT_PUT/controllers $OUT_PUT/library $OUT_PUT/models $OUT_PUT/script  $APP_PATH
+cp -r $OUT_PUT/actions $OUT_PUT/Bootstrap.php $OUT_PUT/controllers $OUT_PUT/models $OUT_PUT/script  $APP_PATH
 
 #配置文件拷贝global.conf
 cp $OUT_PUT/conf/global_offline.conf $CONF_PATH/global.conf
@@ -51,7 +51,7 @@ cp -r $OUT_PUT/data/app/copyright/* $DATA_PATH
 #webroot index 文件
 cp -r $OUT_PUT/index.php $WEBROOT_PATH
 #api 文件
-cp -r $OUT_PUT/api/*  $API_PATH
+#cp -r $OUT_PUT/api/*  $API_PATH
 #静态资源文件
 #cp -r $OUT_PUT/static/$APP_NAME/*    $STATIC_RTS_PATH
 #模板文件
