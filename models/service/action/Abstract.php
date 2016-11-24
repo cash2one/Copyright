@@ -55,10 +55,16 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
             $userInfo['isLogin'] = 1;
         }
         $this->userInfo = $userInfo;
+        //如果没有登录就强制登录
         if($this->userInfo['isLogin'] == 0)
         {
+            //登录成功之后要跳转去的url
             $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
-            $destUrl = 'https://passport.rdtest.baidu.com/?login&u='.$currentUrl;
+            //passport的登陆地址
+            $loginUrl = Bd_Conf::getAppConf("global/passport/login_url");
+            //拼凑目标地址
+            $destUrl = $loginUrl.'$u='.$currentUrl;
+
             header('Location:'.$destUrl);
             exit();
         }
