@@ -231,7 +231,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
                     }
             }
             $this->detectResult[$index] = $cur;
-            if ($copyright == 1) $copyright = 2;
+            if ($copyright == 1) { $copyright = 2; }
             $this->detectResult[$index]['risk'] = $copyright;
         }   
         //var_dump($this->detectResult);

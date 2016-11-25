@@ -81,9 +81,14 @@ class Service_Copyright_Statistic
             'priacyUrlCount' => $priacyUrlCount,
         );
         $interval = 3;
-        if ($riskCount / $totalScan > 0.2) $interval = 0;
-        else if ($riskCount / $totalScan > 0.05) $interval = 1;
-        else if ($riskCount / $totalScan > 0.01) $interval = 2;
+        if ($riskCount / $totalScan > 0.2) { $interval = 0; }
+        else {
+            if ($riskCount / $totalScan > 0.05) { $interval = 1; }
+            else {
+                if ($riskCount / $totalScan > 0.01) { $interval = 2; }
+            }
+        }
+
         $riskEstimate = array(
             'interval' => $interval,
             'totalScan' => $totalScan,

@@ -61,8 +61,8 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
         foreach ($this->searchResult as $id => $arrInfo) {
             $qid = $arrInfo['qid'];
             $url = "http://zhidao.baidu.com/question/$qid.html";
-            if ($this->type == 0) $type = 'fiction';
-            else $type = 'film';
+            if ($this->type == 0) { $type = 'fiction'; }
+            else { $type = 'film'; }
             $arrRet = Service_Data_Da::isResource($type, $arrInfo['title']);
             $arrRet['errno'] =0;
             $arrRet['result']['risk']=1;
