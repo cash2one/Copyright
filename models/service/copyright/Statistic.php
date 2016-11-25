@@ -20,8 +20,8 @@ class Service_Copyright_Statistic
      * @return 0, 1, -1
      */ 
     public static function cmp_obj($a, $b) {
-        if ($a['count'] > $b['count']) return -1;
-        if ($a['count'] < $b['count']) return 1;
+        if ($a['count'] > $b['count']) { return -1; }
+        if ($a['count'] < $b['count']) { return 1; }
         return 0;
     }
 
