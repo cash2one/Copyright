@@ -126,6 +126,22 @@ class Service_Page_FullTask
         $ret = $this->sdf->updateTable($jobid,$row);
         return $ret;
     }
+
+    /**
+     * @param
+     * @return
+     */
+    public function schedule()
+    {
+        //uid
+        //jobid
+        //file content
+        //mode
+        //type
+        //scope
+        //start optional
+        //end optional
+    }
 }
 
 
