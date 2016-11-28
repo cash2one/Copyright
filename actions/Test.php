@@ -12,13 +12,13 @@
  * @brief
  *
  **/
-class Action_Test extends Service_Action_Abstract
+class Action_Test extends Ap_Action_Abstract
 {
     /**
      * @param
      * @return
      */
-    public function invoke()
+    public function execute()
     {
         /*
         //登录成功之后要跳转去的url
@@ -32,7 +32,7 @@ class Action_Test extends Service_Action_Abstract
         */
         $userInfo = Bd_Passport::checkUserLogin();
         $this->jsonResponse($userInfo);
-        
+
     }
 }
 

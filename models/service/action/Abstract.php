@@ -63,8 +63,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
             //passport的登陆地址
             $loginUrl = Bd_Conf::getAppConf("passport/login_url");
             //拼凑目标地址
-            $destUrl = $loginUrl.'$u='.$currentUrl;
-
+            $destUrl = $loginUrl.'&u='.$currentUrl;
             header('Location:'.$destUrl);
             exit();
         }
