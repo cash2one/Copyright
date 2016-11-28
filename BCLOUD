@@ -1,2 +1,2 @@
-BUILD_SUBMITTER -x -m baidu/iknow-copyright/shield -c "cd baidu/iknow-copyright/shield && mkdir output && cp BCLOUD ./output/" -u ./
+BUILD_SUBMITTER -x -m baidu/iknow-copyright/shield -c "cd baidu/iknow-copyright/shield && sh build.sh" -u ./
 BUILD_SUBMITTER_COVERITY -m baidu/iknow-copyright/shield -u ./ -x -c "cd baidu/iknow-copyright/shield && export covpath=\$PWD && mkdir coverity && mkdir output && \$BUILD_KIT_PATH/coverity-7.5.1/cov-analysis-linux64/bin/cov-build --dir coverity sh build.sh && mv \$covpath/coverity \$covpath/output/coverity"
