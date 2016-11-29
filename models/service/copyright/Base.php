@@ -31,6 +31,18 @@ abstract class Service_Copyright_Base extends Service_Copyright_Abstract
      * @param
      * @return
      */
+    function simpleRun($pn, $start, $end, $casePerPage = 10)
+    {
+        $this->Search($pn, $start, $end, $casePerPage);
+        $this->Norm();
+        $this->Detect();
+        return $this->detectResult;
+    }
+
+    /**
+     * @param
+     * @return
+     */
     function writeRedis() {
         $forredis = array();
         foreach ($this->detectResult as $key => $value) {

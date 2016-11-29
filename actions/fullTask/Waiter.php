@@ -22,7 +22,35 @@ class Action_Waiter extends Service_Action_Abstract
     public function invoke()
     {
         //jobid （get）
+        $jobId = $_GET['jobid'];
+        $parentFolder = Service_Copyright_File::getFullTaskPath();
+        $jobStatus = file_get_contents($parentFolder . '/job_status.txt');
+        $arrJobs = json_decode($jobStatus, true);
 
+        if (empty($arrJobs[$jobId])) {
+            $ret = array('errno' => -1, 'message' => 'do not exist this jobid');
+            $this->jsonResponse($ret);
+        }
+        else {
+            $ret = array(
+                'errno' => 0,
+                'result' => array(
+                    'job_process' => $arrJobs[$jobId]['job_process'],
+                    'job_result_file' => $arrJobs[$jobId]['job_result_file'],
+                    'job_stat' => $arrJobs[$jobId]['job_stat'],
+                ),
+            );
+            $this->jsonResponse($ret);
+        }
+        //echo "$jobStatus";
+        fastcgi_finish_request();
+        foreach ($arrJobs as $index => $value) {
+            if ($value['job_process'] === 100) {
+                unset($arrJobs[$index]);
+            }
+        }
+        $jobStatus = json_encode($arrJobs);
+        file_put_contents($parentFolder . '/job_status.txt', $jobStatus, LOCK_EX);
         //$this->jsonResponse($result);
 
     }
