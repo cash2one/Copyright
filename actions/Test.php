@@ -31,7 +31,7 @@ class Action_Test extends Ap_Action_Abstract
         $result = array('currentUrl'=>$currentUrl,'loginUrl'=>$loginUrl,'destUrl'=>$destUrl);
         */
         $userInfo = Bd_Passport::checkUserLogin();
-        $this->jsonResponse($userInfo);
+        var_dump($userInfo);
 
     }
 }
