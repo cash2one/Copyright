@@ -20,6 +20,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @return 
      */
     public static function get_score($type, $title) {
+        /*
         $input['pid'] = $type;
         $input['line'] = $title;
         $postdata = json_encode($input);
@@ -36,7 +37,23 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         curl_close($ch);
         $t = json_decode($curlresult, true);
         return $t['score'];
-        //usleep(10);
+        */
+
+        $input['pid'] = $type;
+        $input['line'] = $title;
+        $postdata = json_encode($input);
+        $header = array( "Content-Type: application/json");
+        $httpproxy = Orp_FetchUrl::getInstance(array(
+            'timeout' => 10000,
+            'conn_timeout' => 2000,
+            'max_response_size'=> 1024000,
+        ));
+        $url = 'http://10.100.18.62:2010/SVMService/svm_infer';
+        $res = $httpproxy->post($url, $postdata, $header);
+        $var = json_decode($res, true);
+        //$err = $httpproxy->errmsg();
+        //$http_code = $httpproxy->http_code();
+        return $var['score'];
     }
 
     /**
@@ -53,11 +70,12 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         $input['doc'] = $title;
         $doc_len = mb_strlen($input['doc'],'utf8');
         $postdata = json_encode($input);
-        $ch = curl_init();
-        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
         $header = array(
             "Content-Type: application/json",
         );
+        /*
+        $ch = curl_init();
+        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -65,11 +83,16 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
         $curlresult = curl_exec($ch);
-        $t = json_decode($curlresult, true);
-        $tags = implode("_",$t['label']);
-        //echo "$ln\t{$t['score'][1]}\t$tags\n";
-        //usleep(15);
-        //echo "$ln\t$tags\n";
+        */
+        $httpproxy = Orp_FetchUrl::getInstance(array(
+            'timeout' => 10000,
+            'conn_timeout' =>5000,
+            'max_response_size' => 1024000,
+        ));
+        $url = 'http://10.100.18.62:2011/DnnService/DnnInf';
+        $res = $httpproxy->post($url, $postdata, $header);
+        $var = json_decode($res, true);
+        $tags = implode("_",$var['label']);
         return $tags;
     }
 

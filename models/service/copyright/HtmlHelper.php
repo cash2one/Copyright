@@ -121,7 +121,7 @@ class Service_Copyright_HtmlHelper {
             'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
             'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
         );
-    
+        /* 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
@@ -138,18 +138,26 @@ class Service_Copyright_HtmlHelper {
     
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, true);
-    
+        */
         $useragent_num = count($useragent_list);
         $select_num = rand(0,$useragent_num);
         $select_ua = $useragent_list[$select_num];
-        curl_setopt ($curl, CURLOPT_USERAGENT, $select_ua);
+        //curl_setopt ($curl, CURLOPT_USERAGENT, $select_ua);
         
-        $content_ret = curl_exec($curl);
-        $url_ret = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-        curl_close($curl);
+        $httpproxy = Orp_FetchUrl::getInstance(array(
+            'user_agent' => $select_ua, 
+            'timeout' => 1200, 
+            'conn_timeout' => 5000, 
+            'max_response_size'=> 1024000,
+        ));
+        $content_ret = $httpproxy->get($url);
+        //$content_ret = curl_exec($curl);
+        //$url_ret = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
+        //curl_close($curl);
+        $curl_info = $httpproxy->curl_info();
         return $ret = array(
             'content_ret' => $content_ret,
-            'url_ret' => $url_ret,
+            'url_ret' => $curl_info['url'],
         );
     }
 
@@ -187,7 +195,7 @@ class Service_Copyright_HtmlHelper {
         );
 
         for ($i = 0 ; $i < $retry ; $i++){
-            //echo "retry: " . (string)$i. " $url\n";
+            /*
             $ch = curl_init();
             curl_setopt ($ch, CURLOPT_URL, $url);
             curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -208,19 +216,21 @@ class Service_Copyright_HtmlHelper {
             curl_setopt ($ch, CURLOPT_TIMEOUT, $timeout);
             curl_setopt ($ch, CURLOPT_ENCODING ,'gzip'); // automatic unzip
 
-            //$use_proxy = rand(0,count($proxy_list));
-            $use_proxy = 0;
-            //var_dump($use_proxy);
-
-            if ($use_proxy != 0){
-                curl_setopt ($ch, CURLOPT_PROXY, $proxy_list[$use_proxy-1]);
-            }
-            //var_dump($proxy_list[$use_proxy-1]);
-            //       curl_setopt ($ch, CURLOPT_HTTPHEADER, array('Accept-Encoding: gzip')); // accept gzip data
             $res['content'] = curl_exec($ch);
             $res['status'] = curl_getinfo($ch,CURLINFO_HTTP_CODE);
-
             curl_close($ch);
+             */
+
+            $httpproxy = Orp_FetchUrl::getInstance(array(
+                'user_agent' => "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 2.0.50727; InfoPath.1; CIBA)",
+                'timeout' => 1000, 
+                'conn_timeout' => 1000,
+                'encoding' => 'gzip',
+                'referer' => 'http://www.baidu.com',
+                'max_response_size' => 1024000,
+            ));
+            $res['content'] = $httpproxy->get($url);
+            $res['status'] = $httpproxy->http_code();
             if ($res['content'] == false || ($res['status'] != '200' && $may_not_200 == 0)){
                 //var_dump("oh no");
                 sleep(2);
@@ -233,6 +243,9 @@ class Service_Copyright_HtmlHelper {
         return $res;
     }    
 }
+
+//$ret = Service_Copyright_HtmlHelper::dailyPostUrl("http://wiki.jikexueyuan.com/project/react/why-react.html");
+//print_r($ret);
 
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
 ?>

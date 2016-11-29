@@ -21,7 +21,7 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
      * @return
      */
     function GetContentFromLink($link) {
-        $content_tmp = Service_Copyright_HtmlHelper::DailyPostUrl($link);
+        $content_tmp = Service_Copyright_HtmlHelper::dailyPostUrl($link);
         $content = $content_tmp['content_ret'];
         $list_charset = preg_match("/<meta.+?charset=[^\w]?([-\w]+)/i",$content,$temp)? strtolower($temp[1]):"utf-8";
         $get_txt_retry = 5;
