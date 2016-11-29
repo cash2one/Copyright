@@ -1,7 +1,7 @@
 <?php
 $fn = $argv[1];
 $fd = fopen($fn,'r');
-$arr_not_video = array(
+$g_arr_not_video = array(
 	"小说",
 	"txt",
 	"TXT", 
@@ -16,9 +16,14 @@ $arr_not_video = array(
 	"MP3",	
 );
 
+/**
+ * @param 
+ * @return
+ */ 
 function contains_not_video($title) {
-	global $arr_not_video;
-	foreach($arr_not_video as $key) {
+	global $g_arr_not_video;
+
+	foreach($g_arr_not_video as $key) {
 		if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
 			return $key;
 		}

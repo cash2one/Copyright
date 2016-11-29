@@ -50,10 +50,14 @@ abstract class Service_FullTask_Abstract {
             $arrJobs = array();
         }
         $jobItem = $arrJobs[$this->jobId];
-        if ($jobItem == null) $jobItem = array();
+        if ($jobItem == null) { $jobItem = array(); }
         $jobItem['process'] = $process;
-        if ($resultPath) $jobItem['job_result_file'] = $resultPath;
-        if ($statJson) $jobItem['job_stat'] = $statJson;
+        if ($resultPath) {
+            $jobItem['job_result_file'] = $resultPath;
+        }
+        if ($statJson) {
+            $jobItem['job_stat'] = $statJson;
+        }
         $arrJobs[$this->jobId] = $jobItem;
         $jobStatus = json_encode($arrJobs);
         file_put_contents($dir . '/job_status.txt', $jobStatus, LOCK_EX);

@@ -1,10 +1,15 @@
 <?php
 
 	
-$arr_words = array();
-	
+$g_arr_words = array();
+
+/**
+ * @param
+ * @return
+ */ 
 function read_words() {
-	global $arr_words;
+	global $g_arr_words;
+
     $file = fopen('{words.txt}', 'r');
 	try{	
 		while (!feof($file)){
@@ -12,7 +17,7 @@ function read_words() {
 			if (strlen($line) == 0){
 				break;
 			}
-			$arr_words[] = $line;
+			$g_arr_words[] = $line;
 		}
 	}catch(Exception $e){
 		echo $e->getMessage();

@@ -15,7 +15,7 @@
  *  
  **/
 
-#require('Abstract.php');
+//require('Abstract.php');
 
 class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
 
@@ -245,9 +245,11 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
     }
 }
 
-#$obj = new Service_FullTask_TitleIknow('1', 0, 0, '/home/users/pancheng/pancheng-src/offline/upload/words.txt');
-#$ret = $obj->compute_statistic('/home/users/pancheng/pancheng-src/offline/results/judge_fiction_1479367797.txt', 
-#                        '/home/users/pancheng/pancheng-src/offline/results/stat_result_1479367797.txt');
-#print_r($ret);
+/*
+$obj = new Service_FullTask_TitleIknow('1', 0, 0, '/home/users/pancheng/pancheng-src/offline/upload/words.txt');
+$ret = $obj->compute_statistic('/home/users/pancheng/pancheng-src/offline/results/judge_fiction_1479367797.txt', 
+                        '/home/users/pancheng/pancheng-src/offline/results/stat_result_1479367797.txt');
+print_r($ret);
+ */
 /* vim: set expandtab ts=4 sw=4 sts=4 tw=100: */
 ?>
