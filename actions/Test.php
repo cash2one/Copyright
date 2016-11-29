@@ -12,14 +12,15 @@
  * @brief
  *
  **/
-class Action_Test extends Service_Action_Abstract
+class Action_Test extends Ap_Action_Abstract
 {
     /**
      * @param
      * @return
      */
-    public function invoke()
+    public function execute()
     {
+        /*
         //登录成功之后要跳转去的url
         $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
         //passport的登陆地址
@@ -28,7 +29,9 @@ class Action_Test extends Service_Action_Abstract
         $destUrl = $loginUrl.'$u='.$currentUrl;
 
         $result = array('currentUrl'=>$currentUrl,'loginUrl'=>$loginUrl,'destUrl'=>$destUrl);
-        $this->jsonResponse($result);
+        */
+        $userInfo = Bd_Passport::checkUserLogin();
+        var_dump($userInfo);
 
     }
 }
