@@ -89,7 +89,7 @@ class Action_Submit extends Service_Action_Abstract
         if ($createJobCount == 1) {
             $ret = array('errno' => 0, 'jobId' => $jobId);
         } else {
-            $ret = array('errno' => -1, 'message' => 'create job failed!');
+            $ret = array('errno' => -1, 'message' => 'Please do not repeat create jobs!');
         }
         $this->jsonResponse($ret);
     }
@@ -109,7 +109,7 @@ class Action_Submit extends Service_Action_Abstract
         $endTime)
     {
         $str = "uid:$uid ";
-        $str .= "salt:$salt ";
+        $str .= "salt:$salt "; //一个salt只能创建一个job
         $str .= "sourceFile:$sourceFile";
         $str .= "mode:$mode ";
         $str .= "type:$type ";
