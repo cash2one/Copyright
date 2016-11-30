@@ -17,6 +17,9 @@ class Service_Copyright_HashCache
 {
     const TIMEOUT = 600; //默认缓存十分钟
 
+    const VOLUME_SIZE = 10; //分片
+    const PAGE_SIZE = 10; //分页
+
     private $redis;
 
     /**
@@ -83,8 +86,76 @@ class Service_Copyright_HashCache
                     }
                     $ret['ret'][$key] = $new_ret;
                 }
+                else if($ret['err_no'] != 0 && $ret['err_msg'] == "error in some keys")
+                {
+                    Bd_Log::warning(sprintf('[redis ret]%s',json_encode($ret)));
+                    return $this->readRetry($key,$fields);
+                }
                 return $ret;
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param
+     * @parma fields 是key value形式的
+     * @return
+     */
+    public function readRetry($key, array $fields)
+    {
+        $result = array();
+        if (!empty($fields)) {
+            $volume_size = self::VOLUME_SIZE;
+            $volume_start = 0;
+            for($i=0;$i<ceil(count($fields)/$volume_size);$i++)
+            {
+                //分片
+                $volume_fields = array_slice($fields,$volume_start,$volume_size);
+
+                $reqs = array();
+                //20161130改成批量的方式
+                $page_size = self::PAGE_SIZE;
+                $page_start = 0;
+                for($j=0;$j<ceil(count($volume_fields)/self::PAGE_SIZE);$j++)
+                {
+                    //分页，切割数组
+                    $temp = array_slice($volume_fields,$page_start,$page_size);
+
+                    $sub_input = array('key'=>$key);
+                    foreach($temp as $index=>$field)
+                    {
+                        $sub_input['field'][] = $field;
+                    }
+                    $reqs[] = $sub_input;
+
+                    $page_start += $page_size;
+                }
+
+                $input = array('reqs'=>$reqs);
+                Bd_Log::notice(sprintf('[input]%s',json_encode($input)));
+                $ret = $this->redis->HMGET($input);
+                if($ret['err_no'] == 0 && count($ret['ret'][$key]) == count($volume_fields))
+                {
+                    $result['err_no'] = $ret['err_no'];
+                    $result['err_msg'] = $ret['err_msg'];
+                    $tally = 0;
+                    foreach($volume_fields as $index=>$item)
+                    {
+                        $result['ret'][$key][$item] = $ret['ret'][$key][$tally];
+                        $tally++;
+                    }
+                }
+                else
+                {
+                    Bd_Log::warning(sprintf('[ret]%s',json_encode($ret)));
+                    return $ret;
+                }
+
+                $volume_start += $volume_size;
+            }
+            return $result;
         }
 
         return false;

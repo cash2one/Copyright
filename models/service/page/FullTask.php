@@ -83,8 +83,10 @@ class Service_Page_FullTask
                 $item = array('jobid' => $value['jobid']);
                 //全量任务对应的文件名字
                 $item['sourceFile'] = $value['file_name'];
+                $item['salt'] = $value['salt'];
                 //全量任务对应的文件服务器的相对路径
-                $item['sourceFileServerPath'] = $value['salt'].'/'.$value['file_name'];
+                //$item['sourceFileServerPath'] = $value['salt'].'/'.$value['file_name'];
+                $item['sourceFileServerPath'] = $value['file_name'];
                 $item['createTime'] = intval($value['create_time']);
                 $item['mode'] = intval($value['mode']);
                 //当mode=0，即标题类的时候， 才有范围的说法
