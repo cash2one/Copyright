@@ -79,8 +79,14 @@ class Service_Page_FullTask
             $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
             $result = array();
             //格式化数据,从数据库到对象
+
+            $serial_number = $count;
             foreach($ret as $index=>$value) {
                 $item = array('jobid' => $value['jobid']);
+                //任务序号
+                $item['index'] = $serial_number;
+                $serial_number--;
+
                 //全量任务对应的文件名字
                 $item['sourceFile'] = $value['file_name'];
                 $item['salt'] = $value['salt'];
