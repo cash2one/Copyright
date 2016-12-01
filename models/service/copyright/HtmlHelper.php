@@ -235,10 +235,7 @@ class Service_Copyright_HtmlHelper {
             {
                 Bd_Log::warning(sprintf('fetchUrl[httpproxy]%s,[response]%s',json_encode($httpproxy),$res['content']));
             }
-            else
-            {
-                Bd_Log::notice(sprintf('fetchUrl[httpproxy]%s,[response]%s',json_encode($httpproxy),$res['content']));
-            }
+
 
             $res['status'] = $httpproxy->http_code();
             if ($res['content'] == false || ($res['status'] != '200' && $may_not_200 == 0)){
