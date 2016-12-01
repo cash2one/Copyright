@@ -93,7 +93,7 @@ class Service_Copyright_Statistic
             'interval' => $interval,
             'totalScan' => $totalScan,
             'riskCount' => $riskCount,
-            'noRiskCount' => $noRiskCount,
+            'noRiskCount' => $totalScan - $riskCount,
             'riskRate' => $riskCount / $totalScan,
             'highRiskCount' => $highRiskCount / $totalScan,
             'lowRiskCount' => $lowRiskCount / $totalScan,
