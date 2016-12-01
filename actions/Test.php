@@ -21,16 +21,24 @@ class Action_Test extends Ap_Action_Abstract
     public function execute()
     {
         //测试FetchUrl
+        //测试FetchUrl
         //测试外网
-        $url = 'http://www.qq.com';
-        var_dump(sprinft('----------fetchUrl [url]%s ---------',$url));
+        $url = 'https://www.douban.com';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
         $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
         $res = $httpproxy->get($url);
         var_dump($res);
 
         //测试内网
-        $url = 'http://10.40.19.41:8260/rts/test';
-        var_dump(sprinft('----------fetchUrl [url]%s ---------',$url));
+        $url = 'http://10.40.45.67:8090/rts/test';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
+        $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
+        $res = $httpproxy->get($url);
+        var_dump($res);
+
+        //测试内网
+        $url = 'http://10.65.211.21/s?wd=hello';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
         $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
         $res = $httpproxy->get($url);
         var_dump($res);

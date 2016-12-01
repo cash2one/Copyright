@@ -233,11 +233,11 @@ class Service_Copyright_HtmlHelper {
             //打log
             if($res['content'] === false || empty($res['content']))
             {
-                Bd_Log::warning(sprintf('[fetchUrl response]%s',$res['content']));
+                Bd_Log::warning(sprintf('fetchUrl[httpproxy]%s,[response]%s',json_encode($httpproxy),$res['content']));
             }
             else
             {
-                Bd_Log::notice(sprintf('[fetchUrl response]%s',$res['content']));
+                Bd_Log::notice(sprintf('fetchUrl[httpproxy]%s,[response]%s',json_encode($httpproxy),$res['content']));
             }
 
             $res['status'] = $httpproxy->http_code();
