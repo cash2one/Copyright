@@ -21,7 +21,7 @@ class Action_Test extends Ap_Action_Abstract
     public function execute()
     {
         //测试FetchUrl
-        //测试FetchUrl
+        /*
         //测试外网
         $url = 'https://www.douban.com';
         var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
@@ -35,9 +35,10 @@ class Action_Test extends Ap_Action_Abstract
         $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
         $res = $httpproxy->get($url);
         var_dump($res);
+        */
 
         //测试内网
-        $url = 'http://10.65.211.21/s?wd=hello';
+        $url = 'https://www.baidu.com/s?wd=hello';
         var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
         $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
         $res = $httpproxy->get($url);
