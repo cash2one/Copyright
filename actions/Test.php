@@ -20,6 +20,31 @@ class Action_Test extends Ap_Action_Abstract
      */
     public function execute()
     {
+        //测试FetchUrl
+        /*
+        //测试外网
+        $url = 'https://www.douban.com';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
+        $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
+        $res = $httpproxy->get($url);
+        var_dump($res);
+
+        //测试内网
+        $url = 'http://10.40.45.67:8090/rts/test';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
+        $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
+        $res = $httpproxy->get($url);
+        var_dump($res);
+        */
+
+        //测试内网
+        $url = 'https://www.baidu.com/s?wd=hello';
+        var_dump(sprintf('----------fetchUrl [url]%s ---------',$url));
+        $httpproxy = Orp_FetchUrl::getInstance(array('timeout' =>30000,'conn_timeout' =>10000,'max_response_size'=> 1024000));
+        $res = $httpproxy->get($url);
+        var_dump($res);
+
+
         /*
         //登录成功之后要跳转去的url
         $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
@@ -30,8 +55,11 @@ class Action_Test extends Ap_Action_Abstract
 
         $result = array('currentUrl'=>$currentUrl,'loginUrl'=>$loginUrl,'destUrl'=>$destUrl);
         */
+        /*
+         * 测试userinfo
         $userInfo = Bd_Passport::checkUserLogin();
         var_dump($userInfo);
+        */
 
     }
 }

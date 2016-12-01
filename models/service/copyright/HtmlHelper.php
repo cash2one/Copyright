@@ -230,6 +230,13 @@ class Service_Copyright_HtmlHelper {
                 'max_response_size' => 1024000,
             ));
             $res['content'] = $httpproxy->get($url);
+            //打log
+            if($res['content'] === false || empty($res['content']))
+            {
+                Bd_Log::warning(sprintf('fetchUrl[httpproxy]%s,[response]%s',json_encode($httpproxy),$res['content']));
+            }
+
+
             $res['status'] = $httpproxy->http_code();
             if ($res['content'] == false || ($res['status'] != '200' && $may_not_200 == 0)){
                 //var_dump("oh no");

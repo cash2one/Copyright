@@ -66,6 +66,7 @@ class Action_Assignment extends Ap_Action_Abstract
             $text, 
             $caseNum,
             $casePerParallelProcess);
+        header('Content-type:text/json');
         echo json_encode($ret);
     }
 }
