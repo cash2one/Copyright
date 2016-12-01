@@ -45,7 +45,6 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
      */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
         $base_url = Bd_Conf::getAppConf("search/base_url");
-        //$base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
         $hasUrl =  preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+/i',$this->contentOrLink);
         if ($hasUrl) {
@@ -61,7 +60,6 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
         $results=$html->find("#content_left [id*=^\d+$]");
 
         foreach ($results as $k => $result) {
-            //$k --;
             if(empty($result)){
                 continue;
             }
@@ -137,12 +135,8 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $sim_title = sprintf("%.2f", $sim_title)*100; 
             $sim_content = -1;
             $list_html_txt = $this->GetContentFromLink($href);//$list_html['content_ret'];
-            //$list_html_url = Service_Copyright_HtmlHelper::dailyPostUrl($href);
-            //$list_html_url = $list_html_url['url_ret'];
             $sim_content_ret = similar_text($this->contentOrLink, $list_html_txt, $sim_content);
             $sim_content = sprintf("%.2f", $sim_content);
-            //$parts_html_url = parse_url($list_html_url);
-            //$domain = $parts_html_url['host'];
             $ret_arr["daily_title"] = $this->query;
             $ret_arr["daily_txt"] = $this->contentOrLink;
             $ret_arr["title"] = strip_tags($a_txt);
