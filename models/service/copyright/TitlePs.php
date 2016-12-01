@@ -115,7 +115,8 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @return
      */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
-        $base_url = 'http://10.65.211.21:80/s?wd=';
+        $base_url = Bd_Conf::getAppConf("search/base_url");
+        //$base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
         $url = $query_url;
         if ($pn > 0){

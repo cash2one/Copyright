@@ -44,7 +44,8 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
      * @return
      */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
-        $base_url = 'http://10.65.211.21:80/s?wd=';
+        $base_url = Bd_Conf::getAppConf("search/base_url");
+        //$base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
         $hasUrl =  preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+/i',$this->contentOrLink);
         if ($hasUrl) {
