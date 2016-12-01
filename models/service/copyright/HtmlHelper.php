@@ -121,28 +121,9 @@ class Service_Copyright_HtmlHelper {
             'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
             'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
         );
-        /* 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 120);
-        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT,500);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-        if($ispost){
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $data); 
-        }else{  
-            curl_setopt($curl, CURLOPT_HTTPGET, 1);
-        }
-    
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, true);
-        */
         $useragent_num = count($useragent_list);
         $select_num = rand(0,$useragent_num);
         $select_ua = $useragent_list[$select_num];
-        //curl_setopt ($curl, CURLOPT_USERAGENT, $select_ua);
         
         $httpproxy = Orp_FetchUrl::getInstance(array(
             'user_agent' => $select_ua, 
@@ -151,9 +132,6 @@ class Service_Copyright_HtmlHelper {
             'max_response_size'=> 1024000,
         ));
         $content_ret = $httpproxy->get($url);
-        //$content_ret = curl_exec($curl);
-        //$url_ret = curl_getinfo($curl, CURLINFO_EFFECTIVE_URL);
-        //curl_close($curl);
         $curl_info = $httpproxy->curl_info();
         return $ret = array(
             'content_ret' => $content_ret,
@@ -186,40 +164,7 @@ class Service_Copyright_HtmlHelper {
             $may_not_200 = 0;
         }
 
-        $proxy_list = array(
-            // "http://10.36.45.12:8888",  // heter00 not available
-            //'http://10.48.29.111', // cq01-testing-wenku05.vm.baidu.com
-            'http://10.57.148.18:8888', // cq02 datase
-            'http://10.94.35.45:8888', // cp01-wenku-test3.cp01.baidu.com
-            'http://10.95.22.55:8888', // cp01-qa-wenku-001.cp01.baidu.com
-        );
-
         for ($i = 0 ; $i < $retry ; $i++){
-            /*
-            $ch = curl_init();
-            curl_setopt ($ch, CURLOPT_URL, $url);
-            curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-            if ($has_header == 0){
-                curl_setopt ($ch, CURLOPT_HEADER, false);
-            }else{
-                curl_setopt ($ch, CURLOPT_HEADER, true);
-            }
-            if ($has_body == 0){
-                curl_setopt ($ch, CURLOPT_NOBODY , true);
-            }else{
-                curl_setopt ($ch, CURLOPT_NOBODY , false);
-            }
-            curl_setopt ($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 2.0.50727;
-     InfoPath.1; CIBA)");
-            curl_setopt ($ch, CURLOPT_REFERER, "http://www.baidu.com");
-            curl_setopt ($ch, CURLOPT_TIMEOUT, $timeout);
-            curl_setopt ($ch, CURLOPT_ENCODING ,'gzip'); // automatic unzip
-
-            $res['content'] = curl_exec($ch);
-            $res['status'] = curl_getinfo($ch,CURLINFO_HTTP_CODE);
-            curl_close($ch);
-             */
 
             $httpproxy = Orp_FetchUrl::getInstance(array(
                 'user_agent' => "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 2.0.50727; InfoPath.1; CIBA)",

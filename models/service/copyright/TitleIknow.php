@@ -60,7 +60,7 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
     function Norm() {
         foreach ($this->searchResult as $id => $arrInfo) {
             $qid = $arrInfo['qid'];
-            $url = "http://zhidao.baidu.com/question/$qid.html";
+            $url = Bd_Conf::getAppConf("search/zhidao_question_url") . $qid. ".html";
             if ($this->type == 0) { $type = 'fiction'; }
             else { $type = 'film'; }
             $arrRet = Service_Data_Da::isResource($type, $arrInfo['title']);
@@ -131,14 +131,8 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 if ($intRet > 0) {
                     $piracyAttach = $arrMat[0];
                 }
-                /*
-                if ($arrPirate['result']['label']==1)
-                {
-                    $arrCnt[$list['deleted']]++;
-                }*/
-
             }
-            $url = "http://zhidao.baidu.com/question/$qid.html";
+            $url = Bd_Conf::getAppConf("search/zhidao_question_url") . $qid . ".html";
             $this->normResult[$arrUrlToId[$url]]['riskAttach'] = $piracyAttach;
             $this->normResult[$arrUrlToId[$url]]['riskUrl'] = $piracyUrl;
             if (!$piracyAttach && !$piracyUrl) {

@@ -20,24 +20,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @return 
      */
     public static function get_score($type, $title) {
-        /*
-        $input['pid'] = $type;
-        $input['line'] = $title;
-        $postdata = json_encode($input);
-        $ch = curl_init();
-        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2010/SVMService/svm_infer');
-        $header = array( "Content-Type: application/json");
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        $curlresult = curl_exec($ch);
-        curl_close($ch);
-        $t = json_decode($curlresult, true);
-        return $t['score'];
-        */
 
         $input['pid'] = $type;
         $input['line'] = $title;
@@ -48,12 +30,9 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             'conn_timeout' => 2000,
             'max_response_size'=> 1024000,
         ));
-        $url = 'http://10.100.18.62:2010/SVMService/svm_infer';
+        $url = Bd_Conf::getAppConf("search/svm_infer_url"); 
         $res = $httpproxy->post($url, $postdata, $header);
-        //Bd_Log::warning(sprintf('[method]%s,[svm response]%s',__METHOD__,$res));
         $var = json_decode($res, true);
-        //$err = $httpproxy->errmsg();
-        //$http_code = $httpproxy->http_code();
         return $var['score'];
     }
 
@@ -73,25 +52,13 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         $header = array(
             "Content-Type: application/json",
         );
-        /*
-        $ch = curl_init();
-        curl_setopt ($ch, CURLOPT_URL, 'http://10.100.18.62:2011/DnnService/DnnInf');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        $curlresult = curl_exec($ch);
-        */
         $httpproxy = Orp_FetchUrl::getInstance(array(
             'timeout' => 10000,
             'conn_timeout' =>5000,
             'max_response_size' => 1024000,
         ));
-        $url = 'http://10.100.18.62:2011/DnnService/DnnInf';
+        $url = Bd_Conf::getAppConf("search/dnn_infer_url"); 
         $res = $httpproxy->post($url, $postdata, $header);
-        //Bd_Log::warning(sprintf('[method]%s,[svm response]%s',__METHOD__,$res));
         $var = json_decode($res, true);
         $tags = implode("_",$var['label']);
         return $tags;
@@ -136,10 +103,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             {
                 continue;
             }
-          //  $t = $result->find('.t', 0);
-          //  $a = $t->find('a', 0);
-            //  echo "$a->href\t$a->innertext\n";
-            BD_Log::notice("In $pn $casePerPage $k ");
             $this->searchResult[$pn * $casePerPage + $k] = $result;
         }
         BD_Log::notice("[search] ".count($this->searchResult));
@@ -193,10 +156,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             }
             
             $list_title = strip_tags($a_txt);
-         //   $list_html_url = Service_Copyright_HtmlHelper::dailyPostUrl($href);
-         //   $list_html_url = $list_html_url['url_ret'];
-         //   $parts_html_url = parse_url($list_html_url);
-         //   $domain = $parts_html_url['host'];
             if ($this->type == 1) {
                 $ret_arr['score'] = Service_Copyright_TitlePs::get_score("film", $list_title);
                 $ret_arr['tags'] = Service_Copyright_TitlePs::get_tags("film", $list_title);
@@ -212,7 +171,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             $this->normResult[$index] = $ret_arr;            
         }
         BD_Log::notice("Norm ".count($this->normResult));
-        //var_dump($this->normResult);
     }
 
     /**
@@ -258,8 +216,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             if ($copyright == 1) { $copyright = 2; }
             $this->detectResult[$index]['risk'] = $copyright;
         }   
-        //var_dump($this->detectResult);
-        //$a = $this->detectResult;
         BD_Log::notice("Detect ".json_encode($this->detectResult));
     }
 
