@@ -52,6 +52,24 @@ class Service_Page_FullTask
         return $ret;
     }
 
+    /**
+     * @param $total
+     * @param $currentPageIndex
+     * @param $pageCount
+     * @return int
+     */
+    private function getCurrentPageMaxIndex($total,$currentPageIndex,$pageCount)
+    {
+        if($currentPageIndex == 1)
+        {
+            return $total;
+        }
+        else
+        {
+            $totalPage = ceil($total/$pageCount);
+            return intval(($totalPage-$currentPageIndex+1)*$pageCount);
+        }
+    }
 
     /**
      * @param $uid
@@ -80,7 +98,7 @@ class Service_Page_FullTask
             $result = array();
             //格式化数据,从数据库到对象
 
-            $serial_number = $count;
+            $serial_number = $this->getCurrentPageMaxIndex($count,$pageIndex,$pageCount);
             foreach($ret as $index=>$value) {
                 $item = array('jobid' => $value['jobid']);
                 //任务序号
