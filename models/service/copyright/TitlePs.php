@@ -51,16 +51,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         $url = 'http://10.100.18.62:2010/SVMService/svm_infer';
         $res = $httpproxy->post($url, $postdata, $header);
 
-        //打log
-        if($res === false || empty($res))
-        {
-            Bd_Log::warning(sprintf('[FetchUrl response]%s',$res));
-        }
-        else
-        {
-            Bd_Log::notice(sprintf('[FetchUrl response]%s',$res));
-        }
-
         $var = json_decode($res, true);
         //$err = $httpproxy->errmsg();
         //$http_code = $httpproxy->http_code();
