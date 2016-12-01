@@ -50,7 +50,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         ));
         $url = 'http://10.100.18.62:2010/SVMService/svm_infer';
         $res = $httpproxy->post($url, $postdata, $header);
-
+        //Bd_Log::warning(sprintf('[method]%s,[svm response]%s',__METHOD__,$res));
         $var = json_decode($res, true);
         //$err = $httpproxy->errmsg();
         //$http_code = $httpproxy->http_code();
@@ -63,7 +63,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      */
     public static function get_tags($type, $title) {
         $input['pid'] =  'qtag';
-        if (($type == 'film') && ($key = contains_not_video($title)) != '') {
+        if (($type == 'film') && ($key = Service_Copyright_TitlePs::contains_not_video($title)) != '') {
            return "非视频_$key";
         }
         
@@ -91,6 +91,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
         ));
         $url = 'http://10.100.18.62:2011/DnnService/DnnInf';
         $res = $httpproxy->post($url, $postdata, $header);
+        //Bd_Log::warning(sprintf('[method]%s,[svm response]%s',__METHOD__,$res));
         $var = json_decode($res, true);
         $tags = implode("_",$var['label']);
         return $tags;
@@ -116,7 +117,6 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      */
     function Search($pn, $start, $end, $casePerPage = 10, $ext = array()) {
         $base_url = Bd_Conf::getAppConf("search/base_url");
-        //$base_url = 'http://10.65.211.21:80/s?wd=';
         $query_url = $base_url . urlencode($this->query);
         $url = $query_url;
         if ($pn > 0){
@@ -142,7 +142,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             BD_Log::notice("In $pn $casePerPage $k ");
             $this->searchResult[$pn * $casePerPage + $k] = $result;
         }
-        BD_Log::notice("Search ".count($this->searchResult));
+        BD_Log::notice("[search] ".count($this->searchResult));
     }
 
     /**
