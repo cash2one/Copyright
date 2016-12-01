@@ -92,8 +92,32 @@ class Service_Page_FullTask
         if($count > 0)
         {
             $fields = array('jobid','salt','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
+            $mod = $count%$pageCount;
             $index = $pageCount*($pageIndex-1);
-            $limit = $pageCount;
+            if($pageIndex == 1)
+            {
+                $index = 0;
+                if($mod == 0)
+                {
+                    $limit = $pageCount;
+                }
+                else
+                {
+                    $limit = $count%$pageCount;
+                }
+            }
+            else
+            {
+                if($mod == 0)
+                {
+                    $index = ($pageIndex-1)*$pageCount;
+                }
+                else
+                {
+                    $index = $mod + ($pageIndex-2)*$pageCount;
+                }
+                $limit = $pageCount;
+            }
             $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
             $result = array();
             //格式化数据,从数据库到对象
