@@ -62,7 +62,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      */
     public static function get_tags($type, $title) {
         $input['pid'] =  'qtag';
-        if (($type == 'film') && ($key = contains_not_video($title)) != '') {
+        if (($type == 'film') && ($key = Service_Copyright_TitlePs::contains_not_video($title)) != '') {
            return "非视频_$key";
            continue;
         }
