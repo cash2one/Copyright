@@ -56,18 +56,73 @@ class Service_Page_FullTask
      * @param $total
      * @param $currentPageIndex
      * @param $pageCount
-     * @return int
+     * @param $index
+     * @param $limit
      */
-    private function getCurrentPageMaxIndex($total,$currentPageIndex,$pageCount)
+    private function getIndex_Limit_CurrentPageMaxNumber0($total,$currentPageIndex,$pageCount,&$index,&$limit,&$currentPageMaxNumber)
     {
+        $mod = $total%$pageCount;
         if($currentPageIndex == 1)
         {
-            return $total;
+            //$index
+            $index = 0;
+            //$limit
+            if($mod == 0)
+            {
+                $limit = $pageCount;
+            }
+            else
+            {
+                $limit = $mod;
+            }
+            //$currentPageMaxNumber
+            $currentPageMaxNumber = $total;
         }
         else
         {
+            //$index
+            if($mod == 0)
+            {
+                $index = ($currentPageIndex-1)*$pageCount;
+            }
+            else
+            {
+                $index = $mod + ($currentPageIndex-2)*$pageCount;
+            }
+            //$limit
+            $limit = $pageCount;
+            //$currentPageMaxNumber
             $totalPage = ceil($total/$pageCount);
-            return intval(($totalPage-$currentPageIndex+1)*$pageCount);
+            $currentPageMaxNumber = intval(($totalPage-$currentPageIndex+1)*$pageCount);
+        }
+    }
+
+    /**
+     * @param $total
+     * @param $currentPageIndex
+     * @param $pageCount
+     * @param $index
+     * @param $limit
+     */
+    private function getIndex_Limit_CurrentPageMaxNumber($total,$currentPageIndex,$pageCount,&$index,&$limit,&$currentPageMaxNumber)
+    {
+        if($currentPageIndex == 1)
+        {
+            //$index
+            $index = 0;
+            //$limit
+            $limit = $pageCount;
+            //$currentPageMaxNumber
+            $currentPageMaxNumber = $total;
+        }
+        else
+        {
+            //$index
+            $index = ($currentPageIndex-1)*$pageCount;
+            //$limit
+            $limit = $pageCount;
+            //$currentPageMaxNumber
+            $currentPageMaxNumber = $total - ($currentPageIndex-1)*$pageCount;
         }
     }
 
@@ -91,38 +146,17 @@ class Service_Page_FullTask
 
         if($count > 0)
         {
+            $index = 0;
+            $limit = 0;
+            $serial_number = 0;
+            //给index limit 还有serial_number 赋值
+            $this->getIndex_Limit_CurrentPageMaxNumber($count,$pageIndex,$pageCount,$index,$limit,$serial_number);
+
             $fields = array('jobid','salt','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
-            $mod = $count%$pageCount;
-            $index = $pageCount*($pageIndex-1);
-            if($pageIndex == 1)
-            {
-                $index = 0;
-                if($mod == 0)
-                {
-                    $limit = $pageCount;
-                }
-                else
-                {
-                    $limit = $count%$pageCount;
-                }
-            }
-            else
-            {
-                if($mod == 0)
-                {
-                    $index = ($pageIndex-1)*$pageCount;
-                }
-                else
-                {
-                    $index = $mod + ($pageIndex-2)*$pageCount;
-                }
-                $limit = $pageCount;
-            }
             $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
             $result = array();
             //格式化数据,从数据库到对象
 
-            $serial_number = $this->getCurrentPageMaxIndex($count,$pageIndex,$pageCount);
             foreach($ret as $index=>$value) {
                 $item = array('jobid' => $value['jobid']);
                 //任务序号
