@@ -140,7 +140,7 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             $ret_arr["daily_title"] = $this->query;
             $ret_arr["daily_txt"] = $this->contentOrLink;
             $ret_arr["title"] = strip_tags($a_txt);
-            $ret_arr["url"] = $list_html_url;
+            $ret_arr["url"] = $href;
             $ret_arr["domain"] = $domain;
             $ret_arr["sim_title"] = $sim_title;
             $ret_arr["sim_content"] = $sim_content;

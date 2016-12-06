@@ -107,9 +107,9 @@ class Action_Query extends Service_Action_Abstract
                 }
             }
             // 只要缺失的数量小于10%，都可以接受
-            if ($missCount < $caseNum * 0.1) {
+            if ($missCount > $caseNum * 0.1) {
                 $ret['errno'] = 4;
-                $ret['message'] = "cache miss too much";
+                $ret['message'] = "cache miss too much! missCount=$missCount";
             }
 
             $this->processInfo($retCache['ret']["$jobId"]['info']);
