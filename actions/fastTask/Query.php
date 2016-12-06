@@ -89,18 +89,28 @@ class Action_Query extends Service_Action_Abstract
         else
         {
             // 将redis中缓存的数据打到返回结果里面
+            $missCount = 0;
             for ($i = 0; $i < $caseNum; ++$i)
             {
                 if (!isset($retCache['ret']["$jobId"][$i]) || 
                     empty($retCache['ret']["$jobId"][$i]))
                 {
-                    $ret['errno'] = 4;
-                    $ret['message'] = "cache index = $i miss";
-                    break;
+                    //只统计缺失多少个，不退出
+                    $missCount ++;
+                    //$ret['errno'] = 4;
+                    //$ret['message'] = "cache index = $i miss";
+                    //break;
                 }
-                $ret['result'][] = json_decode($retCache['ret']["$jobId"][$i], true);
+                else 
+                { 
+                    $ret['result'][] = json_decode($retCache['ret']["$jobId"][$i], true);
+                }
             }
-
+            // 只要缺失的数量小于10%，都可以接受
+            if ($missCount < $caseNum * 0.1) {
+                $ret['errno'] = 4;
+                $ret['message'] = "cache miss too much";
+            }
 
             $this->processInfo($retCache['ret']["$jobId"]['info']);
             $ret['query'] = $this->query;
