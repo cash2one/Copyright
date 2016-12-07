@@ -86,12 +86,21 @@ class Action_Submit extends Service_Action_Abstract
             $custom_start_time,
             $custom_end_time
         );
+        $needSchedule = false;
         if ($createJobCount == 1) {
             $ret = array('errno' => 0, 'jobId' => $jobId);
+            $needSchedule = true; //任务创建成功 ， 就需要进行调度
         } else {
+            //说明jobid 已经和已有的重复了，导致数据库插入不成功!
             $ret = array('errno' => -1, 'message' => 'Please do not repeat create jobs!');
         }
         $this->jsonResponse($ret);
+
+        //调度任务启动
+        if($needSchedule)
+        {
+            $obj->schedule($jobId,$this->getUid(),$salt,$fileName,$mode,$type,$scope,$custom_start_time,$custom_end_time);
+        }
     }
 
     /**

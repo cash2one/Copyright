@@ -76,6 +76,19 @@ class Service_Data_FullTask
 
     /**
      * @param $fields
+     * @param $conditions
+     * @param null $appends
+     * @return mixed
+     * @throws Exception
+     */
+    public function select($fields,$conditions,$appends=null)
+    {
+        $ret = $this->sdm->select($this->table,$fields,$conditions,null,$appends);
+        return $ret;
+    }
+
+    /**
+     * @param $fields
      * @param $uid
      * @param $startIndex
      * @param $number
@@ -83,7 +96,7 @@ class Service_Data_FullTask
      * @return mixed
      * @throws Exception
      */
-    public function select($fields,$uid,$startIndex,$number,$status = null)
+    public function getUserJobs($fields,$uid,$startIndex,$number,$status = null)
     {
         //初始化查询条件
         $condition = array('uid='=>$uid);
@@ -109,6 +122,13 @@ class Service_Data_FullTask
     public function updateTable($jobid,$row)
     {
         $condition = array('jobid='=>$jobid);
+
+        //如果没有设置update_time字段， 那么默认就是当前的时间
+        if(!isset($row['update_time']))
+        {
+            $row['update_time'] = time();
+        }
+
         $ret = $this->sdm->update($this->table,$row,$condition);
         return $ret;
     }

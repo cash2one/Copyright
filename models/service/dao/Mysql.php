@@ -38,7 +38,7 @@ class Service_Dao_Mysql
             if ($this->_db === false) {
                 $db_errno = Bd_Db_ConnMgr::getErrno();
                 $db_error = Bd_Db_ConnMgr::getError();
-                $log = sprintf("connect databsae error, errno=%s,error=%s", $db_errno, $db_error);
+                $log = sprintf("connect database error, errno=%s,error=%s", $db_errno, $db_error);
                 Bd_Log::fatal($log);
             }
         }

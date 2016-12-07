@@ -153,7 +153,7 @@ class Service_Page_FullTask
             $this->getIndex_Limit_CurrentPageMaxNumber($count,$pageIndex,$pageCount,$index,$limit,$serial_number);
 
             $fields = array('jobid','salt','file_name','create_time','mode','type','scope','status','job_process','job_result_file','custom_start_time','custom_end_time');
-            $ret = $this->sdf->select($fields,$uid,$index,$limit,$status);
+            $ret = $this->sdf->getUserJobs($fields,$uid,$index,$limit,$status);
             $result = array();
             //格式化数据,从数据库到对象
 
@@ -212,19 +212,64 @@ class Service_Page_FullTask
     }
 
     /**
+     * 由线上环境调度线下的任务启动
      * @param
      * @return
      */
-    public function schedule()
+    public function schedule($jobid,$uid,$salt,$fileName,$mode,$type,$scope,$startTime=0,$endTime=0,$ext = null)
     {
-        //uid
-        //jobid
-        //file content
-        //mode
-        //type
-        //scope
-        //start optional
-        //end optional
+        //调用 action /FullTask/Scheduler
+        //发起curl请求， 这里不选择ral主要是因为ral的log太多， 对以后监控可能会产生影响
+        $file = Service_Copyright_File::getFullTaskPath().'/'.$salt.'/'.$fileName;
+        $fileContent = @file_get_contents($file);    //20161207 这里，如果文件很大， 可能有些问题
+        if(empty($fileContent))
+        {
+            return;
+        }
+
+        //构造post数组
+        $post = array();
+        $post['jobid'] = $jobid;
+        $post['uid'] = $uid;
+        $post['salt'] = $salt;
+        $post['fileName'] = $fileName;
+        $post['fileContent'] = $fileContent;
+        $post['mode'] = $mode;
+        $post['type'] = $type;
+        $post['scope'] = $scope;
+        $post['startTime'] = $startTime;
+        $post['endTime'] = $endTime;
+
+        $schedulerUrl = Bd_Conf::getAppConf("fulltask/scheduler_url");
+        $ret = Service_Copyright_Curl::send($schedulerUrl,$post,1);
+
+        if(false === $ret)
+        {
+            Bd_Log::warning(sprintf('[url]%s,[jobid]%s,[return]%s',$schedulerUrl,$jobid,$ret));
+            //5表示线上调度线下失败
+            $status = 5;
+        }
+        else
+        {
+            //4表示线上调度线下成功
+            $status = 4;
+            //log
+            Bd_Log::notice(sprintf('[url]%s,[jobid]%s,[return]%s',$schedulerUrl,$jobid,$ret));
+        }
+
+        //如果ext是空， 说明是第一次schedule
+        if(empty($ext))
+        {
+            $ext = array('schedule_history'=>array(time()));
+        }
+        else
+        {
+            $ext['schedule_history'][] = time(); //追加当前时间
+        }
+
+        $row = array('status'=>$status,'update_time'=>time(),'ext'=>json_encode($ext));
+        $this->updateTable($jobid,$row); //更新数据库的状态
+
     }
 }
 

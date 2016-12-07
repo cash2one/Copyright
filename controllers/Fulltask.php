@@ -9,5 +9,7 @@ class Controller_FullTask extends Ap_Controller_Abstract {
         'init' => 'actions/fullTask/Init.php',
         'submit' => 'actions/fullTask/Submit.php',
         'query' => 'actions/fullTask/Query.php',
+        'scheduler' => 'actions/fullTask/Scheduler.php',
+        'waiter' => 'actions/fullTask/Waiter.php',
 	);
 }
