@@ -104,6 +104,8 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
             unset($arrCnt);
             unset($piracyUrl);
             unset($piracyAttach);
+            unset($piracyAttachName);
+            unset($piracyAttachLink);
             $qid = $arrAns['result'][$id]['qid'];
             foreach ($arrAns['result'][$id]['normal_replys'] as $k => $list)
             {
@@ -113,9 +115,13 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 if ($intRet > 0) {
                     $piracyUrl = $arrMat[0];
                 }
-                $intRet = preg_match('/\<file fsid/i', $strCon, $arrMat);
+                $intRet = preg_match('/\<file fsid.*?\/>/i', $strCon, $arrMat);
                 if ($intRet > 0) {
                     $piracyAttach = $arrMat[0];
+                    $intRet = preg_match('/name="(.*?)"/', $piracyAttach, $arrMat);
+                    $piracyAttachName = $arrMat[1];
+                    $intRet = preg_match('/link="(.*?)"/', $piracyAttach, $arrMat);
+                    $piracyAttachLink = 'http://pan.baidu.com' . $arrMat[1];
                 }
                 /*if ($arrPirate['result']['label']==1)
                 {
@@ -131,13 +137,17 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 if ($intRet > 0) {
                     $piracyUrl = $arrMat[0];
                 }
-                $intRet = preg_match('/\<file fsid/i', $strCon, $arrMat);
+                $intRet = preg_match('/\<file fsid.*?\/>/i', $strCon, $arrMat);
                 if ($intRet > 0) {
                     $piracyAttach = $arrMat[0];
+                    $intRet = preg_match('/name="(.*?)"/', $piracyAttach, $arrMat);
+                    $piracyAttachName = $arrMat[1];
+                    $intRet = preg_match('/link="(.*?)"/', $piracyAttach, $arrMat);
+                    $piracyAttachLink = 'http://pan.baidu.com' . $arrMat[1];
                 }
             }
             $url = Bd_Conf::getAppConf("search/zhidao_question_url") . $qid . ".html";
-            $this->normResult[$arrUrlToId[$url]]['riskAttach'] = $piracyAttach;
+            $this->normResult[$arrUrlToId[$url]]['riskAttach'] = $piracyAttachName;
             $this->normResult[$arrUrlToId[$url]]['riskUrl'] = $piracyUrl;
             if (!$piracyAttach && !$piracyUrl) {
                 $this->normResult[$arrUrlToId[$url]]['risk'] = 0;
