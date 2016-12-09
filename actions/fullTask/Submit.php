@@ -29,12 +29,36 @@ class Action_Submit extends Service_Action_Abstract
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $salt = $httpPost['salt'];
+        $fileName = $httpPost['fileName']; //刚刚上传的文件名
+
+        //简单写， 粗暴了点， 但是时间紧迫
         if (empty($salt)) {
             $ret = array('errno' => -1, 'message' => 'please provide the salt!');
             $this->jsonResponse($ret);
             return;
         }
-        //根据fileId， 获取对应路径下的文件名， 这个文件是全量任务要用到的用户上传的文件
+        if(empty($fileName))
+        {
+            $ret = array('errno' => -1, 'message' => 'please provide the fileName!');
+            $this->jsonResponse($ret);
+            return;
+        }
+
+        //因为orp的实例机器会文件上传到ftp服务器， 所以在submit的时候要判断一下文件是否存在
+        $scf = new Service_Copyright_File();
+        $fileHttpUrl = $scf->getFileHttpAddr($salt,$fileName);
+
+        //如果ftp文件不存在， 那么就报异常退出
+        if($scf->isFileExists($fileHttpUrl) == false)
+        {
+            $ret = array('errno'=>-1,'message'=>sprintf('[file]%s, not exists!',$fileHttpUrl));
+            $this->jsonResponse($ret);
+            return;
+        }
+
+        /*
+        //如果用NFS ， 需要把这段代码注释打开
+        //根据salt， 获取对应路径下的文件名， 这个文件是全量任务要用到的用户上传的文件
         $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
         if (is_dir($parentFolder)) {
             $files = glob($parentFolder . '/*.*');
@@ -52,6 +76,7 @@ class Action_Submit extends Service_Action_Abstract
             $this->jsonResponse($ret);
             return;
         }
+        */
 
         //默认用户自定的时间，起始时间和终止时间都是0
         $custom_start_time = 0;

@@ -221,11 +221,6 @@ class Service_Page_FullTask
         //调用 action /FullTask/Scheduler
         //发起curl请求， 这里不选择ral主要是因为ral的log太多， 对以后监控可能会产生影响
         $file = Service_Copyright_File::getFullTaskPath().'/'.$salt.'/'.$fileName;
-        $fileContent = @file_get_contents($file);    //20161207 这里，如果文件很大， 可能有些问题
-        if(empty($fileContent))
-        {
-            return;
-        }
 
         //构造post数组
         $post = array();
@@ -233,7 +228,6 @@ class Service_Page_FullTask
         $post['uid'] = $uid;
         $post['salt'] = $salt;
         $post['fileName'] = $fileName;
-        $post['fileContent'] = $fileContent;
         $post['mode'] = $mode;
         $post['type'] = $type;
         $post['scope'] = $scope;

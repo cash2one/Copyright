@@ -14,6 +14,17 @@
  **/
 class Action_Upload extends Service_Action_Abstract
 {
+    private $fileName;
+
+    /**
+     * @param
+     * @return
+     */
+    public function __construct()
+    {
+        $this->fileName =  $_FILES[Service_Copyright_File::FILE]['name'];
+    }
+
     /**
     * @param :
     * @return :
@@ -24,9 +35,13 @@ class Action_Upload extends Service_Action_Abstract
         $checkRet = $scf->check();
         if($checkRet === true)
         {
+            $fromFileName = $_FILES[self::FILE]["tmp_name"];
             $salt = $this->generateSalt();
             $parentFolder = Service_Copyright_File::getFullTaskPath().'/'.$salt;
-            if($scf->save2Local($parentFolder))
+            $newFileFullPath = $parentFolder.'/'.$this->fileName;
+
+            //if($scf->save2Local($fromFileName,$newFileFullPath))
+            if($scf->save2ftp($fromFileName,$salt,$this->fileName))
             {
                 $ret = array('errno'=>0,'salt'=>$salt);
             }
@@ -50,10 +65,9 @@ class Action_Upload extends Service_Action_Abstract
     public function generateSalt()
     {
         //从临时文件中获取文件1k字节的内容
-        $fileName = $_FILES[Service_Copyright_File::FILE]['name'];
         $content = file_get_contents($_FILES[Service_Copyright_File::FILE]["tmp_name"],0,null,0,1024);
         $uid = $this->getUid();
-        $temp = 'fileName'.$fileName;
+        $temp = 'fileName'.$this->fileName;
         $temp .= 'content'.$content;
         $temp .= 'uid'.$uid;
         $temp .= 'time'.time();
