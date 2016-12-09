@@ -105,7 +105,7 @@ class Service_Copyright_Statistic
         //arsort($userCount);
         foreach ($domainCount as $key => $value) {
             $priacySource[] = array(
-                'from' => $key,
+                'from' => 'http://' . $key,
                 'fromType' => 0,
                 'count' => $value,
             );

@@ -27,7 +27,7 @@ class Action_Scheduler extends Ap_Action_Abstract
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $salt = $httpPost['salt'];
-        $filename = $httpPost['filename'];
+        $filename = $httpPost['fileName'];
         echo "submit successfully\n";
         fastcgi_finish_request();
         $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
