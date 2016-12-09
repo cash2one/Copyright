@@ -40,23 +40,27 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $generate_path = dirname($this->queryPath) . '/script_generate/';
         $result_path = dirname($this->queryPath) . '/results/';
 
-        mkdir($generate_path);
-        mkdir($result_path);
-        $timestamp = time();
+        if (!file_exists($generate_path)) {
+            mkdir($generate_path);
+        }
+        if (!file_exists($result_path)) {
+            mkdir($result_path);
+        }
+        $timestamp = $this->jobId; //time();
         $type = 'fiction';
         if ($this->type == 1) { $type = 'film'; }
-        $script0 = $generate_path . 'fetch_hive_' . $timestamp . '.php';
-        $script1 = $generate_path . 'fetch_hive_' . $timestamp . '.sql';
+        $script0 = $generate_path . $this->jobId . '_fetch_hive' . '.php';
+        $script1 = $generate_path . $this->jobId . '_fetch_hive' . '.sql';
         $script2 = $template_path . 'filter_content.php';
-        $script3 = $generate_path . 'svm_' . $timestamp . '.php';
-        $script4 = $generate_path . 'qtags_' . $timestamp . '.php';
+        $script3 = $generate_path . $this->jobId . '_svm' . '.php';
+        $script4 = $generate_path . $this->jobId . '_qtags' . '.php';
         $script5 = $template_path . 'judge_' . $type . '.sh';
 
-        $output1 = $result_path . 'fetch_hive_' . $timestamp . '.txt';
-        $output2 = $result_path . 'filter_content_' . $timestamp . '.txt';
-        $output3 = $result_path . 'svm_' . $timestamp . '.txt';
-        $output4 = $result_path . 'qtags_' . $timestamp . '.txt';
-        $output5 = $result_path . 'judge_' . $type . '_' . $timestamp . '.txt';
+        $output1 = $result_path . $this->jobId . '_fetch_hive' . '.txt';
+        $output2 = $result_path . $this->jobId . '_filter_content' . '.txt';
+        $output3 = $result_path . $this->jobId . '_svm' . '.txt';
+        $output4 = $result_path . $this->jobId . '_qtags' . '.txt';
+        $output5 = $result_path . $this->jobId . '_judge_' . $type . '.txt';
 
         $tokens = explode("/", $script0);
         $replace1 = array(

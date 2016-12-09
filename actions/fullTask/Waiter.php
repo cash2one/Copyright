@@ -42,7 +42,6 @@ class Action_Waiter extends Service_Action_Abstract
             );
             $this->jsonResponse($ret);
         }
-        //echo "$jobStatus";
         fastcgi_finish_request();
         foreach ($arrJobs as $index => $value) {
             if ($value['job_process'] === 100) {
@@ -51,8 +50,6 @@ class Action_Waiter extends Service_Action_Abstract
         }
         $jobStatus = json_encode($arrJobs);
         file_put_contents($parentFolder . '/job_status.txt', $jobStatus, LOCK_EX);
-        //$this->jsonResponse($result);
-
     }
 
 }

@@ -26,14 +26,13 @@ class Action_Scheduler extends Ap_Action_Abstract
         //$queryPath = $httpPost['queryPath'];
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
+        $salt = $httpPost['salt'];
+        $filename = $httpPost['filename'];
         echo "submit successfully\n";
         fastcgi_finish_request();
-        $salt = time();
         $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
         mkdir($parentFolder);
-        $queryPath = $parentFolder . '/' . $_FILES['query']['name'];
-        BD_LOG::notice("query_path: ". $queryPath);
-        move_uploaded_file($_FILES['query']['tmp_name'], $queryPath);
+        $queryPath = $parentFolder . '/' . $filename;
         if ($mode == 0 && $scope == 0) {
             $obj = new Service_FullTask_TitlePs($jobId, $type, $scope, $queryPath);
             $obj->run();

@@ -36,16 +36,18 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
      */ 
     public function run() {
         $this->update_status(0);
-        $result_path = dirname($this->queryPath) . '/results';
-        mkdir($result_path);
+        $result_path = dirname($this->queryPath) . '/results/';
+        if (!file_exists($result_path)) {
+            mkdir($result_path);
+        }
 
-        $timestamp = time();
-        $output1 = $result_path . '/fetch_ps_' . $timestamp . '.txt';
+        //$timestamp = time();
+        $output1 = $result_path . $this->jobId . '_fetch_ps'  . '.txt';
 
         $this->process($this->type, $this->queryPath, $output1);
         $this->update_status(90, $output1);   
 
-        $tokens = explode("/", $scripts['resultPath']);
+        //$tokens = explode("/", $scripts['resultPath']);
         //$tokens[count($tokens) - 1] = 'stat.txt';
         //$statPath = join('/', $tokens);
         $statJson = $this->compute_statistic($output1);

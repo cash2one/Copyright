@@ -35,19 +35,15 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
      */ 
     public function run() {
         $this->update_status(0);
-        $result_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/results/';
+        $result_path = dirname($this->queryPath) . '/results/';
 
-        $timestamp = time();
-        $output1 = $result_path . 'fetch_daily_' . $timestamp . '.txt';
+        $output1 = $result_path . $this->jobId .  '_fetch_daily' . '.txt';
 
         $this->process($this->type, $this->queryPath, $output1);
         $this->update_status(90, $output1); 
    
-        $tokens = explode("/", $scripts['resultPath']);
-        $tokens[count($tokens) - 1] = 'stat.txt';
-        $statPath = join('/', $tokens);
-        $statJson = $this->compute_statistic($output1, $statPath);
-        $this->update_status(100, null, $statPath, $statJson); 
+        $statJson = $this->compute_statistic($output1);
+        $this->update_status(100, null, $statJson); 
     }
 
     /**
