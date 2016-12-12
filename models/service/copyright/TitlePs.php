@@ -215,8 +215,26 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             $this->detectResult[$index] = $cur;
             if ($copyright == 1) { $copyright = 2; }
             $this->detectResult[$index]['risk'] = $copyright;
+            if ($this->hitWhiteList($domain)) {
+                $this->detectResult[$index]['risk'] = 0;
+            }
         }   
         BD_Log::notice("Detect ".json_encode($this->detectResult));
+    }
+
+    /**
+     * @param 
+     * @return 
+     */ 
+    public function hitWhiteList($domain) {
+        $lists = Bd_Conf::getAppConf("whitelist/titleps");
+        $tokens = explode(';', $lists);
+        foreach ($tokens as $whitename) {
+            if (strpos($whitename, $domain) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

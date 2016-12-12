@@ -183,9 +183,27 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
             }
             $this->detectResult[$index] = $cur;
             $this->detectResult[$index]['risk'] = $level;
+            if ($this->hitWhiteList($domain)) {
+                $this->detectResult[$index]['risk'] = 0;
+            }
             unset($this->detectResult[$index]['daily_txt']);
         }  
         BD_Log::notice("Detect ".count($this->detectResult)); 
+    }
+
+    /**
+     * @param
+     * @return
+     */
+    public function hitWhiteList($domain) {
+        $lists = Bd_Conf::getAppConf("whitelist/contentps");
+        $tokens = explode(';', $lists);
+        foreach ($tokens as $whitename) {
+            if (strpos($whitename, $domain) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
