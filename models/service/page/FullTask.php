@@ -237,18 +237,25 @@ class Service_Page_FullTask
         $schedulerUrl = Bd_Conf::getAppConf("fulltask/scheduler_url");
         $ret = Service_Copyright_Curl::send($schedulerUrl,$post,1);
 
+        $retData = json_decode($ret,true);
         if(false === $ret)
         {
             Bd_Log::warning(sprintf('[url]%s,[jobid]%s,[return]%s',$schedulerUrl,$jobid,$ret));
             //5表示线上调度线下失败
             $status = 5;
         }
-        else
+        else if($retData['errno'] == 0)
         {
             //4表示线上调度线下成功
             $status = 4;
             //log
             Bd_Log::notice(sprintf('[url]%s,[jobid]%s,[return]%s',$schedulerUrl,$jobid,$ret));
+        }
+        else
+        {
+            Bd_Log::warning(sprintf('[url]%s,[jobid]%s,[return]%s',$schedulerUrl,$jobid,$ret));
+            //5表示线上调度线下失败
+            $status = 5;
         }
 
         //如果ext是空， 说明是第一次schedule

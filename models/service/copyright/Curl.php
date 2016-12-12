@@ -39,6 +39,7 @@ class Service_Copyright_Curl
         }
         else
         {
+            /*
             //作为底层方法，要记录服务端返回的原始数据
             if(is_string($ret))
             {
@@ -54,6 +55,12 @@ class Service_Copyright_Curl
                 $serializeRetData = json_encode($ret);
             }
             Bd_Log::notice(sprintf('[url]%s,[post]%s,[return]%s . curl return successfully!',$url,json_encode($post),$serializeRetData));
+            */
+            if(is_string($ret))
+            {
+                Bd_Log::notice(sprintf('[url]%s,[post]%s,[return]%s . curl return successfully!',$url,json_encode($post),$ret));
+            }
+
         }
         return $ret;
     }
