@@ -196,7 +196,7 @@ class Service_Copyright_File
         $errno = curl_errno($ch);
         if($errno == 0)
         {
-            Bd_Log::fatal(sprintf('save2ftp successfully! [fromFile]%s,[url]%s',$fromFile,$url));
+            Bd_Log::notice(sprintf('save2ftp successfully! [fromFile]%s,[url]%s',$fromFile,$url));
             return true;
         }
         else
