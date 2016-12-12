@@ -15,6 +15,7 @@
  *  
  **/
 
+
 abstract class Service_FullTask_Abstract {
 
     public static $PHP_PATH;
