@@ -18,10 +18,13 @@ Bd_Init::init();
 //B事情
 //1. 从数据库中拉取 status==5的， （表示调度失败的） 并且create_time不超过24小时的， 根据ext获取调度次数小于3次的
 //2. 遍历列表，每个元素都是一个job， 发送请求到线下Scheduler
-echo 'Hello, sample script running...';
+$fullTaskWaiter = new FullTaskWaiter();
+$fullTaskWaiter->work();
 
 //如果利用noah ct任务系统运行脚本，需要显示退出，设置退出码为0，否则监控系统会报警
 exit(0);
+
+
 
 class FullTaskWaiter
 {
