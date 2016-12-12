@@ -17,31 +17,23 @@ class Action_Upload extends Service_Action_Abstract
     private $fileName;
 
     /**
-     * @param
-     * @return
-     */
-    public function __construct()
-    {
-        $this->fileName =  $_FILES[Service_Copyright_File::FILE]['name'];
-    }
-
-    /**
     * @param :
     * @return :
     */
     public function invoke()
     {
         $scf = new Service_Copyright_File();
+        $this->fileName = $scf->fileName;
         $checkRet = $scf->check();
         if($checkRet === true)
         {
-            $fromFileName = $_FILES[self::FILE]["tmp_name"];
+            $fromFileName = $_FILES[Service_Copyright_File::FILE]["tmp_name"];
             $salt = $this->generateSalt();
             $parentFolder = Service_Copyright_File::getFullTaskPath().'/'.$salt;
-            $newFileFullPath = $parentFolder.'/'.$this->fileName;
+            $newFileFullPath = $parentFolder.'/'.$scf->fileName;
 
             //if($scf->save2Local($fromFileName,$newFileFullPath))
-            if($scf->save2ftp($fromFileName,$salt,$this->fileName))
+            if($scf->save2ftp($fromFileName,$salt,$scf->fileName))
             {
                 $ret = array('errno'=>0,'salt'=>$salt);
             }
