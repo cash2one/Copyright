@@ -34,6 +34,7 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
      * @return
      */ 
     public function run() {
+        BD_Log::notice("service content ps is running...\n");
         $this->update_status(0);
         $result_path = dirname($this->queryPath) . '/results/';
 
@@ -41,9 +42,11 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
 
         $this->process($this->type, $this->queryPath, $output1);
         $this->update_status(90, $output1); 
-   
+
+        BD_Log::notice("content ps is running statistics...\n");
         $statJson = $this->compute_statistic($output1);
         $this->update_status(100, null, $statJson); 
+        BD_Log::notice("content ps is done.\n");
     }
 
     /**
@@ -71,7 +74,7 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
             $tokens = explode("\t", $line);
             $content .= "资源关键词：$tokens[0]\n";
             $content .= "序号\t标题\n";
-            $obj = new Service_Copyright_ContentPs($this->jobId, $tokens[0], $type, $tokens[1]);
+            $obj = new Service_Copyright_ContentPs($this->jobId, $tokens[0], $type, 0, $tokens[1]);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {

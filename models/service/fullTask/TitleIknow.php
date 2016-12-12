@@ -130,6 +130,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
      * @return
      */
     public function run() {
+        BD_Log::notice("service title iknow is running...\n");
         $this->update_status(0);
         $arrScripts = $this->generate_scripts();
         foreach ($arrScripts as $script) {
@@ -137,8 +138,10 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
             exec($script['executable']);
             $this->update_status($script['progress'], $script['resultPath']);
         }
+        BD_Log::notice("title iknow is running statistics...\n");
         $statJson = $this->compute_statistic($script['resultPath']);
         $this->update_status(100, null, $statJson);
+        BD_Log::notice("title iknow is done.\n");
     }
 
     /**

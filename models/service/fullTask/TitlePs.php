@@ -35,12 +35,13 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
      * @return
      */ 
     public function run() {
+        Bd_Log::notice("service title ps is running...\n");
         $this->update_status(0);
         $result_path = dirname($this->queryPath) . '/results/';
         if (!file_exists($result_path)) {
             mkdir($result_path);
         }
-
+        Bd_Log::notice("result_path is: ". $result_path);
         //$timestamp = time();
         $output1 = $result_path . $this->jobId . '_fetch_ps'  . '.txt';
 
@@ -50,6 +51,7 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
         //$tokens = explode("/", $scripts['resultPath']);
         //$tokens[count($tokens) - 1] = 'stat.txt';
         //$statPath = join('/', $tokens);
+        Bd_Log::notice("title ps is running statistics\n");
         $statJson = $this->compute_statistic($output1);
         $this->update_status(100, null, $statJson); 
     }
@@ -80,7 +82,7 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
             $content .= "资源关键词：$line\n";
             $content .= "序号\t标题\n";
             BD_LOG::notice("content: ". $content);
-            $obj = new Service_Copyright_TitlePs($this->jobId, $line, $type);
+            $obj = new Service_Copyright_TitlePs($this->jobId, $line, $type, 0);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {

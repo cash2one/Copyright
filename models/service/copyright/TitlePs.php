@@ -227,6 +227,7 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
      * @return 
      */ 
     public function hitWhiteList($domain) {
+        if (!$domain) return false;
         $lists = Bd_Conf::getAppConf("whitelist/titleps");
         $tokens = explode(';', $lists);
         foreach ($tokens as $whitename) {

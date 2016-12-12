@@ -196,6 +196,7 @@ class Service_Copyright_ContentPs extends Service_Copyright_Base
      * @return
      */
     public function hitWhiteList($domain) {
+        if (!$domain) return false;
         $lists = Bd_Conf::getAppConf("whitelist/contentps");
         $tokens = explode(';', $lists);
         foreach ($tokens as $whitename) {
