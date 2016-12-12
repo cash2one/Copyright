@@ -151,6 +151,7 @@ class Service_Copyright_File
     }
 
     /**
+     * nginx静态服务的文件是否存在
      * @param $httpUrl
      * @return bool
      */

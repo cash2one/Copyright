@@ -14,10 +14,72 @@
  **/
 class Action_Download extends Service_Action_Abstract
 {
+
+    public function invoke()
+    {
+        $httpGet = $_GET;
+        $salt = $httpGet['salt'];
+        $fileName = $httpGet['file'];
+        $fileName = $this->iconvutf8($fileName);
+
+        //如果连fileName都没有， 那只能return
+        if(empty($fileName))
+        {
+            $ret = array('errno'=>-1,'message'=>'please input the file');
+            $this->jsonResponse($ret);
+            return;
+        }
+
+        //如果没有salt ， 就说明下载的是样式文件
+        if(empty($salt))
+        {
+            return $this->downloadSampleFile($fileName);
+        }
+        else
+        {
+
+        }
+
+    }
+
     /**
-     * @param
+     * 样式文件的下载
+     * @param $fileName
      * @return
      */
+    protected function downloadSampleFile($fileName)
+    {
+        $filePath = Service_Copyright_File::getFullTaskPath().'/sample/'.$fileName;
+        $this->downloadFileResponse($filePath);
+    }
+
+    /**
+     * @param $salt
+     * @param $fileName
+     * @return
+     */
+    protected function downloadFile($salt,$fileName)
+    {
+        //拼凑文件地址
+        $scf = new Service_Copyright_File();
+        $httpFileAddr = $scf->getFileHttpAddr($salt,$fileName);
+        //校验文件是否存在
+        if($scf->isFileExists($httpFileAddr))
+        {
+            //文件如果存在，就做302跳转
+            header('Location:'.$httpFileAddr);
+            exit();
+        }
+        else
+        {
+            $result = array('errno'=>-1,'message'=>sprintf('[file]%s , not exists!',$httpFileAddr));
+            $this->jsonResponse($result);
+        }
+    }
+
+    /*
+     *  注释掉这个方法， 因为文件方案并不是nfs
+     *
     public function invoke()
     {
         $httpGet = $_GET;
@@ -42,6 +104,7 @@ class Action_Download extends Service_Action_Abstract
         $this->downloadFileResponse($filePath);
 
     }
+    */
 }
 
 
