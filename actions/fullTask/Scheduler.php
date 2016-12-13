@@ -37,15 +37,15 @@ class Action_Scheduler extends Service_Action_Abstract
         //根据salt 和fileName 拼凑输入的文件地址
         $queryPath = Service_Copyright_File::getFullTaskPath() . '/' . $salt . '/' . $fileName;
         if ($mode == 0 && $scope == 0) {
-            $obj = new Service_FullTask_TitlePs($jobId, $type, $scope, $queryPath);
+            $obj = new Service_FullTask_TitlePs($jobId, $type, $scope, $salt, $queryPath);
             $obj->run();
         }
         if ($mode == 0 && $scope == 1) {
-            $obj = new Service_FullTask_TitleIknow($jobId, $type, $scope, $queryPath);
+            $obj = new Service_FullTask_TitleIknow($jobId, $type, $scope, $salt, $queryPath);
             $obj->run();
         }
         if ($mode == 1 && $scope == 0) {
-            $obj = new Service_FullTask_ContentPs($jobId, $type, $scope, $queryPath);
+            $obj = new Service_FullTask_ContentPs($jobId, $type, $scope, $salt, $queryPath);
             $obj->run();
         }
     }
