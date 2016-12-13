@@ -159,7 +159,7 @@ class Service_Copyright_File
     {
         $ch = curl_init($httpUrl);
         curl_setopt($ch,CURLOPT_NOBODY,true);
-        curl_setopt($ch,CURLOPT_CUSTOMEQUEST,'GET');
+        curl_setopt($ch,CURLOPT_CUSTOMREQUEST,'GET');
         $response = curl_exec($ch);
         $found = false;
         if($response !== false)
