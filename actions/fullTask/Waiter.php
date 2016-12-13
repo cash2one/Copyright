@@ -28,6 +28,7 @@ class Action_Waiter extends Service_Action_Abstract
         if (!file_exists($parentFolder . '/job_status.txt')) {
             $ret = array('errno' => -1, 'message' => 'do not exist this job_status.txt');
             $this->jsonResponse($ret);
+            return;
         }
         $jobStatus = file_get_contents($parentFolder . '/job_status.txt');
         $arrJobs = json_decode($jobStatus, true);
@@ -47,11 +48,11 @@ class Action_Waiter extends Service_Action_Abstract
             );
             $this->jsonResponse($ret);
         }
-        fastcgi_finish_request();
         /*
          * 现在每个salt文件下存放一个job_status，不用每次更新
          */
        /* 
+        fastcgi_finish_request();
         foreach ($arrJobs as $index => $value) {
             if ($value['job_process'] === 100) {
                 unset($arrJobs[$index]);

@@ -136,8 +136,10 @@ class Service_Copyright_TitlePs extends Service_Copyright_Base
             }
             else {
                 $domain = $domain->find('a', 0);
-                $domain = explode("/", strip_tags($domain->innertext));
-                $domain = $domain[0];
+                if (!empty($domain)) {
+                    $domain = explode("/", strip_tags($domain->innertext));
+                    $domain = $domain[0];
+                }
             }
 
             $a_txt_arr = array();
