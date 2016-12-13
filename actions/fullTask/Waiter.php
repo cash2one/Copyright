@@ -23,7 +23,12 @@ class Action_Waiter extends Service_Action_Abstract
     {
         //jobid （get）
         $jobId = $_GET['jobid'];
-        $parentFolder = Service_Copyright_File::getFullTaskPath();
+        $salt = $_GET['salt'];
+        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
+        if (!file_exists($parentFolder . '/job_status.txt')) {
+            $ret = array('errno' => -1, 'message' => 'do not exist this job_status.txt');
+            $this->jsonResponse($ret);
+        }
         $jobStatus = file_get_contents($parentFolder . '/job_status.txt');
         $arrJobs = json_decode($jobStatus, true);
 
@@ -43,6 +48,10 @@ class Action_Waiter extends Service_Action_Abstract
             $this->jsonResponse($ret);
         }
         fastcgi_finish_request();
+        /*
+         * 现在每个salt文件下存放一个job_status，不用每次更新
+         */
+       /* 
         foreach ($arrJobs as $index => $value) {
             if ($value['job_process'] === 100) {
                 unset($arrJobs[$index]);
@@ -50,6 +59,7 @@ class Action_Waiter extends Service_Action_Abstract
         }
         $jobStatus = json_encode($arrJobs);
         file_put_contents($parentFolder . '/job_status.txt', $jobStatus, LOCK_EX);
+         */
     }
 
 }

@@ -23,16 +23,18 @@ abstract class Service_FullTask_Abstract {
     protected $jobId;
     protected $type;
     protected $scope;
+    protected $salt;
     protected $queryPath;
 
     /**
      * @param 
      * @return 
      */ 
-    public function __construct($_jobId, $_type, $_scope, $_queryPath) {
+    public function __construct($_jobId, $_type, $_scope, $_salt, $_queryPath) {
         $this->jobId = $_jobId;
         $this->type = $_type;
         $this->scope = $_scope;
+        $this->salt = $_salt;
         $this->queryPath = $_queryPath;
         self::$PHP_PATH = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))) . '/php/bin/php';
     }
@@ -42,9 +44,9 @@ abstract class Service_FullTask_Abstract {
      * @return
      */
     public function update_status($process, $resultPath = null, $statJson = null) {
-        $dir = Service_Copyright_File::getFullTaskPath(); 
-        $jobStatus = file_get_contents($dir . "/job_status.txt");
-        if ($jobStatus) {
+        $dir = Service_Copyright_File::getFullTaskPath() . '/' . $this->salt; 
+        if (file_exists($dir . '/job_status.txt')) {
+            $jobStatus = file_get_contents($dir . "/job_status.txt");
             $arrJobs = json_decode($jobStatus, true);
         }
         else {
