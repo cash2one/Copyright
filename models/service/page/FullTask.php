@@ -181,7 +181,13 @@ class Service_Page_FullTask
                 $item['process'] = intval($value['job_process']);
                 if(!empty($value['job_result_file']))
                 {
-                    $item['downloadAddr'] = sprintf('/copyright/file/download?salt=%s&file=%s',$value['salt'],$value['job_result_file']);
+                    //$item['downloadAddr'] = sprintf('/copyright/file/download?salt=%s&file=%s',$value['salt'],$value['job_result_file']);
+
+                    //当用NFS的时候，需要用这个地址进行返回
+                    //$item['downloadAddr'] = sprintf('/copyright/file/download?salt=%s&jobid=%s&file=%s',$value['salt'],$value['jobid'],$value['job_result_file']);
+
+                    $scf = new Service_Copyright_File();
+                    $item['downloadAddr'] = $scf->getFileHttpAddr($value['salt'],$value['job_result_file'],$value['jobid']);
                 }
 
                 $custom_start_time = intval($value['custom_start_time']);

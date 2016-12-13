@@ -132,9 +132,10 @@ class Service_Copyright_File
     /**
      * @param $salt
      * @param $fileName
+     * @param null $jobid
      * @return string
      */
-    public function getFileHttpAddr($salt,$fileName)
+    public function getFileHttpAddr($salt,$fileName,$jobid = null)
     {
         $http_config = Bd_Conf::getAppConf("fulltask/http_config");
         $port = $http_config['port'];
@@ -146,7 +147,15 @@ class Service_Copyright_File
         {
             $url = sprintf('http://%s:%s/%s',$http_config['hostname'],$http_config['port'],$http_config['pathinfo']);
         }
-        $url .= $salt.'/'.$fileName;
+
+        if(empty($jobid))
+        {
+            $url .= $salt.'/'.$fileName;
+        }
+        else
+        {
+            $url .= $salt.'/'.$jobid.'/'.$fileName;
+        }
         return $url;
     }
 

@@ -41,7 +41,10 @@ class Action_Download extends Service_Action_Abstract
         }
         else
         {
+            $jobid = $httpGet['jobid'];
 
+            //jobid是空说明下载的是曾经用户上传的文件,jobid不为空说明是任务的结果文件
+            return $this->downloadFile($salt,$fileName,$jobid);
         }
 
     }
@@ -60,13 +63,13 @@ class Action_Download extends Service_Action_Abstract
     /**
      * @param $salt
      * @param $fileName
-     * @return
+     * @param null $jobid
      */
-    protected function downloadFile($salt,$fileName)
+    protected function downloadFile($salt,$fileName,$jobid = null)
     {
         //拼凑文件地址
         $scf = new Service_Copyright_File();
-        $httpFileAddr = $scf->getFileHttpAddr($salt,$fileName);
+        $httpFileAddr = $scf->getFileHttpAddr($salt,$fileName,$jobid);
         //校验文件是否存在
         if($scf->isFileExists($httpFileAddr))
         {
