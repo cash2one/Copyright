@@ -36,8 +36,10 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
     public function run() {
         BD_Log::notice("service content ps is running...\n");
         $this->update_status(0);
-        $result_path = dirname($this->queryPath) . '/results/';
-
+        $result_path = dirname($this->queryPath) . '/' . $this->jobId . '/';
+        if (!file_exists($resultPath)) {
+            mkdir($resultPath);
+        }
         $output1 = $result_path . $this->jobId .  '_fetch_daily' . '.txt';
 
         $this->process($this->type, $this->queryPath, $output1);

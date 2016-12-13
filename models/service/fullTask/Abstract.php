@@ -44,7 +44,10 @@ abstract class Service_FullTask_Abstract {
      * @return
      */
     public function update_status($process, $resultPath = null, $statJson = null) {
-        $dir = Service_Copyright_File::getFullTaskPath() . '/' . $this->salt; 
+        $dir = Service_Copyright_File::getFullTaskPath() . '/' . $this->salt . '/' . $this->jobId;
+        if (!file_exists($dir)) {
+            mkdir($dir);
+        }
         if (file_exists($dir . '/job_status.txt')) {
             $jobStatus = file_get_contents($dir . "/job_status.txt");
             $arrJobs = json_decode($jobStatus, true);
@@ -56,7 +59,9 @@ abstract class Service_FullTask_Abstract {
         if ($jobItem == null) { $jobItem = array(); }
         $jobItem['process'] = $process;
         if ($resultPath) {
-            $jobItem['job_result_file'] = $resultPath;
+            $tokens = explode("/", $resultPath);
+            // 返回具体文件名即可，不用完整路径
+            $jobItem['job_result_file'] = $tokens[count($tokens) - 1];
         }
         if ($statJson) {
             $jobItem['job_stat'] = $statJson;

@@ -38,7 +38,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $ret = array();
         $template_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/script_template/';
         $generate_path = dirname($this->queryPath) . '/script_generate/';
-        $result_path = dirname($this->queryPath) . '/results/';
+        $result_path = dirname($this->queryPath) . '/' . $this->jobId . '/';
 
         if (!file_exists($generate_path)) {
             mkdir($generate_path);

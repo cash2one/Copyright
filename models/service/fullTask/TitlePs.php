@@ -37,7 +37,7 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
     public function run() {
         Bd_Log::notice("service title ps is running...\n");
         $this->update_status(0);
-        $result_path = dirname($this->queryPath) . '/results/';
+        $result_path = dirname($this->queryPath) . '/' . $this->jobId . '/';
         if (!file_exists($result_path)) {
             mkdir($result_path);
         }

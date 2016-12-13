@@ -24,7 +24,7 @@ class Action_Waiter extends Service_Action_Abstract
         //jobid （get）
         $jobId = $_GET['jobid'];
         $salt = $_GET['salt'];
-        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt;
+        $parentFolder = Service_Copyright_File::getFullTaskPath() . '/' . $salt . '/' . $jobId;
         if (!file_exists($parentFolder . '/job_status.txt')) {
             $ret = array('errno' => -1, 'message' => 'do not exist this job_status.txt');
             $this->jsonResponse($ret);
@@ -40,9 +40,9 @@ class Action_Waiter extends Service_Action_Abstract
             $ret = array(
                 'errno' => 0,
                 'result' => array(
-                    'job_process' => $arrJobs[$jobId]['job_process'],
+                    'job_process' => $arrJobs[$jobId]['process'],
                     'job_result_file' => $arrJobs[$jobId]['job_result_file'],
-                    'job_stat' => $arrJobs[$jobId]['job_stat'],
+                    'job_stat' => json_encode($arrJobs[$jobId]['job_stat']),
                 ),
             );
             $this->jsonResponse($ret);
