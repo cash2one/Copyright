@@ -6,7 +6,7 @@
  */
 
 //这个CT任务大致三两分钟启动一次
-Bd_Init::init();
+Bd_Init::init('copyright');
 
 //主体功能逻辑写在这里
 
@@ -49,6 +49,7 @@ class FullTaskWaiter
         $this->status = 4;
         //获取要处理的列表
         $tasks = $this->getTasks();
+        var_dump($tasks);
         if(!empty($tasks) && count($tasks) > 0)
         {
             foreach($tasks as $index=>$item)
@@ -80,7 +81,7 @@ class FullTaskWaiter
                 $jobid = $item['jobid'];
                 $uid = $item['uid'];
                 $salt = $item['salt'];
-                $fileName = $item['fileName'];
+                $fileName = $item['file_name'];
                 $mode = $item['mode'];
                 $type = $item['type'];
                 $scope = $item['scope'];
@@ -102,7 +103,7 @@ class FullTaskWaiter
     {
         $status = $this->status;
         //要查询的字段
-        $fields = array('jobid','uid','salt','fileName','mode','type','scope','custom_start_time','custom_end_time','status','job_process','ext');
+        $fields = array('jobid','uid','salt','file_name','mode','type','scope','custom_start_time','custom_end_time','status','job_process','ext');
         switch($status)
         {
             case 4:
@@ -136,24 +137,25 @@ class FullTaskWaiter
     protected function updateJob($job)
     {
         $jobid = $job['jobid'];
+        $salt = $job['salt'];
         $currentProcess = $job['job_process'];
-        //请求线下，获取job对应的状态
-        $waiterUrl = Bd_Conf::getAppConf("fulltask/waiter_url").'jobid='.$jobid;
+        //请求线下，获取job对应的状态, 要把salt 和jobid传过去
+        $waiterUrl = Bd_Conf::getAppConf("fulltask/waiter_url").'salt='.$salt.'&jobid='.$jobid;
         $responseRet = Service_Copyright_Curl::send($waiterUrl,null,1);
         if($responseRet === false)
         {
-            Bd_Log::warning('Oh, No! the waiter is no response !');
+            Bd_Log::warning(sprintf('Oh, No! the waiter is no response ![waiterUrl]%s',$waiterUrl));
         }
         else
         {
-            $ret = json_decode($responseRet);
+            $ret = json_decode($responseRet,true);
             if($ret['errno'] == 0 && !empty($ret['result']))
             {
                 $spf = new Service_Page_FullTask();
                 $job_process = $ret['result']['job_process'];
                 if($job_process == 100 && !empty($ret['result']['job_result_file']) && !empty($ret['result']['job_stat']))
                 {
-                    $status = 3;
+                    $status = 3; //status = 3 表示已经完成
                     $job_result_file = $ret['result']['job_result_file'];
                     $job_stat = $ret['result']['job_stat'];
                     $row = array('status'=>$status,'job_process'=>$job_process,'job_result_file'=>$job_result_file,'job_stat'=>$job_stat);
@@ -161,7 +163,7 @@ class FullTaskWaiter
                 }
                 else if($job_process >0 &&$job_process < 100 && $currentProcess != $job_process)
                 {
-                    $status = 1;
+                    $status = 1; //status = 1 表示正在运行中
                     $row = array('status'=>$status,'job_process'=>$job_process);
                     $spf->updateTable($jobid,$row);
                 }

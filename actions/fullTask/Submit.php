@@ -29,7 +29,7 @@ class Action_Submit extends Service_Action_Abstract
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
         $salt = $httpPost['salt'];
-        $fileName = $httpPost['fileName']; //刚刚上传的文件名
+        $fileName = $this->iconvutf8($httpPost['fileName']); //刚刚上传的文件名
 
         //简单写， 粗暴了点， 但是时间紧迫
         if (empty($salt)) {
