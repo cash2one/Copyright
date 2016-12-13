@@ -95,8 +95,8 @@ class Service_Copyright_Statistic
             'riskCount' => $riskCount,
             'noRiskCount' => $totalScan - $riskCount,
             'riskRate' => $riskCount / $totalScan,
-            'highRiskCount' => $highRiskCount / $totalScan,
-            'lowRiskCount' => $lowRiskCount / $totalScan,
+            'highRiskCount' => $highRiskCount,
+            'lowRiskCount' => $lowRiskCount,
             'priacyAttachCount' => $priacyAttachCount,
             'priacyUrlCount' => $priacyUrlCount, 
         );

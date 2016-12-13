@@ -174,8 +174,8 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
                 'riskCount' => $queryRiskCount[$key],
                 'noRiskCount' => $queryTotalScan[$key] - $queryRiskCount[$key],
                 'riskRate' => $queryRiskCount[$key] / $queryTotalScan[$key],
-                'highRiskCount' => $queryHighRiskCount[$key] / $queryTotalScan[$key],
-                'lowRiskCount' => $queryLowRiskCount[$key] / $queryTotalScan[$key],
+                'highRiskCount' => $queryHighRiskCount[$key],
+                'lowRiskCount' => $queryLowRiskCount[$key],
                 'priacyAttachCount' => $queryAttachCount[$key],
                 'priacyUrlCount' => $queryUrlCount[$key],
             );
