@@ -49,7 +49,7 @@ class FullTaskWaiter
         $this->status = 4;
         //获取要处理的列表
         $tasks = $this->getTasks();
-        var_dump($tasks);
+        //var_dump($tasks);
         if(!empty($tasks) && count($tasks) > 0)
         {
             foreach($tasks as $index=>$item)
