@@ -55,12 +55,14 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $script3 = $generate_path . $this->jobId . '_svm' . '.php';
         $script4 = $generate_path . $this->jobId . '_qtags' . '.php';
         $script5 = $template_path . 'judge_' . $type . '.sh';
+        $script6 = $template_path . 'format_csv.php';
 
         $output1 = $result_path . $this->jobId . '_fetch_hive' . '.txt';
         $output2 = $result_path . $this->jobId . '_filter_content' . '.txt';
         $output3 = $result_path . $this->jobId . '_svm' . '.txt';
         $output4 = $result_path . $this->jobId . '_qtags' . '.txt';
         $output5 = $result_path . $this->jobId . '_judge_' . $type . '.txt';
+        $output6 = $result_path . 'result.csv';
 
         $tokens = explode("/", $script0);
         $replace1 = array(
@@ -106,9 +108,13 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $ret[4] = array(
             'executable' => "sh $script5 $output4 > $output5",
             'progress' => 80,
-            'resultPath' => $output5,
+            'resultPath' => null,
         );
-
+        $ret[5] = array(
+            'executable' => self::$PHP_PATH . " $script6 $output5 $output6",
+            'progress' => 90,
+            'resultPath' => $output6,
+        );
         return $ret;
     }
 
@@ -154,15 +160,19 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $totalScan = 0;
         $priacyAttachCount = 0;
         $priacyUrlCount = 0;
-        while ($line = fgets($fd)) {
+        while ($line = fgetcsv($fd)) {
+            if (strpos($line[0], "序号") !== false) {
+                continue;
+            }
             $totalScan ++;
-            $line = trim($line);
-            $tokens = explode("\t", $line);
-            $query = $tokens[0];
-            $risk = $tokens[count($tokens) - 1];
-            $priacy = $tokens[count($tokens) - 4];
- //           $domain = 
+            $query = $line[0];
+            $risk = $line[count($line) - 1];
+            $priacy = $line[4];
+            $userName = $line[3];
             if ($risk == 1) { $risk = 2; }
+            if ($risk != 0) {
+                $userRiskCount[$userName] ++;
+            }
             if ($queryTotalScan[$query]) {
                 $queryTotalScan[$query] ++;
             }
@@ -209,7 +219,6 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
             'priacyAttachCount' => $priacyAttachCount,
             'priacyUrlCount' => $priacyUrlCount,
         );
-        //$content = '';
         foreach ($queryRiskCount as $key => $value) {
             $interval = 3;
             if ($queryRiskCount[$key] / $queryTotalScan[$key] > 0.2) {
@@ -221,34 +230,41 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
             else if ($queryRiskCount[$key] / $queryTotalScan[$key] > 0.01) {
                 $interval = 2;
             }
-          //  $content .= $key;
             $riskEstimate[$key] = array(
                 'interval' => $interval,
                 'totalScan' => $queryTotalScan[$key],
                 'riskCount' => $queryRiskCount[$key],
                 'noRiskCount' => $queryTotalScan[$key] - $queryRiskCount[$key],
-                'riskRate' => $queryRiskCount[$key] / $queryTotalScan[$key],
+                'riskRate' => sprintf("%.2lf", $queryRiskCount[$key] / $queryTotalScan[$key]),
                 'highRiskCount' => intval($queryHighRiskCount[$key]),
                 'lowRiskCount' => intval($queryLowRiskCount[$key]),
                 'priacyAttachCount' => intval($queryAttachCount[$key]),
                 'priacyUrlCount' => intval($queryUrlCount[$key]),
             ); 
-          //  foreach ($riskEstimate[$key] as $k => $v) {
-          //      $content .= "\t" . $v;
-          //  }
-          //  $content .= "\n";
         }
-        //file_put_contents($statPath, $content);
         foreach ($riskEstimate as $key => $row) {
             $volume[$key] = $row['riskCount'];
         }
         array_multisort($volume, SORT_DESC, $riskEstimate);
-        //usort($riskEstimate, array('Service_FullTask_TitleIknow', 'cmp_obj'));
         $riskEstimate = array_slice($riskEstimate, 0, 10);
+        
+        foreach ($userRiskCount as $key => $value) {
+            $piracySource[] = array(
+                'from' => $key,
+                'fromType' => 1,
+                'count' => $value,
+            );
+        }
+        foreach ($piracySource as $key => $value) {
+            $volume[$key] = $value['count'];
+        }
+        array_multisort($volume, SORT_DESC, $piracySource);
+        $piracySource = array_slice($piracySource, 0, 10);
         $result = array(
-            'overview' => $overview, 
+            'overview' => $overview,
             'riskEstimate' => $riskEstimate,
-        );
+            'priacySource' => $piracySource,
+        );       
         return $result;
     }
 }
