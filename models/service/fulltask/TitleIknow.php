@@ -36,7 +36,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
      */
     public function generate_scripts() {
         $ret = array();
-        $template_path = dirname(dirname(dirname(dirname(__FILE__)))) . '/script_template/';
+        $template_path = dirname(Service_Copyright_File::getFullTaskPath()) . '/script_template/';
         $generate_path = dirname($this->queryPath) . '/script_generate/';
         $result_path = dirname($this->queryPath) . '/' . $this->jobId . '/';
 
