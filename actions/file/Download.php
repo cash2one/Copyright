@@ -24,7 +24,8 @@ class Action_Download extends Service_Action_Abstract
         $httpGet = $_GET;
         $salt = $httpGet['salt'];
         $fileName = $httpGet['file'];
-        $fileName = $this->iconvutf8($fileName);
+        //$fileName = $this->iconvutf8($fileName);
+        $fileName = urldecode($fileName);
 
         //如果连fileName都没有， 那只能return
         if(empty($fileName))
