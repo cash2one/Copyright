@@ -114,7 +114,7 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 $intRet = preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?    \:\%\~\|\.]+/i', $strCon, $arrMat);
                 if ($intRet > 0) {
                     $piracyUrl = $arrMat[0];
-                    if ($this->hitWhiteList($piracyUrl)) unset($piracyUrl);
+                    if ($this->hitWhiteList($piracyUrl)) { unset($piracyUrl); }
                 }
                 $intRet = preg_match('/\<file fsid.*?\/>/i', $strCon, $arrMat);
                 if ($intRet > 0) {
@@ -137,7 +137,7 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
                 $intRet = preg_match('/http[s]?\:\/\/[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?\:\%\~\|\.]+|www\.[a-zA-Z\d\$\-_\@\&\+\=\;\/\#\?    \:\%\~\|\.]+/i', $strCon, $arrMat);
                 if ($intRet > 0) {
                     $piracyUrl = $arrMat[0];
-                    if ($this->hitWhiteList($piracyUrl)) unset($piracyUrl);
+                    if ($this->hitWhiteList($piracyUrl)) { unset($piracyUrl); }
                 }
                 $intRet = preg_match('/\<file fsid.*?\/>/i', $strCon, $arrMat);
                 if ($intRet > 0) {

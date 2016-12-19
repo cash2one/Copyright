@@ -79,18 +79,13 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
         while ($line = fgets($fn)) {
             $line = trim($line);
             fputcsv($fd, array('资源关键词：', $line));
-            fputcsv($fd, array(
-                '序号', '搜索结果标题', '外网链接', '域名站点', '是否资源类盗版',
-            ));
+            fputcsv($fd, array('序号', '搜索结果标题', '外网链接', '域名站点', '是否资源类盗版'));
             $content .= "序号\t标题\n";
             $obj = new Service_Copyright_TitlePs($this->jobId, $line, $type, 0);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {
-                    fputcsv($fd, array(
-                        $index + $pn * 10, $item['title'], $item['url'],
-                        $item['domain'], $item['risk'],
-                    ));
+                    fputcsv($fd, array($index + $pn * 10, $item['title'], $item['url'], $item['domain'], $item['risk']));
                 }
             }
         }

@@ -75,20 +75,12 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
             $line = trim($line);
             $tokens = explode("\t", $line);
             fputcsv($fd, array("资源关键词：", $tokens[0]));
-            fputcsv($fd, array(
-                '序号', '外网标题', '外网链接', 
-                '外网域名', '公共字符数', '公共字符占比', 
-                '标题相似度', '内容相似度', '判断结果',
-            ));
+            fputcsv($fd, array('序号', '外网标题', '外网链接', '外网域名', '公共字符数', '公共字符占比', '标题相似度', '内容相似度', '判断结果'));
             $obj = new Service_Copyright_ContentPs($this->jobId, $tokens[0], $type, 0, $tokens[1]);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {
-                    fputcsv($fd, array(
-                        $index + $pn * 10, $item['title'], $item['url'],
-                        $item['domain'], $item['sim_len'], $item['sim_other_content'],
-                        $item['sim_title'], $item['sim_content'], $item['risk'],
-                    ));
+                    fputcsv($fd, array($index + $pn * 10, $item['title'], $item['url'],$item['domain'], $item['sim_len'], $item['sim_other_content'], $item['sim_title'], $item['sim_content'], $item['risk']));
                 }
             }
         }
