@@ -40,7 +40,7 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
         if (!file_exists($resultPath)) {
             mkdir($resultPath);
         }
-        $output1 = $result_path . $this->jobId .  '_fetch_daily' . '.txt';
+        $output1 = $result_path . 'fetch_daily' . '.csv';
 
         $this->process($this->type, $this->queryPath, $output1);
         $this->update_status(90, $output1); 
@@ -70,25 +70,28 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
      */ 
     private function process($type, $file, $output) {
         $fn = fopen($file, "r");
-        $content = "";
+        $fd = fopen($output, 'w');
         while ($line = fgets($fn)) {
             $line = trim($line);
             $tokens = explode("\t", $line);
-            $content .= "资源关键词：$tokens[0]\n";
-            $content .= "序号\t标题\n";
+            fputcsv($fd, array("资源关键词：", $tokens[0]));
+            fputcsv($fd, array(
+                '序号', '外网标题', '外网链接', 
+                '外网域名', '公共字符数', '公共字符占比', 
+                '标题相似度', '内容相似度', '判断结果',
+            ));
             $obj = new Service_Copyright_ContentPs($this->jobId, $tokens[0], $type, 0, $tokens[1]);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {
-                    $content .= "$index";
-                    foreach ($item as $key => $value) {
-                        $content .= "\t$value";
-                    }
-                    $content .= "\n";
+                    fputcsv($fd, array(
+                        $index + $pn * 10, $item['title'], $item['url'],
+                        $item['domain'], $item['sim_len'], $item['sim_other_content'],
+                        $item['sim_title'], $item['sim_content'], $item['risk'],
+                    ));
                 }
             }
         }
-        file_put_contents($output, $content);
     }
 
     /**
@@ -101,16 +104,14 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
         $totalScan = 0;
         $priacyAttachCount = 0;
         $priacyUrlCount = 0;
-        while ($line = fgets($fd)) {
-            $line = trim($line);
-            if (strpos($line, "资源关键词：") !== false) {
-                $tokens = explode("：", $line);
-                $query = $tokens[1];
+        while ($line = fgetcvs($fd)) {
+            if (strpos($line[0], "资源关键词：") !== false) {
+                $query = $line[1];
             }
             else {
-                $tokens = explode("\t", $line);
-                if (count($tokens) == 2) { continue; }
-                $risk = $tokens[count($tokens) - 1];
+                if (strpos($line[0], "序号") !== false) { continue; }
+                $risk = $line[count($line) - 1];
+                $domain = $line[3];
                 if ($queryTotalScan[$query]) {
                     $queryTotalScan[$query] ++;
                 }
@@ -162,11 +163,11 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
                 'totalScan' => $queryTotalScan[$key],
                 'riskCount' => $queryRiskCount[$key],
                 'noRiskCount' => $queryTotalScan[$key] - $queryRiskCount[$key],
-                'riskRate' => $queryRiskCount[$key] / $queryTotalScan[$key],
-                'highRiskCount' => $queryHighRiskCount[$key],
-                'lowRiskCount' => $queryLowRiskCount[$key],
-                'priacyAttachCount' => $queryAttachCount[$key],
-                'priacyUrlCount' => $queryUrlCount[$key],
+                'riskRate' => sprintf("%.2lf", $queryRiskCount[$key] / $queryTotalScan[$key]),
+                'highRiskCount' => intval($queryHighRiskCount[$key]),
+                'lowRiskCount' => intval($queryLowRiskCount[$key]),
+                'priacyAttachCount' => intval($queryAttachCount[$key]),
+                'priacyUrlCount' => intval($queryUrlCount[$key]),
             );
           //  foreach ($riskEstimate[$key] as $k => $v) {
           //     $content .= "\t" . $v;
@@ -180,9 +181,23 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
         }
         array_multisort($volume, SORT_DESC, $riskEstimate);
         $riskEstimate = array_slice($riskEstimate, 0, 10);
+
+        foreach ($domainRiskCount as $key => $value) {
+            $piracySource[] = array(
+                'from' => 'http://' . $key,
+                'fromType' => 0,
+                'count' => $value,
+            );
+        }
+        foreach ($piracySource as $key => $value) {
+            $volume[$key] = $value['count'];
+        }
+        array_multisort($volume, SORT_DESC, $piracySource);
+        $piracySource = array_slice($piracySource, 0, 10);
         $result = array(
             'overview' => $overview,
             'riskEstimate' => $riskEstimate,
+            'piracySource' => $piracySource,
         );
         return $result;
     }

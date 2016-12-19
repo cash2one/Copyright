@@ -43,7 +43,7 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
         }
         Bd_Log::notice("result_path is: ". $result_path);
         //$timestamp = time();
-        $output1 = $result_path . $this->jobId . '_fetch_ps'  . '.txt';
+        $output1 = $result_path . 'fetch_ps'  . '.csv';
 
         $this->process($this->type, $this->queryPath, $output1);
         $this->update_status(90, $output1);   
@@ -75,29 +75,25 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
      */ 
     private function process($type, $file, $output) {
         $fn = fopen($file, "r");
-        $content = "";
+        $fd = fopen($output, 'w');
         while ($line = fgets($fn)) {
             $line = trim($line);
-            BD_LOG::notice('process: '. $line. ' and type: '. $type);
-            $content .= "资源关键词：$line\n";
+            fputcsv($fd, array('资源关键词：', $line));
+            fputcsv($fd, array(
+                '序号', '搜索结果标题', '外网链接', '域名站点', '是否资源类盗版',
+            ));
             $content .= "序号\t标题\n";
-            BD_LOG::notice("content: ". $content);
             $obj = new Service_Copyright_TitlePs($this->jobId, $line, $type, 0);
             for ($pn = 0; $pn < 5; $pn ++) {
                 $ret = $obj->simpleRun($pn, 0, 10, 10);
                 foreach ($ret as $index => $item) {
-                    $content .= "$index";
-                    BD_LOG::notice("content: ". $content);
-                    foreach ($item as $key => $value) {
-                        $content .= "\t$value";
-                    }
-                    $content .= "\n";
-                    BD_LOG::notice("content: ". $content);
+                    fputcsv($fd, array(
+                        $index + $pn * 10, $item['title'], $item['url'],
+                        $item['domain'], $item['risk'],
+                    ));
                 }
             }
-            BD_LOG::notice("content: ". $content);
         }
-        file_put_contents($output, $content);
     }
 
     /**
@@ -110,17 +106,15 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
         $totalScan = 0;
         $priacyAttachCount = 0;
         $priacyUrlCount = 0;
-        while ($line = fgets($fd)) {
-            $line = trim($line);
-            if (strpos($line, "资源关键词：") !== false) {
-                $tokens = explode("：", $line);
-                $query = $tokens[1];
+        while ($line = fgetcvs($fd)) {
+            if (strpos($line[0], "资源关键词：") !== false) {
+                $query = $line[1];
             }
             else {
                 $totalScan ++;
-                $tokens = explode("\t", $line);
-                if (count($tokens) == 2) { continue; }
-                $risk = $tokens[count($tokens) - 1];
+                if (strpos($line[0], '序号') !== false) { continue; }
+                $risk = $line[count($line) - 1];
+                $domain = $line[3]; 
                 if ($risk == 1) { $risk = 2; }
                 if ($queryTotalScan[$query]) {
                     $queryTotalScan[$query] ++;
@@ -130,6 +124,9 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
                 }
                 if ($risk != 0) {
                     $riskCount ++;
+                    if ($domain) {
+                        $domainRiskCount[$domain] ++;
+                    }
                     if ($queryRiskCount[$query]) { $queryRiskCount[$query] ++; }
                     else {
                         $queryRiskCount[$query] = 1;
@@ -173,11 +170,11 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
                 'totalScan' => $queryTotalScan[$key],
                 'riskCount' => $queryRiskCount[$key],
                 'noRiskCount' => $queryTotalScan[$key] - $queryRiskCount[$key],
-                'riskRate' => $queryRiskCount[$key] / $queryTotalScan[$key],
-                'highRiskCount' => $queryHighRiskCount[$key],
-                'lowRiskCount' => $queryLowRiskCount[$key],
-                'priacyAttachCount' => $queryAttachCount[$key],
-                'priacyUrlCount' => $queryUrlCount[$key],
+                'riskRate' => sprintf("%.2lf", $queryRiskCount[$key] / $queryTotalScan[$key]),
+                'highRiskCount' => intval($queryHighRiskCount[$key]),
+                'lowRiskCount' => intval($queryLowRiskCount[$key]),
+                'priacyAttachCount' => intval($queryAttachCount[$key]),
+                'priacyUrlCount' => intval($queryUrlCount[$key]),
             );
          //   foreach ($riskEstimate[$key] as $k => $v) {
          //       $content .= "\t" . $v;
@@ -191,9 +188,23 @@ class Service_FullTask_TitlePs extends Service_FullTask_Abstract {
         array_multisort($volume, SORT_DESC, $riskEstimate); 
         //usort($riskEstimate, array('Service_FullTask_TitlePs', 'cmp_obj'));
         $riskEstimate = array_slice($riskEstimate, 0, 10);
+
+        foreach ($domainRiskCount as $key => $value) {
+            $piracySource[] = array(
+                'from' => 'http://' . $key,
+                'fromType' => 0,
+                'count' => $value,
+            );
+        }
+        foreach ($piracySource as $key => $value) {
+            $volume[$key] = $value['count'];    
+        }
+        array_multisort($volume, SORT_DESC, $piracySource);
+        $piracySource = array_slice($piracySource, 0, 10);
         $result = array(
             'overview' => $overview,
             'riskEstimate' => $riskEstimate,
+            'piracySource' => $piracySource,
         );
         return $result;
     }

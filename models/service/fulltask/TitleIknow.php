@@ -161,6 +161,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
             $query = $tokens[0];
             $risk = $tokens[count($tokens) - 1];
             $priacy = $tokens[count($tokens) - 4];
+ //           $domain = 
             if ($risk == 1) { $risk = 2; }
             if ($queryTotalScan[$query]) {
                 $queryTotalScan[$query] ++;
@@ -227,10 +228,10 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
                 'riskCount' => $queryRiskCount[$key],
                 'noRiskCount' => $queryTotalScan[$key] - $queryRiskCount[$key],
                 'riskRate' => $queryRiskCount[$key] / $queryTotalScan[$key],
-                'highRiskCount' => $queryHighRiskCount[$key],
-                'lowRiskCount' => $queryLowRiskCount[$key],
-                'priacyAttachCount' => $queryAttachCount[$key],
-                'priacyUrlCount' => $queryUrlCount[$key],
+                'highRiskCount' => intval($queryHighRiskCount[$key]),
+                'lowRiskCount' => intval($queryLowRiskCount[$key]),
+                'priacyAttachCount' => intval($queryAttachCount[$key]),
+                'priacyUrlCount' => intval($queryUrlCount[$key]),
             ); 
           //  foreach ($riskEstimate[$key] as $k => $v) {
           //      $content .= "\t" . $v;

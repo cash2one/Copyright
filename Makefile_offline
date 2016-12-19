@@ -48,6 +48,9 @@ cp -r $OUT_PUT/actions $OUT_PUT/Bootstrap.php $OUT_PUT/controllers $OUT_PUT/mode
 cp $OUT_PUT/conf/global_offline.conf $CONF_PATH/global.conf
 #数据文件拷贝
 cp -r $OUT_PUT/data/app/copyright/* $DATA_PATH
+#模板脚本拷贝
+cp -r $OUT_PUT/script_template/* $DATA_PATH
+
 #webroot index 文件
 cp -r $OUT_PUT/index.php $WEBROOT_PATH
 #api 文件
