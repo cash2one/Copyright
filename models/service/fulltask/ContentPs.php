@@ -71,9 +71,10 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
     private function process($type, $file, $output) {
         $fn = fopen($file, "r");
         $fd = fopen($output, 'w');
+        fwrite($fd, chr(0xEF).chr(0xBB).chr(0xBF));
         while ($line = fgets($fn)) {
             $line = trim($line);
-            $tokens = explode("\t", $line);
+            $tokens = explode("#####", $line);
             fputcsv($fd, array("资源关键词：", $tokens[0]));
             fputcsv($fd, array('序号', '外网标题', '外网链接', '外网域名', '公共字符数', '公共字符占比', '标题相似度', '内容相似度', '判断结果'));
             $obj = new Service_Copyright_ContentPs($this->jobId, $tokens[0], $type, 0, $tokens[1]);
@@ -96,7 +97,7 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
         $totalScan = 0;
         $priacyAttachCount = 0;
         $priacyUrlCount = 0;
-        while ($line = fgetcvs($fd)) {
+        while ($line = fgetcsv($fd)) {
             if (strpos($line[0], "资源关键词：") !== false) {
                 $query = $line[1];
             }
@@ -189,7 +190,7 @@ class Service_FullTask_ContentPs extends Service_FullTask_Abstract {
         $result = array(
             'overview' => $overview,
             'riskEstimate' => $riskEstimate,
-            'piracySource' => $piracySource,
+            'priacySource' => $piracySource,
         );
         return $result;
     }
