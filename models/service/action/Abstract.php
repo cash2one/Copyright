@@ -49,7 +49,7 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
     public function smartyInstance()
     {
         //20161220 打个log看线上环境的 server_name,主要是看server_name
-        Bd_Log::notice(json_encode($_SERVER));
+        //Bd_Log::notice(json_encode($_SERVER));
 
         //检查用于是否登陆
         $userInfo = Bd_Passport::checkUserLogin();
