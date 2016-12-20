@@ -58,6 +58,8 @@ abstract class Service_Action_Abstract extends Ap_Action_Abstract
         //如果没有登录就强制登录
         if($this->userInfo['isLogin'] == 0)
         {
+            //20161220 打个log看线上环境的 server_name,主要是看server_name
+            Bd_Log::notice(json_encode($_SERVER));
             //登录成功之后要跳转去的url
             $currentUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER["REQUEST_URI"];
             //passport的登陆地址
