@@ -25,7 +25,7 @@ while ($line = fgets($fn)) {
     if (empty($line)) { continue; }
     $tokens = explode("\t", $line);
     $index ++;
-    fputcsv($fd, array($index, $token[0], $tokens[2], $token[5], $token[7], $token[count($tokens) - 1]));
+    fputcsv($fd, array($index, $tokens[0], $tokens[2], $tokens[5], $tokens[7], $tokens[count($tokens) - 1]));
 }
 fclose($fd);
 fclose($fn);
