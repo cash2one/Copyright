@@ -10,9 +10,9 @@ add file {words.txt};
 select transform(Q.qid, Q.title, R.rid, R.uid, R.uname, R.content) using '${hiveconf:HDFS_PHP} ./{TF_info1.php}' as (match, qid, title, rid, uid, uname, content)
 from  
 	(SELECT  qid, rid, uid, uname, content FROM qb_tblReply 
-      WHERE deleted='n' and dt='20161207') R
+      WHERE deleted='n' and dt='{date}') R
 	join
 	(SELECT  qid, title FROM qb_tblQuestion WHERE
-      deleted='n' and dt='20161207') Q 
+      deleted='n' and dt='{date}') Q 
 	ON R.qid = Q.qid
 

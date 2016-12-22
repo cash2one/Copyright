@@ -33,7 +33,7 @@ while ($line = fgets($in)){
 	$tokens = explode("\t", $line);
 	$title = $tokens[1];
 	$flag = false;
-	foreach($arr_words as $key) {
+	foreach ($g_arr_words as $key) {
 		if (mb_strpos($title, $key, 0, 'UTF-8') !== false) {
 			$flag = true;
 			$match = $key;

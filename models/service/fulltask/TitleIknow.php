@@ -67,6 +67,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
         $tokens = explode("/", $script0);
         $replace1 = array(
             "{words.txt}" => $this->queryPath,
+            "{date}" => date("Ymd", strtotime("yesterday")),
             "{TF_info.php}" => $script0,
             "{TF_info1.php}" => $tokens[count($tokens) - 1],
         );
