@@ -197,7 +197,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
                     else { $queryLowRiskCount[$query] = 1; }
                 }
             }
-            if ($priacy == '<file>') {
+            if (strpos($priacy, "<file ") !== false) {
                 $priacyAttachCount ++;
                 if ($queryAttachCount[$query]) { $queryAttachCount[$query] ++; }
                 else {
