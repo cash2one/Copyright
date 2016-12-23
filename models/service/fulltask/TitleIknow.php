@@ -166,7 +166,7 @@ class Service_FullTask_TitleIknow extends Service_FullTask_Abstract {
                 continue;
             }
             $totalScan ++;
-            $query = $line[0];
+            $query = $line[1];
             $risk = $line[count($line) - 1];
             $priacy = $line[4];
             $userName = $line[3];
