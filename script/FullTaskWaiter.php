@@ -28,7 +28,12 @@ exit(0);
 
 class FullTaskWaiter
 {
-    private $status;
+    private static $modeCondition = array(
+        'urge'=>array(1,4),  //1表示正在执行，4表示调度成功  要催促正在执行和调度成功的进度
+        'reschedule'=>array(0,5), //0表示job创建成功，5表示调度失败， 要对创建成功和调度失败的重新进行调度
+    );
+
+    private $mode;
     public function work()
     {
         //更新job的process状态
@@ -46,10 +51,9 @@ class FullTaskWaiter
      */
     public function urge()
     {
-        $this->status = 4;
+        $this->mode = __FUNCTION__;
         //获取要处理的列表
         $tasks = $this->getTasks();
-        //var_dump($tasks);
         if(!empty($tasks) && count($tasks) > 0)
         {
             foreach($tasks as $index=>$item)
@@ -66,7 +70,7 @@ class FullTaskWaiter
      */
     public function reschedule()
     {
-        $this->status = 5;
+        $this->mode = __FUNCTION__;
         //获取要处理的列表
         $tasks = $this->getTasks();
         if(!empty($tasks) && count($tasks) > 0)
@@ -74,11 +78,13 @@ class FullTaskWaiter
             foreach($tasks as $index=>$item)
             {
                 $ext = json_decode($item['ext'],true);
+                $jobid = $item['jobid'];
                 if(empty($ext) || count($ext['schedule_history']) >= 3)
                 {
+                    var_dump(sprintf('[jobid]%s,[schedule_history]%s,no need to reschedule again!',$jobid,implode(',',$ext['schedule_history'])));
                     continue;
                 }
-                $jobid = $item['jobid'];
+
                 $uid = $item['uid'];
                 $salt = $item['salt'];
                 $fileName = $item['file_name'];
@@ -90,9 +96,41 @@ class FullTaskWaiter
 
                 $spf = new Service_Page_FullTask();
                 $spf->schedule($jobid,$uid,$salt,$fileName,$mode,$type,$scope,$startTime,$endTime,$ext);
+
+                var_dump(sprintf('[jobid]%s,[schedule_history]%s, schedule!',$jobid,implode(',',$ext['schedule_history'])));
                 sleep(1);
             }
         }
+    }
+
+    /**
+     * @param $field
+     * @param array $arr
+     * @return string
+     */
+    private function orJoint($field,array $arr)
+    {
+        $conditionStr = "";
+        if(!empty($arr))
+        {
+            foreach($arr as $item)
+            {
+                if(!empty($conditionStr))
+                {
+                    $conditionStr .= " OR ";
+                }
+
+                if(is_int($item))
+                {
+                    $conditionStr .= "`$field`=$item";
+                }
+                else
+                {
+                    $conditionStr .= "`$field`='$item'";
+                }
+            }
+        }
+        return $conditionStr;
     }
 
     /**
@@ -101,21 +139,24 @@ class FullTaskWaiter
      */
     private function getTasks()
     {
-        $status = $this->status;
         //要查询的字段
         $fields = array('jobid','uid','salt','file_name','mode','type','scope','custom_start_time','custom_end_time','status','job_process','ext');
-        switch($status)
+        switch($this->mode)
         {
-            case 4:
-                //找到那些只是调度成功的
+            case 'urge':
                 $sdf = new Service_Data_FullTask();
-                $conditions = array('status='=>$status);
+                //status 要用或操作
+                $statusCondition = $this->orJoint('status',self::$modeCondition[$this->mode]);
+                $conditions = array($statusCondition);
+
                 $tasks = $sdf->select($fields,$conditions);
                 break;
-            case 5:
+            case 'reschedule':
                 //找到调度失败的，目的是再次进行调度
                 $sdf = new Service_Data_FullTask();
-                $conditions = array('status='=>$status);
+                //status 要用或操作
+                $statusCondition = $this->orJoint('status',self::$modeCondition[$this->mode]);
+                $conditions = array($statusCondition);
 
                 //控制时间要不超过24小时的
                 $currentTime = time();
@@ -142,6 +183,7 @@ class FullTaskWaiter
         //请求线下，获取job对应的状态, 要把salt 和jobid传过去
         $waiterUrl = Bd_Conf::getAppConf("fulltask/waiter_url").'salt='.$salt.'&jobid='.$jobid;
         $responseRet = Service_Copyright_Curl::send($waiterUrl,null,1);
+        var_dump(sprintf('[waiter url]%s,[return]%s',$waiterUrl,$responseRet));
         if($responseRet === false)
         {
             Bd_Log::warning(sprintf('Oh, No! the waiter is no response ![waiterUrl]%s',$waiterUrl));
