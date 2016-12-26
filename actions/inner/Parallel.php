@@ -27,9 +27,10 @@ class Action_Parallel extends Service_Action_Abstract
         $mode = $httpPost['mode'];
         $type = $httpPost['type'];
         $scope = $httpPost['scope'];
-        $query = $httpPost['query'];
-        $chapter = $httpPost['chapter'];
-        $text = $httpPost['text'];
+        $query = $this->iconvutf8($httpPost['query']);
+        $chapter = $this->iconvutf8($httpPost['chapter']);
+        $text = $this->iconvutf8($httpPost['text']);
+        Bd_log::notice(sprintf('[query]%s,[chapter]%s,[text]%s',$query,$chapter,$text));
         
         $unitJob = new Service_Data_Unit();
         $ret = $unitJob->schedule(

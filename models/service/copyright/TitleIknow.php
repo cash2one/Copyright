@@ -28,7 +28,6 @@ class Service_Copyright_TitleIknow extends Service_Copyright_Base {
         if ($pn != 0) {
             $_pn += 10;
         }
-        $query = iconv('cp936', 'utf8', $this->query);
         $query = "ie=utf8"."&word=$this->query"."&pn=$_pn"."&rn=$rn";
         ral_set_pathinfo('search/api/e9d3ce7b038101cd0b78fdcdced58queryinner');
         ral_set_querystring($query);
